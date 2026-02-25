@@ -6,7 +6,7 @@ description: |
 license: MIT
 metadata:
   author: ai-library
-  version: "1.0"
+  version: "2.0"
   scope: [root, ui, backend]
   auto_invoke:
     - "Optimizing performance"
@@ -343,7 +343,9 @@ export default withBundleAnalyzer({
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  // Enable React Compiler (auto-memoization)
+  // React Compiler (React 19+) - auto-memoizes components and hooks.
+  // Replaces the need for manual useMemo/useCallback in most cases.
+  // Run `npx react-compiler-healthcheck` first to verify your codebase is compatible.
   experimental: {
     reactCompiler: true,
   },
@@ -362,6 +364,33 @@ const nextConfig: NextConfig = {
 }
 
 export default nextConfig
+```
+
+> **React Compiler note:** With `reactCompiler: true`, you can remove most manual `useMemo` and `useCallback` calls. The compiler infers when memoization is needed. Keep explicit memoization only when performance-testing shows it's needed.
+
+
+---
+
+## 📊 Real User Monitoring
+
+Add Speed Insights for Core Web Vitals from real users (not just Lighthouse).
+
+```typescript
+// app/layout.tsx
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import { Analytics } from '@vercel/analytics/react'
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html>
+      <body>
+        {children}
+        <SpeedInsights />  {/* Real CWV data from users */}
+        <Analytics />     {/* Page view analytics */}
+      </body>
+    </html>
+  )
+}
 ```
 
 ---

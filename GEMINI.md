@@ -1,6 +1,6 @@
-# AI Development Library - Claude Code
+# AI Development Library - Gemini
 
-> This file configures how Claude Code should use the skills library for development.
+> This file configures how Gemini (in VS Code or any IDE) should use the skills library for development.
 
 ---
 
@@ -13,6 +13,12 @@ This library contains **skills** (code patterns) and **specialized agents** (dom
 **ALWAYS load and read the relevant skills BEFORE writing code.**
 
 No matter how "simple" the task seems. No exceptions. If you don't follow the skill patterns, the code will be rejected.
+
+---
+
+## Orchestrator
+
+Start by reading `AGENTS.md` for the full auto-invoke table, agent hierarchy, and global rules. This file supplements it with Gemini-specific guidance.
 
 ---
 
@@ -44,7 +50,7 @@ When working with these actions/files, **read the corresponding skill FIRST**:
 
 ## Domain Delegation
 
-When a task belongs to a specific domain, **load the corresponding agent** to get full context:
+When a task belongs to a specific domain, **load the corresponding agent** for full context:
 
 | Domain | Agent | When to use |
 |--------|--------|-------------|
@@ -54,8 +60,6 @@ When a task belongs to a specific domain, **load the corresponding agent** to ge
 | **Testing** | `agents/testing.md` | Unit tests, integration, E2E |
 
 ### How to "Delegate"
-
-Delegation in Claude Code is done by loading additional context:
 
 ```
 1. Read the agent file (e.g. agents/ui.md)
@@ -170,4 +174,4 @@ For detailed rules, auto-invoke tables, and full architecture: `AGENTS.md`
 
 ---
 
-*Claude Code Configuration v1.1 | Compatible with ai-library v2.3.0*
+*Gemini Configuration v1.0 | Compatible with ai-library v2.3.0*

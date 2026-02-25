@@ -120,4 +120,4 @@ Zod 4.x | React Hook Form 7.x | Zustand 5.x
 
 ---
 
-*Agent Version: 2.0.0*
+*Agent Version: 2.1.0*

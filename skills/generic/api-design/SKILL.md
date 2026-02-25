@@ -6,7 +6,7 @@ description: |
 license: MIT
 metadata:
   author: ai-library
-  version: "1.0"
+  version: "2.0"
   scope: [root, backend]
   auto_invoke:
     - "Creating API endpoints"
@@ -374,6 +374,87 @@ export async function GET(request: Request) {
 }
 ```
 
+### 6. Streaming Responses (AI / Long-running)
+
+For AI text generation or long-running operations, stream responses instead of waiting for full completion.
+
+```typescript
+// app/api/chat/route.ts
+import { OpenAI } from 'openai'
+
+const openai = new OpenAI()
+
+export async function POST(request: Request) {
+  const { messages } = await request.json()
+
+  // Create a readable stream from OpenAI
+  const stream = await openai.chat.completions.create({
+    model: 'gpt-4o',
+    messages,
+    stream: true,
+  })
+
+  // Return a streaming response
+  const readableStream = new ReadableStream({
+    async start(controller) {
+      const encoder = new TextEncoder()
+
+      for await (const chunk of stream) {
+        const text = chunk.choices[0]?.delta?.content ?? ''
+        if (text) {
+          // Server-Sent Events format
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text })}\n\n`))
+        }
+      }
+
+      controller.enqueue(new TextEncoder().encode('data: [DONE]\n\n'))
+      controller.close()
+    },
+  })
+
+  return new Response(readableStream, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+    },
+  })
+}
+```
+
+```typescript
+// Client-side consumption with EventSource / fetch
+'use client'
+
+export async function streamChat(messages: Message[]) {
+  const response = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages }),
+  })
+
+  if (!response.body) throw new Error('No response body')
+
+  const reader = response.body.getReader()
+  const decoder = new TextDecoder()
+
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+
+    const lines = decoder.decode(value).split('\n\n').filter(Boolean)
+    for (const line of lines) {
+      if (line === 'data: [DONE]') return
+      if (line.startsWith('data: ')) {
+        const { text } = JSON.parse(line.slice(6))
+        // Process each chunk (e.g., append to UI)
+        yield text
+      }
+    }
+  }
+}
+```
+
 ---
 
 ## 📁 File Structure
@@ -440,4 +521,4 @@ types/
 
 ---
 
-*Skill Version: 1.0.0 | Compatible with Next.js 16.x*
+*Skill Version: 2.0.0 | Compatible with Next.js 16.x*

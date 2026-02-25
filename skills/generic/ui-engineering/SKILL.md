@@ -285,7 +285,7 @@ const Button = ({ variant = 'primary', ...props }) => (
 )
 ```
 
-### 2. Never Hardcode Colors
+### 3. Never Hardcode Colors
 
 Always use design tokens for consistency and theming.
 
@@ -300,7 +300,7 @@ Always use design tokens for consistency and theming.
 <div className="bg-card text-card-foreground border-border">
 ```
 
-### 3. Never Skip Transitions
+### 4. Never Skip Transitions
 
 Every state change needs smooth transitions.
 

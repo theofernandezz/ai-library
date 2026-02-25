@@ -1,12 +1,12 @@
 ---
-name: seo
+name: SEO - Search Engine Optimization
 description: |
   SEO patterns for Next.js applications. Meta tags, structured data, sitemaps, Open Graph.
   Trigger: Activated when working on meta tags, SEO, or search optimization.
 license: MIT
 metadata:
   author: ai-library
-  version: "1.0"
+  version: "2.0"
   scope: [root, ui, backend]
   auto_invoke:
     - "Adding meta tags"
@@ -408,6 +408,74 @@ export const metadata = {
 
 ---
 
+### 8. hreflang for Multi-Language Apps
+
+> ⚠️ **Cross-skill dependency:** Use alongside the [`i18n` skill](../i18n/SKILL.md) for full multi-language SEO coverage.
+
+```typescript
+// app/[locale]/layout.tsx
+import type { Metadata } from 'next'
+import { locales } from '@/i18n/config'
+
+const BASE_URL = 'https://myapp.com'
+
+export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
+  return {
+    alternates: {
+      canonical: `${BASE_URL}/${params.locale}`,
+      languages: Object.fromEntries(
+        locales.map((locale) => [locale, `${BASE_URL}/${locale}`])
+      ),
+    },
+  }
+}
+
+// Explicit example:
+// { 'en': 'https://myapp.com/en', 'es': 'https://myapp.com/es' }
+```
+
+### 9. PWA Manifest
+
+```typescript
+// app/manifest.ts
+import type { MetadataRoute } from 'next'
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: 'My App',
+    short_name: 'MyApp',
+    description: 'My App helps you do amazing things.',
+    start_url: '/',
+    display: 'standalone',
+    background_color: '#09090b',
+    theme_color: '#09090b',
+    icons: [
+      {
+        src: '/icon-192.png',
+        sizes: '192x192',
+        type: 'image/png',
+        purpose: 'maskable',
+      },
+      {
+        src: '/icon-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+      },
+    ],
+  }
+}
+```
+
+```typescript
+// app/layout.tsx - Reference the manifest
+export const metadata: Metadata = {
+  manifest: '/manifest.webmanifest',
+  // ... rest of metadata
+}
+```
+
+---
+
 ## 📁 File Structure
 
 ```
@@ -474,4 +542,4 @@ public/
 
 ---
 
-*Skill Version: 1.0.0 | Next.js 16.x SEO Patterns*
+*Skill Version: 2.0.0 | Next.js 16.x SEO Patterns*

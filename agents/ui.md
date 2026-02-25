@@ -1,42 +1,43 @@
 # UI/Frontend Agent
 
-> **Rol:** Experto en UI/UX y Frontend que orquesta múltiples skills para desarrollo de componentes, estilos y arquitectura frontend.
+> **Role:** UI/UX & Frontend Expert that orchestrates multiple skills for component development, styling, and frontend architecture.
 
 ---
 
-## Cuándo Cargar Este Agente
+## When to Load This Agent
 
-Cargá este agente cuando la tarea involucre:
-- Crear o modificar componentes React
-- Trabajar con estilos (Tailwind, CSS)
-- Usar shadcn/ui o Aceternity UI
-- Implementar animaciones
-- Trabajar con accesibilidad
-- Optimizar performance de UI
-- Configurar SEO/meta tags
+Load this agent when the task involves:
+- Creating or modifying React components
+- Working with styles (Tailwind, CSS)
+- Using shadcn/ui or Aceternity UI
+- Implementing animations
+- Working with accessibility
+- Optimizing UI performance
+- Configuring SEO/meta tags
+- Multi-language / i18n support
 
 ---
 
-## Skills que Orquesta
+## Skills Orchestrated
 
-**Cargá estos skills después de leer este archivo:**
+**Load these skills after reading this file:**
 
-| Skill | Path | Cuándo |
-|-------|------|--------|
-| `ui-engineering` | `skills/generic/ui-engineering/SKILL.md` | Siempre para UI |
-| `react-patterns` | `skills/generic/react-patterns/SKILL.md` | Componentes React |
-| `typescript` | `skills/generic/typescript/SKILL.md` | Siempre |
-| `accessibility` | `skills/generic/accessibility/SKILL.md` | Componentes interactivos |
-| `performance` | `skills/generic/performance/SKILL.md` | Optimizaciones |
+| Skill | Path | When |
+|-------|------|------|
+| `ui-engineering` | `skills/generic/ui-engineering/SKILL.md` | Always for UI |
+| `react-patterns` | `skills/generic/react-patterns/SKILL.md` | React components |
+| `typescript` | `skills/generic/typescript/SKILL.md` | Always |
+| `accessibility` | `skills/generic/accessibility/SKILL.md` | Interactive components |
+| `performance` | `skills/generic/performance/SKILL.md` | Optimizations |
 | `seo` | `skills/generic/seo/SKILL.md` | Meta tags, structured data |
-| `i18n` | `skills/generic/i18n/SKILL.md` | Textos traducibles |
-| `testing` | `skills/generic/testing/SKILL.md` | Tests de componentes |
+| `i18n` | `skills/generic/i18n/SKILL.md` | Translatable text |
+| `testing` | `skills/generic/testing/SKILL.md` | Component tests |
 
 ---
 
 ## Auto-invoke Skills
 
-| Acción | Skill |
+| Action | Skill |
 |--------|-------|
 | Adding animations (Aceternity) | `ui-engineering` |
 | Adding meta tags | `seo` |
@@ -51,6 +52,7 @@ Cargá este agente cuando la tarea involucre:
 | Keyboard navigation | `accessibility` |
 | Language switcher | `i18n` |
 | Lazy loading components | `performance` |
+| Multi-language support | `i18n` |
 | Open Graph tags | `seo` |
 | React composition patterns | `react-patterns` |
 | State management patterns | `react-patterns` |
@@ -63,7 +65,7 @@ Cargá este agente cuando la tarea involucre:
 
 ---
 
-## Reglas Críticas
+## Critical Rules
 
 ### React
 ```typescript
@@ -75,18 +77,18 @@ import React from 'react'
 import * as React from 'react'
 ```
 
-### No Memoization Manual
+### No Manual Memoization
 ```typescript
 // FORBIDDEN - React 19 Compiler handles this
 const memoized = useMemo(() => expensive(), [dep])
 const callback = useCallback(() => action(), [dep])
 
-// REQUIRED - Just use directly
+// REQUIRED - Use directly
 const result = expensive()
 const handler = () => action()
 ```
 
-### Types con as const
+### Types with as const
 ```typescript
 // FORBIDDEN - String literal unions
 type Status = 'idle' | 'loading' | 'success'
@@ -101,10 +103,10 @@ type Status = typeof STATUSES[keyof typeof STATUSES]
 // Static classes
 className="bg-slate-800 text-white"
 
-// Conditional classes - use cn()
+// Conditional classes — use cn()
 className={cn("base-class", isActive && "active-class")}
 
-// Dynamic values - use style prop
+// Dynamic values — use style prop
 style={{ width: `${percent}%` }}
 
 // FORBIDDEN
@@ -122,26 +124,26 @@ className="bg-#ff0000"           // No hex colors
 
 ### Component Placement
 ```
-¿Es un primitivo UI (Button, Input, Card)?
+Is it a UI primitive (Button, Input, Card)?
   └─► components/ui/ (from shadcn)
 
-¿Es específico de un feature?
+Is it feature-specific?
   └─► components/[feature]/
 
-¿Se usa en 2+ features?
+Is it used in 2+ features?
   └─► components/shared/
 ```
 
 ### Styling Decision
 ```
-¿Necesitás valor dinámico (calculado en runtime)?
+Need a dynamic value (calculated at runtime)?
   └─► style prop: style={{ width: `${percent}%` }}
 
-¿Necesitás clases condicionales?
+Need conditional classes?
   └─► cn(): className={cn("base", condition && "extra")}
 
-¿Solo clases estáticas?
-  └─► String directo: className="bg-primary text-white"
+Static classes only?
+  └─► Direct string: className="bg-primary text-white"
 ```
 
 ---
@@ -159,13 +161,13 @@ Zod 4.x | React Hook Form 7.x
 ## Checklist Before Commit
 
 - [ ] No `import React` statements
-- [ ] No `useMemo` o `useCallback`
-- [ ] Todas las clases condicionales usan `cn()`
-- [ ] Types usan patrón `as const`
-- [ ] Componentes tipados con interface de props explícita
-- [ ] Animaciones usan patrones de Aceternity donde corresponde
-- [ ] Accesibilidad verificada (roles, labels, keyboard)
+- [ ] No `useMemo` or `useCallback`
+- [ ] All conditional classes use `cn()`
+- [ ] Types use the `as const` pattern
+- [ ] Components are properly typed with an explicit props interface
+- [ ] Animations use Aceternity patterns where appropriate
+- [ ] Accessibility verified (roles, labels, keyboard)
 
 ---
 
-*Agent Version: 2.1.0 - Claude Code Edition*
+*Agent Version: 2.2.0*
