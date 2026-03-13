@@ -67,8 +67,8 @@ cp_dir  "$LIBRARY_DIR/skills/skill-creator" "$OPENCODE_DIR/skills/skill-creator"
 cp_dir  "$LIBRARY_DIR/skills/skill-sync"    "$OPENCODE_DIR/skills/skill-sync"
 cp_dir  "$LIBRARY_DIR/skills/feedback-loop" "$OPENCODE_DIR/skills/feedback-loop"
 
-# Agents
-cp_dir  "$LIBRARY_DIR/.opencode/agents"  "$OPENCODE_DIR/agents"
+# Agents (from the root agents/ dir, not .opencode/agents — avoids self-copy)
+cp_dir  "$LIBRARY_DIR/agents"            "$OPENCODE_DIR/agents"
 
 echo ""
 if $DRY_RUN; then

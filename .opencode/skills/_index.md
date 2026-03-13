@@ -20,7 +20,8 @@
 | `api-design` | `generic/api-design/SKILL.md` | REST APIs, webhooks, external integrations |
 | `i18n` | `generic/i18n/SKILL.md` | next-intl, locale handling, translations |
 | `accessibility` | `generic/accessibility/SKILL.md` | WCAG 2.1, ARIA, keyboard navigation |
-| `performance` | `generic/performance/SKILL.md` | Core Web Vitals, lazy loading, optimization |
+| `performance` | `generic/performance/SKILL.md` | Core Web Vitals, lazy loading, React Compiler |
+| `prisma` | `generic/prisma/SKILL.md` | Prisma ORM, PostgreSQL, Neon, service layer, migrations |
 | `seo` | `generic/seo/SKILL.md` | Meta tags, Open Graph, structured data, sitemap |
 | `state-management` | `generic/state-management/SKILL.md` | Zustand vs Context, stores, slices, persistence |
 | `remotion` | `generic/remotion/SKILL.md` | Video creation in React, frame-based animations |
@@ -65,6 +66,8 @@
 | Create API endpoint | `api-design`, `security`, `typescript` |
 | Create video with Remotion | `remotion`, `react-patterns`, `typescript` |
 | Manage global/shared state | `state-management`, `react-patterns`, `typescript` |
+| Database query / model | `prisma`, `security`, `typescript` |
+| Create database migration | `prisma` |
 
 ---
 
@@ -94,4 +97,4 @@ Skills can be combined. When multiple skills are active:
 
 ---
 
-*Skills Index v1.3 | Total: 19 skills*
+*Skills Index v1.4 | Total: 20 skills*

@@ -1,5 +1,5 @@
 ---
-name: skill-creator
+name: Skill Creator - Meta Skill
 description: |
   Template and instructions for creating new skills following the library's standards.
   Trigger: Activated when user asks to "create a new skill" or "add a new rule".
@@ -39,7 +39,7 @@ Use this exact template when creating new skills:
 
 ````markdown
 ---
-name: skill-creator
+name: [Skill Name]
 description: |
   [2-3 sentence description of what this skill enforces]
   Trigger: [When this skill should be auto-invoked]
@@ -253,7 +253,7 @@ Here's a complete example of creating a new skill:
 
 ```markdown
 ---
-name: skill-creator
+name: Testing Patterns - Vitest
 description: |
   Production testing patterns using Vitest with Testing Library.
   Trigger: Activated when creating or editing test files.

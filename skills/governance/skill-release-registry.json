@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "defaultCadenceDays": 30,
+  "skills": [
+    {
+      "id": "accessibility",
+      "file": "skills/generic/accessibility/SKILL.md",
+      "owner": "@ui",
+      "cadenceDays": 30,
+      "lastVerified": "2026-03-13"
+    },
+    {
+      "id": "api-design",
+      "file": "skills/generic/api-design/SKILL.md",
+      "owner": "@backend",
+      "cadenceDays": 30,
+      "lastVerified": "2026-03-13"
+    },
+    {
+      "id": "database",
+      "file": "skills/generic/database/SKILL.md",
+      "owner": "@backend",
+      "cadenceDays": 30,
+      "lastVerified": "2026-03-13"
+    },
+    {
+      "id": "error-handling",
+      "file": "skills/generic/error-handling/SKILL.md",
+      "owner": "@backend",
+      "cadenceDays": 30,
+      "lastVerified": "2026-03-13"
+    },
+    {
+      "id": "git-workflow",
+      "file": "skills/generic/git-workflow/SKILL.md",
+      "owner": "@maintainers",
+      "cadenceDays": 30,
+      "lastVerified": "2026-03-13"
+    },
+    {
+      "id": "i18n",
+      "file": "skills/generic/i18n/SKILL.md",
+      "owner": "@ui",
+      "cadenceDays": 30,
+      "lastVerified": "2026-03-13"
+    },
+    {
+      "id": "nextjs-core",
+      "file": "skills/generic/nextjs-core/SKILL.md",
+      "owner": "@backend",
+      "cadenceDays": 14,
+      "lastVerified": "2026-03-13"
+    },
+    {
+      "id": "performance",
+      "file": "skills/generic/performance/SKILL.md",
+      "owner": "@ui",
+      "cadenceDays": 30,
+      "lastVerified": "2026-03-13"
+    },
+    {
+      "id": "prisma",
+      "file": "skills/generic/prisma/SKILL.md",
+      "owner": "@backend",
+      "cadenceDays": 14,
+      "lastVerified": "2026-03-13"
+    },
+    {
+      "id": "react-native",
+      "file": "skills/generic/react-native/SKILL.md",
+      "owner": "@mobile",
+      "cadenceDays": 7,
+      "lastVerified": "2026-03-13",
+      "fileAssertions": [
+        "Skill Version:",
+        "React Native 0.84+",
+        "Expo SDK 55+"
+      ],
+      "sources": [
+        {
+          "name": "React Native versions",
+          "url": "https://reactnative.dev/versions",
+          "mustContainAny": [
+            "0.84",
+            "latest version"
+          ]
+        },
+        {
+          "name": "Expo changelog",
+          "url": "https://expo.dev/changelog",
+          "mustContainAny": [
+            "sdk 55",
+            "expo sdk 55"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "react-patterns",
+      "file": "skills/generic/react-patterns/SKILL.md",
+      "owner": "@ui",
+      "cadenceDays": 30,
+      "lastVerified": "2026-03-13"
+    },
+    {
+      "id": "remotion",
+      "file": "skills/generic/remotion/SKILL.md",
+      "owner": "@ui",
+      "cadenceDays": 30,
+      "lastVerified": "2026-03-13"
+    },
+    {
+      "id": "security",
+      "file": "skills/generic/security/SKILL.md",
+      "owner": "@backend",
+      "cadenceDays": 14,
+      "lastVerified": "2026-03-13"
+    },
+    {
+      "id": "seo",
+      "file": "skills/generic/seo/SKILL.md",
+      "owner": "@ui",
+      "cadenceDays": 30,
+      "lastVerified": "2026-03-13"
+    },
+    {
+      "id": "state-management",
+      "file": "skills/generic/state-management/SKILL.md",
+      "owner": "@ui",
+      "cadenceDays": 30,
+      "lastVerified": "2026-03-13"
+    },
+    {
+      "id": "testing",
+      "file": "skills/generic/testing/SKILL.md",
+      "owner": "@testing",
+      "cadenceDays": 30,
+      "lastVerified": "2026-03-13"
+    },
+    {
+      "id": "typescript",
+      "file": "skills/generic/typescript/SKILL.md",
+      "owner": "@maintainers",
+      "cadenceDays": 30,
+      "lastVerified": "2026-03-13"
+    },
+    {
+      "id": "ui-engineering",
+      "file": "skills/generic/ui-engineering/SKILL.md",
+      "owner": "@ui",
+      "cadenceDays": 30,
+      "lastVerified": "2026-03-13"
+    }
+  ]
+}

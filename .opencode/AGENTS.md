@@ -93,6 +93,9 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | Locale handling | `i18n` |
 | Logging and monitoring | `error-handling` |
 | Making commits | `git-workflow` |
+| Working with Prisma schema | `prisma` |
+| Writing Prisma queries | `prisma` |
+| Working with PostgreSQL via Neon | `prisma` |
 | Meta tags / Open Graph | `seo` |
 | Mocking with MSW | `testing` |
 | Multi-language support | `i18n` |
@@ -145,6 +148,7 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | `i18n` | Multi-language support with next-intl | [SKILL.md](skills/generic/i18n/SKILL.md) |
 | `accessibility` | WCAG 2.1, ARIA, keyboard navigation | [SKILL.md](skills/generic/accessibility/SKILL.md) |
 | `performance` | Core Web Vitals, lazy loading, optimization | [SKILL.md](skills/generic/performance/SKILL.md) |
+| `prisma` | Prisma ORM, PostgreSQL, Neon serverless, service layer | [SKILL.md](skills/generic/prisma/SKILL.md) |
 | `seo` | Meta tags, Open Graph, structured data, sitemap | [SKILL.md](skills/generic/seo/SKILL.md) |
 | `state-management` | Zustand vs Context decision matrix, stores, persistence | [SKILL.md](skills/generic/state-management/SKILL.md) |
 | `remotion` | Video creation in React, programmatic videos | [SKILL.md](skills/generic/remotion/SKILL.md) |

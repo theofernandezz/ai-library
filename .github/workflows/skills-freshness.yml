@@ -1,0 +1,48 @@
+name: Skills Freshness
+
+on:
+  pull_request:
+    paths:
+      - "skills/**"
+      - "agents/**"
+      - "AGENTS.md"
+      - "CLAUDE.md"
+      - "GEMINI.md"
+      - ".github/workflows/skills-freshness.yml"
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+jobs:
+  check-skills-freshness:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Collect changed files (PR only)
+        if: github.event_name == 'pull_request'
+        run: |
+          git diff --name-only "origin/${{ github.base_ref }}...HEAD" > changed_files.txt
+          cat changed_files.txt
+
+      - name: Run skills freshness checker (PR)
+        if: github.event_name == 'pull_request'
+        run: |
+          set -eo pipefail
+          CHANGED_FILES="$(cat changed_files.txt)" \
+          node skills/governance/check-skills-freshness.mjs --strict --changed-only | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Run skills freshness checker (scheduled/manual)
+        if: github.event_name != 'pull_request'
+        run: |
+          set -eo pipefail
+          node skills/governance/check-skills-freshness.mjs --strict | tee -a "$GITHUB_STEP_SUMMARY"

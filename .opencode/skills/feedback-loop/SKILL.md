@@ -1,5 +1,5 @@
 ---
-name: feedback-loop
+name: Feedback Loop - Self-Improvement
 description: |
   Meta-skill for continuous improvement of the AI library. Captures learnings after tasks.
   Trigger: Activated at the end of significant tasks or when patterns are missing.

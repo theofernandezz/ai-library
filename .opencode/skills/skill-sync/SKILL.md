@@ -27,7 +27,7 @@ Each skill that should appear in Auto-invoke sections needs these fields in fron
 
 ```yaml
 ---
-name: skill-sync
+name: skill-name
 description: |
   What this skill does.
 metadata:
