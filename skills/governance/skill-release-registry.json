@@ -150,6 +150,27 @@
       "owner": "@ui",
       "cadenceDays": 30,
       "lastVerified": "2026-03-13"
+    },
+    {
+      "id": "skill-creator",
+      "file": "skills/skill-creator/SKILL.md",
+      "owner": "@maintainers",
+      "cadenceDays": 30,
+      "lastVerified": "2026-03-13"
+    },
+    {
+      "id": "skill-sync",
+      "file": "skills/skill-sync/SKILL.md",
+      "owner": "@maintainers",
+      "cadenceDays": 30,
+      "lastVerified": "2026-03-13"
+    },
+    {
+      "id": "feedback-loop",
+      "file": "skills/feedback-loop/SKILL.md",
+      "owner": "@maintainers",
+      "cadenceDays": 30,
+      "lastVerified": "2026-03-13"
     }
   ]
 }
