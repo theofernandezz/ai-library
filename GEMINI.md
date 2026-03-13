@@ -26,27 +26,28 @@ Start by reading `AGENTS.md` for the full auto-invoke table, agent hierarchy, an
 
 When working with these actions/files, **read the corresponding skill FIRST**:
 
-| If you're...                        | Skill                      | Path                                       |
-| ----------------------------------- | -------------------------- | ------------------------------------------ |
-| Creating/editing .ts or .tsx files  | `typescript`               | `skills/generic/typescript/SKILL.md`       |
-| Working in the app/ directory       | `nextjs-core`              | `skills/generic/nextjs-core/SKILL.md`      |
-| Creating React components           | `react-patterns`           | `skills/generic/react-patterns/SKILL.md`   |
-| Using Tailwind/shadcn/Aceternity    | `ui-engineering`           | `skills/generic/ui-engineering/SKILL.md`   |
-| Working with Supabase/DB            | `database`                 | `skills/generic/database/SKILL.md`         |
-| Working with Prisma/PostgreSQL      | `prisma`                   | `skills/generic/prisma/SKILL.md`           |
-| Creating Server Actions             | `nextjs-core` + `security` | Read both skills                           |
-| Handling authentication             | `security`                 | `skills/generic/security/SKILL.md`         |
-| Writing tests                       | `testing`                  | `skills/generic/testing/SKILL.md`          |
-| Making commits/PRs                  | `git-workflow`             | `skills/generic/git-workflow/SKILL.md`     |
-| Creating API routes/webhooks        | `api-design`               | `skills/generic/api-design/SKILL.md`       |
-| Handling errors                     | `error-handling`           | `skills/generic/error-handling/SKILL.md`   |
-| Internationalizing content          | `i18n`                     | `skills/generic/i18n/SKILL.md`             |
-| Working on accessibility            | `accessibility`            | `skills/generic/accessibility/SKILL.md`    |
-| Optimizing performance              | `performance`              | `skills/generic/performance/SKILL.md`      |
-| Configuring SEO                     | `seo`                      | `skills/generic/seo/SKILL.md`              |
-| Creating videos with Remotion       | `remotion`                 | `skills/generic/remotion/SKILL.md`         |
-| Managing global/shared state        | `state-management`         | `skills/generic/state-management/SKILL.md` |
-| Building React Native apps/features | `react-native`             | `skills/generic/react-native/SKILL.md`     |
+| If you're...                         | Skill                      | Path                                       |
+| ------------------------------------ | -------------------------- | ------------------------------------------ |
+| Creating/editing .ts or .tsx files   | `typescript`               | `skills/generic/typescript/SKILL.md`       |
+| Working in the app/ directory        | `nextjs-core`              | `skills/generic/nextjs-core/SKILL.md`      |
+| Creating React components            | `react-patterns`           | `skills/generic/react-patterns/SKILL.md`   |
+| Using Tailwind/shadcn/Aceternity     | `ui-engineering`           | `skills/generic/ui-engineering/SKILL.md`   |
+| Designing UX flows / CRUD dashboards | `ux`                       | `skills/generic/ux/SKILL.md`               |
+| Working with Supabase/DB             | `database`                 | `skills/generic/database/SKILL.md`         |
+| Working with Prisma/PostgreSQL       | `prisma`                   | `skills/generic/prisma/SKILL.md`           |
+| Creating Server Actions              | `nextjs-core` + `security` | Read both skills                           |
+| Handling authentication              | `security`                 | `skills/generic/security/SKILL.md`         |
+| Writing tests                        | `testing`                  | `skills/generic/testing/SKILL.md`          |
+| Making commits/PRs                   | `git-workflow`             | `skills/generic/git-workflow/SKILL.md`     |
+| Creating API routes/webhooks         | `api-design`               | `skills/generic/api-design/SKILL.md`       |
+| Handling errors                      | `error-handling`           | `skills/generic/error-handling/SKILL.md`   |
+| Internationalizing content           | `i18n`                     | `skills/generic/i18n/SKILL.md`             |
+| Working on accessibility             | `accessibility`            | `skills/generic/accessibility/SKILL.md`    |
+| Optimizing performance               | `performance`              | `skills/generic/performance/SKILL.md`      |
+| Configuring SEO                      | `seo`                      | `skills/generic/seo/SKILL.md`              |
+| Creating videos with Remotion        | `remotion`                 | `skills/generic/remotion/SKILL.md`         |
+| Managing global/shared state         | `state-management`         | `skills/generic/state-management/SKILL.md` |
+| Building React Native apps/features  | `react-native`             | `skills/generic/react-native/SKILL.md`     |
 
 ---
 

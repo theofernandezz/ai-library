@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "defaultCadenceDays": 30,
+  "defaultRequiredCaseCount": 5,
+  "suites": [
+    {
+      "id": "ui-engineering",
+      "owner": "design-systems",
+      "skillFile": "skills/generic/ui-engineering/SKILL.md",
+      "casesFile": "skills/generic/ui-engineering/references/golden-prompts.json",
+      "lastReviewed": "2026-03-13",
+      "cadenceDays": 14,
+      "requiredCaseCount": 5,
+      "bestPracticeAssertions": [
+        "UI_DIRECTION",
+        "Variation Budget Rule",
+        "Reference Pool Strategy",
+        "Accessibility",
+        "Design Intent"
+      ]
+    },
+    {
+      "id": "ux",
+      "owner": "product-ux",
+      "skillFile": "skills/generic/ux/SKILL.md",
+      "casesFile": "skills/generic/ux/references/golden-prompts.json",
+      "lastReviewed": "2026-03-13",
+      "cadenceDays": 14,
+      "requiredCaseCount": 5,
+      "bestPracticeAssertions": [
+        "UX_CRITERIA",
+        "Empty state",
+        "Loading state",
+        "Error state",
+        "Success feedback"
+      ]
+    }
+  ]
+}

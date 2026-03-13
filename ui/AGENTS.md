@@ -4,7 +4,8 @@
 
 > **Skills Reference**: For detailed patterns, use these skills:
 >
-> - [`ui-engineering`](../skills/generic/ui-engineering/SKILL.md) - Linear-style design, Tailwind v4, Shadcn + Aceternity
+> - [`ui-engineering`](../skills/generic/ui-engineering/SKILL.md) - Distinctive UI systems, Tailwind v4, Shadcn + Aceternity
+> - [`ux`](../skills/generic/ux/SKILL.md) - Product UX flows, CRUD patterns, recovery states
 > - [`react-patterns`](../skills/generic/react-patterns/SKILL.md) - Compound components, hooks, composition
 > - [`i18n`](../skills/generic/i18n/SKILL.md) - Multi-language support, translations
 > - [`accessibility`](../skills/generic/accessibility/SKILL.md) - WCAG 2.1, ARIA, keyboard navigation
@@ -28,6 +29,9 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | Core Web Vitals optimization          | `performance`    |
 | Creating custom hooks                 | `react-patterns` |
 | Creating/styling components           | `ui-engineering` |
+| Designing user flows                  | `ux`             |
+| Improving dashboard UX                | `ux`             |
+| Designing CRUD interfaces             | `ux`             |
 | Defining types and interfaces         | `typescript`     |
 | Design system work                    | `ui-engineering` |
 | Image optimization                    | `performance`    |

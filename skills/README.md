@@ -20,7 +20,8 @@ Skills are structured instructions that give AI assistants the context they need
 | `typescript`     | Const types, flat interfaces, utility types       |
 | `react-patterns` | Compound components, hooks, composition           |
 | `nextjs-core`    | App Router, Server Actions, streaming             |
-| `ui-engineering` | Linear-style design, Tailwind v4, Shadcn          |
+| `ui-engineering` | Distinctive UI systems, Tailwind v4, Shadcn       |
+| `ux`             | Product UX flows, CRUD patterns, recovery states  |
 | `database`       | Supabase, RLS, Zod schemas, service layer         |
 | `security`       | XSS/CSRF prevention, input validation, auth       |
 | `error-handling` | Custom errors, boundaries, logging, recovery      |

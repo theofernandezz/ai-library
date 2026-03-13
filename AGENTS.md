@@ -76,6 +76,9 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | Creating test files                     | `testing`          |
 | Creating/editing .ts or .tsx files      | `typescript`       |
 | Creating/styling components             | `ui-engineering`   |
+| Designing user flows                    | `ux`               |
+| Improving dashboard UX                  | `ux`               |
+| Designing CRUD interfaces               | `ux`               |
 | Database queries and mutations          | `database`         |
 | Defining RLS policies                   | `database`         |
 | Defining types and interfaces           | `typescript`       |
@@ -147,7 +150,8 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | `typescript`       | Const types, flat interfaces, utility types             | [SKILL.md](skills/generic/typescript/SKILL.md)       |
 | `react-patterns`   | Compound components, hooks, composition                 | [SKILL.md](skills/generic/react-patterns/SKILL.md)   |
 | `nextjs-core`      | App Router, Server Actions, streaming                   | [SKILL.md](skills/generic/nextjs-core/SKILL.md)      |
-| `ui-engineering`   | Linear-style design, Tailwind v4, Shadcn                | [SKILL.md](skills/generic/ui-engineering/SKILL.md)   |
+| `ui-engineering`   | Distinctive UI systems, Tailwind v4, Shadcn             | [SKILL.md](skills/generic/ui-engineering/SKILL.md)   |
+| `ux`               | Product UX flows, CRUD patterns, recovery states        | [SKILL.md](skills/generic/ux/SKILL.md)               |
 | `database`         | Supabase, RLS, Zod schemas, service layer               | [SKILL.md](skills/generic/database/SKILL.md)         |
 | `security`         | XSS/CSRF prevention, input validation, auth             | [SKILL.md](skills/generic/security/SKILL.md)         |
 | `error-handling`   | Custom errors, boundaries, logging, recovery            | [SKILL.md](skills/generic/error-handling/SKILL.md)   |

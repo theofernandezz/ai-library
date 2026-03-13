@@ -41,8 +41,21 @@ jobs:
           CHANGED_FILES="$(cat changed_files.txt)" \
           node skills/governance/check-skills-freshness.mjs --strict --changed-only | tee -a "$GITHUB_STEP_SUMMARY"
 
+      - name: Run golden prompt checker (PR)
+        if: github.event_name == 'pull_request'
+        run: |
+          set -eo pipefail
+          CHANGED_FILES="$(cat changed_files.txt)" \
+          node skills/governance/check-golden-prompts.mjs --strict --changed-only | tee -a "$GITHUB_STEP_SUMMARY"
+
       - name: Run skills freshness checker (scheduled/manual)
         if: github.event_name != 'pull_request'
         run: |
           set -eo pipefail
           node skills/governance/check-skills-freshness.mjs --strict | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Run golden prompt checker (scheduled/manual)
+        if: github.event_name != 'pull_request'
+        run: |
+          set -eo pipefail
+          node skills/governance/check-golden-prompts.mjs --strict | tee -a "$GITHUB_STEP_SUMMARY"

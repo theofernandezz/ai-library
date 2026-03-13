@@ -26,6 +26,7 @@ Load this agent when the task involves:
 | Skill            | Path                                     | When                                    |
 | ---------------- | ---------------------------------------- | --------------------------------------- |
 | `ui-engineering` | `skills/generic/ui-engineering/SKILL.md` | Always for UI                           |
+| `ux`             | `skills/generic/ux/SKILL.md`             | User flows, CRUD interfaces, state UX   |
 | `react-patterns` | `skills/generic/react-patterns/SKILL.md` | React components                        |
 | `typescript`     | `skills/generic/typescript/SKILL.md`     | Always                                  |
 | `accessibility`  | `skills/generic/accessibility/SKILL.md`  | Interactive components                  |
@@ -47,6 +48,9 @@ Load this agent when the task involves:
 | Core Web Vitals optimization   | `performance`    |
 | Creating custom hooks          | `react-patterns` |
 | Creating/styling components    | `ui-engineering` |
+| Designing user flows           | `ux`             |
+| Improving dashboard UX         | `ux`             |
+| Designing CRUD interfaces      | `ux`             |
 | Defining types and interfaces  | `typescript`     |
 | Design system work             | `ui-engineering` |
 | Image optimization             | `performance`    |
