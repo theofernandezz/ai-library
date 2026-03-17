@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# pre-commit hook — keeps .opencode/ in sync with skills/ and agents/
+#
+# Install once: git config core.hooksPath .githooks
+# ==============================================================================
+
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+
+if [[ -f "$REPO_ROOT/sync-opencode.sh" ]]; then
+  echo "[pre-commit] Syncing .opencode/..."
+  "$REPO_ROOT/sync-opencode.sh"
+  git add "$REPO_ROOT/.opencode/"
+fi

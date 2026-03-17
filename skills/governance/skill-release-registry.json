@@ -134,8 +134,21 @@
       "id": "testing",
       "file": "skills/generic/testing/SKILL.md",
       "owner": "@testing",
-      "cadenceDays": 30,
-      "lastVerified": "2026-03-13"
+      "cadenceDays": 14,
+      "lastVerified": "2026-03-17",
+      "fileAssertions": [
+        "Skill Version:",
+        "Vitest 4.x",
+        "maxWorkers",
+        "coverage.include"
+      ],
+      "sources": [
+        {
+          "name": "Vitest releases",
+          "url": "https://github.com/vitest-dev/vitest/releases",
+          "mustContainAny": ["vitest@4", "v4."]
+        }
+      ]
     },
     {
       "id": "typescript",
@@ -159,6 +172,25 @@
       "lastVerified": "2026-03-13"
     },
     {
+      "id": "env-config",
+      "file": "skills/generic/env-config/SKILL.md",
+      "owner": "@backend",
+      "cadenceDays": 30,
+      "lastVerified": "2026-03-17",
+      "fileAssertions": [
+        "Skill Version:",
+        "Zod",
+        "lib/env.ts"
+      ]
+    },
+    {
+      "id": "project-setup",
+      "file": "skills/project-setup/SKILL.md",
+      "owner": "@maintainers",
+      "cadenceDays": 90,
+      "lastVerified": "2026-03-17"
+    },
+    {
       "id": "skill-creator",
       "file": "skills/skill-creator/SKILL.md",
       "owner": "@maintainers",
@@ -177,7 +209,7 @@
       "file": "skills/feedback-loop/SKILL.md",
       "owner": "@maintainers",
       "cadenceDays": 30,
-      "lastVerified": "2026-03-13"
+      "lastVerified": "2026-03-17"
     }
   ]
 }

@@ -34,6 +34,54 @@
         "Error state",
         "Success feedback"
       ]
+    },
+    {
+      "id": "security",
+      "owner": "@backend",
+      "skillFile": "skills/generic/security/SKILL.md",
+      "casesFile": "skills/generic/security/references/golden-prompts.json",
+      "lastReviewed": "2026-03-17",
+      "cadenceDays": 14,
+      "requiredCaseCount": 5,
+      "bestPracticeAssertions": [
+        "requireAuth",
+        "safeParse",
+        "auth.uid()",
+        "timingSafeEqual",
+        "USING"
+      ]
+    },
+    {
+      "id": "api-design",
+      "owner": "@backend",
+      "skillFile": "skills/generic/api-design/SKILL.md",
+      "casesFile": "skills/generic/api-design/references/golden-prompts.json",
+      "lastReviewed": "2026-03-17",
+      "cadenceDays": 14,
+      "requiredCaseCount": 5,
+      "bestPracticeAssertions": [
+        "status codes",
+        "idempotent",
+        "cursor",
+        "code",
+        "message"
+      ]
+    },
+    {
+      "id": "testing",
+      "owner": "@testing",
+      "skillFile": "skills/generic/testing/SKILL.md",
+      "casesFile": "skills/generic/testing/references/golden-prompts.json",
+      "lastReviewed": "2026-03-17",
+      "cadenceDays": 14,
+      "requiredCaseCount": 5,
+      "bestPracticeAssertions": [
+        "vi.resetAllMocks",
+        "vi.restoreAllMocks",
+        "vi.useFakeTimers",
+        "getByRole",
+        "maxWorkers"
+      ]
     }
   ]
 }

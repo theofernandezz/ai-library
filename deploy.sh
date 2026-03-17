@@ -43,6 +43,7 @@ DRY_RUN=false
 FORCE=false
 COPIED=0
 SKIPPED=0
+ERRORS=0
 
 # ── Helpers ─────────────────────────────────────────────────────────────────
 log()    { echo -e "${BLUE}[deploy]${RESET} $*"; }
@@ -133,6 +134,87 @@ copy_dir() {
   ((COPIED++)) || true
 }
 
+# ── Generate project CLAUDE.md (only for new projects) ──────────────────────
+generate_project_claude_md() {
+  local target="$1"
+  local dst="$target/CLAUDE.md"
+
+  # Never overwrite an existing CLAUDE.md — the dev may have customized it
+  if [[ -f "$dst" ]]; then
+    skip "CLAUDE.md already exists — skipping (run with --force to overwrite)"
+    ((SKIPPED++)) || true
+    return
+  fi
+
+  if $DRY_RUN; then
+    echo -e "${YELLOW}  [dry-run]${RESET} generate CLAUDE.md → $dst"
+    ((COPIED++)) || true
+    return
+  fi
+
+  local project_name
+  project_name="$(basename "$target")"
+
+  cat > "$dst" << EOF
+# $project_name
+
+> Claude Code configuration for this project.
+> Top section: project-specific context. Bottom section: ai-library rules (don't edit manually).
+
+---
+
+## 📋 Project Context
+
+<!-- Fill this in. Claude uses this to make decisions consistent with your project. -->
+
+### Stack
+- Framework:
+- Database:
+- Auth:
+- Styling:
+
+### Key decisions
+<!-- Why did you choose this stack? Any non-obvious architectural decisions? -->
+
+### Domain conventions
+<!-- Naming, patterns, or rules specific to this project -->
+
+### Constraints
+<!-- Performance requirements, compliance, deadlines, etc. -->
+
+---
+
+<!-- ⬇️ ai-library configuration — do not edit below this line ⬇️ -->
+<!-- Update by re-running: ./deploy.sh $(pwd) --force -->
+
+$(cat "$LIBRARY_DIR/CLAUDE.md")
+EOF
+
+  ok "CLAUDE.md (generated from template)"
+  ((COPIED++)) || true
+}
+
+# ── Write version file ────────────────────────────────────────────────────────
+write_version_file() {
+  local target="$1"
+  local dst="$target/.ai-library-version"
+  local commit date
+  commit="$(git -C "$LIBRARY_DIR" rev-parse --short HEAD 2>/dev/null || echo "unknown")"
+  date="$(date +%Y-%m-%d)"
+
+  if $DRY_RUN; then
+    echo -e "${YELLOW}  [dry-run]${RESET} → .ai-library-version"
+    return
+  fi
+
+  {
+    echo "deployed: $date"
+    echo "commit:   $commit"
+    echo "source:   $LIBRARY_DIR"
+  } > "$dst"
+  ok ".ai-library-version"
+}
+
 # ── Deploy to repo root ──────────────────────────────────────────────────────
 deploy_root() {
   local target="$1"
@@ -140,8 +222,8 @@ deploy_root() {
 
   # Entry point files
   copy_file "$LIBRARY_DIR/AGENTS.md"  "$target/AGENTS.md"
-  copy_file "$LIBRARY_DIR/CLAUDE.md"  "$target/CLAUDE.md"
   copy_file "$LIBRARY_DIR/GEMINI.md"  "$target/GEMINI.md"
+  generate_project_claude_md "$target"
 
   # Agents
   copy_dir "$LIBRARY_DIR/agents"     "$target/agents"
@@ -154,11 +236,18 @@ deploy_root() {
   copy_dir "$LIBRARY_DIR/skills/skill-sync"    "$target/skills/skill-sync"
   copy_dir "$LIBRARY_DIR/skills/feedback-loop" "$target/skills/feedback-loop"
 
-  # Sub-agent AGENTS.md files
+  # Sub-agent AGENTS.md files (legacy — kept for backward compat)
   copy_file "$LIBRARY_DIR/ui/AGENTS.md"      "$target/ui/AGENTS.md"
   copy_file "$LIBRARY_DIR/auth/AGENTS.md"    "$target/auth/AGENTS.md"         2>/dev/null || true
   copy_file "$LIBRARY_DIR/backend/AGENTS.md" "$target/backend/AGENTS.md"      2>/dev/null || true
   copy_file "$LIBRARY_DIR/testing/AGENTS.md" "$target/testing/AGENTS.md"      2>/dev/null || true
+
+  # Native Claude Code subagents (also read by VS Code Copilot from .claude/agents/)
+  copy_dir "$LIBRARY_DIR/.claude/agents"     "$target/.claude/agents"
+
+  # Native Claude Code skills — enables `skills:` field in subagent definitions
+  # Copies skills/generic/* → .claude/skills/* (e.g. skills/generic/testing → .claude/skills/testing)
+  copy_dir "$LIBRARY_DIR/skills/generic"     "$target/.claude/skills"
 }
 
 # ── Deploy to .opencode/ ─────────────────────────────────────────────────────
@@ -260,13 +349,16 @@ echo ""
 case "$MODE" in
   root)
     deploy_root "$TARGET_REPO"
+    write_version_file "$TARGET_REPO"
     ;;
   opencode)
     deploy_opencode "$TARGET_REPO"
+    write_version_file "$TARGET_REPO"
     ;;
   both)
     deploy_root     "$TARGET_REPO"
     deploy_opencode "$TARGET_REPO"
+    write_version_file "$TARGET_REPO"
     ;;
   *)
     error "Unknown mode: $MODE. Use root | opencode | both | auto"

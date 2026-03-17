@@ -12,6 +12,7 @@
 | `react-patterns`   | `generic/react-patterns/SKILL.md`   | Compound components, hooks, composition                 |
 | `nextjs-core`      | `generic/nextjs-core/SKILL.md`      | Server Components, Server Actions, streaming            |
 | `ui-engineering`   | `generic/ui-engineering/SKILL.md`   | Tailwind v4, shadcn, Aceternity, `cn()`                 |
+| `ux`               | `generic/ux/SKILL.md`               | User flows, CRUD UX, validation, recovery states        |
 | `database`         | `generic/database/SKILL.md`         | Supabase, mandatory RLS, Zod schemas, service layer     |
 | `security`         | `generic/security/SKILL.md`         | XSS/CSRF, input validation, server-side auth            |
 | `error-handling`   | `generic/error-handling/SKILL.md`   | Custom errors, Error Boundaries, logging                |
@@ -26,16 +27,18 @@
 | `state-management` | `generic/state-management/SKILL.md` | Zustand vs Context, stores, slices, persistence         |
 | `remotion`         | `generic/remotion/SKILL.md`         | Video creation in React, frame-based animations         |
 | `react-native`     | `generic/react-native/SKILL.md`     | Expo, React Navigation, native APIs, mobile performance |
+| `env-config`       | `generic/env-config/SKILL.md`       | Zod env validation, server/public separation, fail-fast |
 
 ---
 
 ## Meta Skills
 
-| Skill           | Path                     | Purpose                                  |
-| --------------- | ------------------------ | ---------------------------------------- |
-| `skill-creator` | `skill-creator/SKILL.md` | Create new skills following the template |
-| `skill-sync`    | `skill-sync/SKILL.md`    | Sync skill metadata to AGENTS.md         |
-| `feedback-loop` | `feedback-loop/SKILL.md` | Capture improvements and learnings       |
+| Skill           | Path                      | Purpose                                        |
+| --------------- | ------------------------- | ---------------------------------------------- |
+| `skill-creator` | `skill-creator/SKILL.md`  | Create new skills following the template       |
+| `skill-sync`    | `skill-sync/SKILL.md`     | Sync skill metadata to AGENTS.md               |
+| `feedback-loop` | `feedback-loop/SKILL.md`  | Capture improvements and learnings             |
+| `project-setup` | `project-setup/SKILL.md`  | Document project context in CLAUDE.md          |
 
 ---
 
@@ -58,6 +61,7 @@
 | Task                                | Minimum Skills                                      |
 | ----------------------------------- | --------------------------------------------------- |
 | Create UI component                 | `ui-engineering`, `react-patterns`, `typescript`    |
+| Redesign CRUD dashboard UX          | `ux`, `ui-engineering`, `accessibility`             |
 | Create Server Action                | `nextjs-core`, `security`, `database`, `typescript` |
 | Create page/layout                  | `nextjs-core`, `typescript`                         |
 | Create custom hook                  | `react-patterns`, `typescript`                      |
@@ -100,4 +104,4 @@ Skills can be combined. When multiple skills are active:
 
 ---
 
-_Skills Index v1.5 | Total: 21 skills_
+_Skills Index v1.6 | Total: 22 skills_

@@ -28,4 +28,132 @@ Formato para agregar mejoras:
 
 ---
 
-*Última revisión: 2026-01-19*
+## 2026-03-17 - testing
+
+### Contexto
+Revisión y actualización del skill de testing. Al hacer WebFetch de la doc oficial de Vitest se descubrió que el skill estaba desactualizado.
+
+### Gap Identificado
+El skill decía "Compatible with Vitest 2.x" pero Vitest estaba en v4.1.0. Tres breaking changes no documentados:
+- `maxThreads`/`maxForks` → `maxWorkers`
+- `coverage.all` eliminado → `coverage.include` es obligatorio
+- `vi.restoreAllMocks()` ya no resetea automocks en v4 — hay que usar también `vi.resetAllMocks()`
+
+### Sugerencia (ya aplicada)
+```typescript
+// v4: usar ambos en afterEach
+afterEach(() => {
+  vi.resetAllMocks()    // automocks (vi.mock)
+  vi.restoreAllMocks()  // manual spies (vi.spyOn)
+})
+```
+
+### Prioridad
+- [x] Crítico — un bug silencioso que puede hacer pasar tests que deberían fallar
+
+---
+
+## 2026-03-17 - library-architecture
+
+### Contexto
+Evaluación general de la librería. Se identificó que `.opencode/` y `skills/generic/` tenían que actualizarse manualmente en paralelo cada vez que se modificaba un skill.
+
+### Gap Identificado
+`sync-opencode.sh` existía pero no se corría automáticamente. Cualquier cambio en `skills/` requería acordarse de correr el script manualmente, generando drift silencioso entre las dos copias.
+
+### Sugerencia (ya aplicada)
+Pre-commit hook en `.githooks/pre-commit` que corre `sync-opencode.sh` automáticamente antes de cada commit. Activado con `git config core.hooksPath .githooks`.
+
+### Prioridad
+- [x] Crítico — el drift entre skills/ y .opencode/skills/ es un bug que se acumula silenciosamente
+
+---
+
+## 2026-03-17 - deploy
+
+### Contexto
+Revisión del flujo de instalación de la librería en proyectos externos via `deploy.sh`.
+
+### Gap Identificado
+Tres problemas:
+1. `deploy.sh` copiaba el `CLAUDE.md` de la librería directamente al proyecto, sin espacio para contexto específico del proyecto.
+2. No había forma de saber qué versión de la librería tenía un proyecto deployado.
+3. La diferencia entre `setup.sh` (symlinks) y `deploy.sh` (copy) no estaba documentada — filosofías opuestas sin decisión clara.
+
+### Sugerencia (ya aplicada)
+- `deploy.sh` genera un `CLAUDE.md` con dos zonas: sección de contexto del proyecto (para que el dev complete) + contenido de la librería.
+- `deploy.sh` escribe `.ai-library-version` con fecha y commit del deploy.
+- `setup.sh` documentado con comentario claro de cuándo usarlo vs `deploy.sh`.
+
+### Prioridad
+- [x] Alto — afecta directamente la experiencia de onboarding en proyectos nuevos
+
+---
+
+## 2026-03-17 - subagents
+
+### Contexto
+Investigación sobre si los `agents/*.md` de la librería podían ser subagentes reales de Claude Code.
+
+### Gap Identificado
+Los `agents/*.md` eran archivos de contexto (role-playing), no subagentes reales. Claude Code tiene un sistema nativo de subagentes en `.claude/agents/` con delegación automática, aislamiento de contexto, y el campo `skills:` que inyecta skills al arrancar.
+
+VS Code Copilot también lee `.claude/agents/` — un archivo, dos herramientas.
+Google Antigravity (v1.20.3+) lee `AGENTS.md` y `SKILL.md` — ya estaba soportado.
+
+### Sugerencia (ya aplicada)
+Crear `.claude/agents/` con subagentes nativos (testing, ui, backend, auth) con frontmatter correcto. Actualizar `deploy.sh` para copiar `.claude/agents/` y `skills/generic/` → `.claude/skills/` en el proyecto destino.
+
+### Prioridad
+- [x] Alto — es la diferencia entre "Claude actúa como" y "Claude delega a un proceso real"
+
+---
+
+## 2026-03-17 - env-config ✅ aplicado
+
+### Contexto
+Revisión de skills faltantes en la librería.
+
+### Gap Identificado
+No hay skill para gestión de variables de entorno. Es un patrón transversal que todo proyecto necesita: validar que las env vars existen al startup antes de que la app falle en runtime con un error críptico.
+
+### Sugerencia
+```typescript
+// lib/env.ts — validación con Zod al startup
+import { z } from 'zod'
+
+const envSchema = z.object({
+  NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+  // ...
+})
+
+export const env = envSchema.parse(process.env)
+// Si falta alguna variable, falla en build time con un error claro
+```
+
+### Prioridad
+- [ ] Alto — ahorraría tiempo de debugging en cada proyecto nuevo
+
+---
+
+## 2026-03-17 - feedback-loop + governance ✅ aplicado
+
+### Contexto
+Discusión sobre cómo hacer que la librería mejore sola detectando gaps en runtime, no solo en revisiones programadas.
+
+### Gap Identificado
+El sistema de governance existente detecta si una skill está *stale* (freshness checks + golden prompts) pero no capturaba señales de *uso real*: cuando Claude necesita un patrón que no existe, cuando una skill da guidance incorrecto, o cuando dos skills se contradicen. Sin este mecanismo, los gaps solo se descubren si el usuario los reporta manualmente.
+
+### Sugerencia (ya aplicada)
+1. **Self-Improvement Signals** en `CLAUDE.md` — tabla de 5 tipos de señal (`SIGNAL:gap`, `SIGNAL:missing`, `SIGNAL:stale`, `SIGNAL:conflict`, `SIGNAL:unclear`) con instrucción explícita de escribirlas mid-task inmediatamente.
+2. **feedback-loop v2.0** — skill actualizado con taxonomía de señales, ejemplos concretos, y protocolo post-tarea simplificado a 4 preguntas.
+3. **skill-release-registry.json** — agregados `env-config`, `project-setup`, `feedback-loop` actualizado; `testing` actualizado a `lastVerified: 2026-03-17` con `fileAssertions` para Vitest 4.x.
+
+### Prioridad
+- [x] Alto — cierra el loop entre "skill escrita" y "skill que mejora con uso real"
+
+---
+
+*Última revisión: 2026-03-17*

@@ -2,7 +2,18 @@
 
 # =============================================================================
 # AI Skills Setup Script
-# Configures skills for multiple AI coding assistants
+# Configures skills for multiple AI coding assistants via symlinks.
+#
+# ⚠️  WHEN TO USE THIS vs deploy.sh
+#
+#   setup.sh  → Use when working INSIDE the ai-library repo itself.
+#               Creates symlinks so tools (Claude, Cursor, etc.) can find the skills.
+#               Symlinks always reflect the latest skills — no re-run needed.
+#
+#   deploy.sh → Use when installing the library INTO another project repo.
+#               Copies skills as standalone files. Run again to update.
+#               This is the standard installation method for external projects.
+#
 # =============================================================================
 
 set -e
