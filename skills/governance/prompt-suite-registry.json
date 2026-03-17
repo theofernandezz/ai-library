@@ -82,6 +82,54 @@
         "getByRole",
         "maxWorkers"
       ]
+    },
+    {
+      "id": "nextjs-core",
+      "owner": "@backend",
+      "skillFile": "skills/generic/nextjs-core/SKILL.md",
+      "casesFile": "skills/generic/nextjs-core/references/golden-prompts.json",
+      "lastReviewed": "2026-03-17",
+      "cadenceDays": 14,
+      "requiredCaseCount": 5,
+      "bestPracticeAssertions": [
+        "useFormState",
+        "revalidatePath",
+        "Suspense",
+        "Promise.all",
+        "'use server'"
+      ]
+    },
+    {
+      "id": "database",
+      "owner": "@backend",
+      "skillFile": "skills/generic/database/SKILL.md",
+      "casesFile": "skills/generic/database/references/golden-prompts.json",
+      "lastReviewed": "2026-03-17",
+      "cadenceDays": 14,
+      "requiredCaseCount": 5,
+      "bestPracticeAssertions": [
+        "ENABLE ROW LEVEL SECURITY",
+        "auth.uid()",
+        "cache(",
+        "z.object",
+        "WITH CHECK"
+      ]
+    },
+    {
+      "id": "prisma",
+      "owner": "@backend",
+      "skillFile": "skills/generic/prisma/SKILL.md",
+      "casesFile": "skills/generic/prisma/references/golden-prompts.json",
+      "lastReviewed": "2026-03-17",
+      "cadenceDays": 14,
+      "requiredCaseCount": 5,
+      "bestPracticeAssertions": [
+        "globalThis",
+        "Prisma.validator",
+        "$transaction",
+        "deletedAt: null",
+        "cursor:"
+      ]
     }
   ]
 }
