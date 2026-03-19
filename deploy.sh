@@ -139,8 +139,8 @@ generate_project_claude_md() {
   local target="$1"
   local dst="$target/CLAUDE.md"
 
-  # Never overwrite an existing CLAUDE.md — the dev may have customized it
-  if [[ -f "$dst" ]]; then
+  # Never overwrite an existing CLAUDE.md unless --force is set
+  if [[ -f "$dst" ]] && ! $FORCE; then
     skip "CLAUDE.md already exists — skipping (run with --force to overwrite)"
     ((SKIPPED++)) || true
     return
