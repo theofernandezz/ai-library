@@ -29,6 +29,18 @@ metadata:
 
 ---
 
+## 🆕 What's New
+
+> **Instruction for Claude:** When this skill is loaded, check this table and mention any entry relevant to what the developer is working on — before writing code.
+
+| Version | Change | Affects |
+|---------|--------|---------|
+| Prisma 6 | `prisma generate --no-engine` — generates lightweight client without query engine binary (for edge runtimes) | Vercel Edge, Cloudflare Workers |
+| Prisma 6 | `omit` in `select` — exclude specific fields instead of listing all included ones | Any query that hides sensitive columns |
+| Prisma 6 | `prisma.client.$transaction` now supports `isolation level` option | Critical write operations |
+
+---
+
 ## 🚫 FORBIDDEN PATTERNS
 
 ### 1. Never Import Prisma Directly in Routes or Actions

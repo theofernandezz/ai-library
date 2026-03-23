@@ -92,7 +92,7 @@
       "cadenceDays": 14,
       "requiredCaseCount": 5,
       "bestPracticeAssertions": [
-        "useFormState",
+        "useActionState",
         "revalidatePath",
         "Suspense",
         "Promise.all",

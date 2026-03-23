@@ -58,6 +58,18 @@ auto_invoke:
 
 ---
 
+## 🆕 What's New
+
+> **Instruction for Claude:** When this skill is loaded for a task, check this table and proactively mention any entry relevant to what the developer is working on — before writing code.
+
+| Version | Change | Affects |
+|---------|--------|---------|
+| x.x | [brief description of what changed] | [file type / feature area] |
+
+_Start with an empty table. Add a row each time a new framework/library version introduces a breaking change or notable new pattern that affects this skill's domain._
+
+---
+
 ## 🏗️ Architecture Overview
 
 [Optional: Include a diagram or description of how components relate]

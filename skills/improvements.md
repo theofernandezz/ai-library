@@ -156,4 +156,25 @@ El sistema de governance existente detecta si una skill está *stale* (freshness
 
 ---
 
-*Última revisión: 2026-03-17*
+---
+
+## 2026-03-23 — SIGNAL:stale — nextjs-core
+
+**Trigger:** User reported server actions patterns were outdated after a Next.js release.
+**Gap:** Two breaking changes not reflected in the skill:
+1. `useFormState` (react-dom) was removed in React 19 — replaced by `useActionState` from `react`, which returns `[state, formAction, isPending]` (isPending is now built-in, no need for a separate `useFormStatus` for the top-level button).
+2. `params` in pages/layouts is now a `Promise<{ id: string }>` in Next.js 15+ — must be `await`-ed before use.
+Both the SKILL.md, golden-prompts.json, and prompt-suite-registry.json were asserting the old `useFormState` API, meaning they would falsely *pass* code using the removed hook.
+**Suggested fix (applied):** Updated all four files; added `fileAssertions` and `sources` to the registry entry so next staleness is caught automatically within 14 days.
+**Priority:** Critical
+
+---
+
+## 2026-03-23 — SIGNAL:gap — skill-creator
+
+**Trigger:** User implemented server actions and was not notified about Next.js 16.2 changes (useActionState, strictRouteTypes, async params) because the skill had no mechanism to surface version-specific changes proactively.
+**Gap:** The skill-creator template has no `## 🆕 What's New` section. Skills only contain static patterns — there's nowhere to record "changed in version X" entries that Claude can surface mid-task. Freshness checks catch *stale* skills but don't help Claude proactively tell the developer what changed.
+**Suggested fix:** Add a `## 🆕 What's New` section to the skill-creator template, placed right after the core principle. Format: a table with columns `Version | Change | Affects`. Add an explicit instruction line telling Claude to check the table and mention applicable entries before writing code. Applied to `nextjs-core` as reference.
+**Priority:** High
+
+*Última revisión: 2026-03-23*

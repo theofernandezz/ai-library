@@ -221,7 +221,20 @@ export function middleware(request: NextRequest) {
 }
 ```
 
-### 3. CSRF Protection for Server Actions
+### 3. JavaScript URL Blocking
+
+As of Next.js 16.2.1, `javascript:` URLs are blocked automatically in `router.push()`, `router.replace()`, `<Link href>`, and `redirect()`. No manual sanitization needed for these cases.
+
+```typescript
+// ✅ These are now blocked automatically by Next.js 16.2.1+
+router.push('javascript:alert(1)')   // throws
+redirect('javascript:alert(1)')      // throws
+
+// ⚠️ Still sanitize user-supplied URLs going into OTHER sinks
+const safeUrl = url.startsWith('https://') ? url : '/fallback'
+```
+
+### 4. CSRF Protection for Server Actions
 
 ```typescript
 // Server Actions have built-in CSRF protection in Next.js
@@ -252,7 +265,7 @@ export async function POST(request: Request) {
 }
 ```
 
-### 4. Rate Limiting
+### 5. Rate Limiting
 
 ```typescript
 // lib/security/rate-limit.ts
@@ -303,7 +316,7 @@ export async function submitForm(formData: FormData) {
 }
 ```
 
-### 5. Secure Authentication Pattern
+### 6. Secure Authentication Pattern
 
 ```typescript
 // lib/auth/server.ts
@@ -360,7 +373,7 @@ export default async function AdminPage() {
 }
 ```
 
-### 6. Secure Cookie Configuration
+### 7. Secure Cookie Configuration
 
 ```typescript
 // For custom cookies (Supabase handles auth cookies)

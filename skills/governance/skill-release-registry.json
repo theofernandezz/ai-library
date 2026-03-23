@@ -49,7 +49,23 @@
       "file": "skills/generic/nextjs-core/SKILL.md",
       "owner": "@backend",
       "cadenceDays": 14,
-      "lastVerified": "2026-03-13"
+      "lastVerified": "2026-03-23",
+      "fileAssertions": [
+        "Skill Version:",
+        "Next.js 16.2",
+        "useActionState",
+        "Promise<{ id: string }>"
+      ],
+      "sources": [
+        {
+          "name": "Next.js releases",
+          "url": "https://github.com/vercel/next.js/releases",
+          "mustContainAny": [
+            "16.2.1",
+            "16.2"
+          ]
+        }
+      ]
     },
     {
       "id": "performance",
@@ -70,7 +86,7 @@
       "file": "skills/generic/react-native/SKILL.md",
       "owner": "@mobile",
       "cadenceDays": 7,
-      "lastVerified": "2026-03-13",
+      "lastVerified": "2026-03-23",
       "fileAssertions": [
         "Skill Version:",
         "React Native 0.84+",
