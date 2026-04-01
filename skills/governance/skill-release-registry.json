@@ -79,7 +79,20 @@
       "file": "skills/generic/prisma/SKILL.md",
       "owner": "@backend",
       "cadenceDays": 14,
-      "lastVerified": "2026-03-13"
+      "lastVerified": "2026-03-31",
+      "fileAssertions": [
+        "Skill Version:",
+        "driverAdapters is GA",
+        "globalForPrisma",
+        "PrismaNeon"
+      ],
+      "sources": [
+        {
+          "name": "Prisma releases",
+          "url": "https://github.com/prisma/prisma/releases",
+          "mustContainAny": ["6.", "prisma@6"]
+        }
+      ]
     },
     {
       "id": "react-native",
@@ -130,7 +143,26 @@
       "file": "skills/generic/security/SKILL.md",
       "owner": "@backend",
       "cadenceDays": 14,
-      "lastVerified": "2026-03-13"
+      "lastVerified": "2026-03-31",
+      "fileAssertions": [
+        "Skill Version: 2.1",
+        "X-XSS-Protection intentionally OMITTED",
+        "await headers()",
+        "Upstash",
+        "nonce"
+      ],
+      "sources": [
+        {
+          "name": "OWASP Secure Headers Project",
+          "url": "https://owasp.org/www-project-secure-headers/",
+          "mustContainAny": ["X-XSS-Protection", "Content-Security-Policy"]
+        },
+        {
+          "name": "Next.js CSP docs",
+          "url": "https://nextjs.org/docs/app/building-your-application/configuring/content-security-policy",
+          "mustContainAny": ["nonce", "Content-Security-Policy"]
+        }
+      ]
     },
     {
       "id": "seo",

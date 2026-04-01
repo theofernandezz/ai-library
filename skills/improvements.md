@@ -178,3 +178,25 @@ Both the SKILL.md, golden-prompts.json, and prompt-suite-registry.json were asse
 **Priority:** High
 
 *Última revisión: 2026-03-23*
+
+---
+
+## 2026-03-31 — SIGNAL:stale — security
+
+**Trigger:** Routine staleness verification of `skills/generic/security/SKILL.md` (18 days since last verified, cadence is 14 days).
+**Gap:** Four stale patterns found:
+1. `X-XSS-Protection: 1; mode=block` was still recommended. OWASP Secure Headers Project 2025 explicitly recommends **not** setting this header — it can introduce XSS vulnerabilities in browsers older than Chrome 78 / IE 11.
+2. CSP still included `unsafe-eval` and `unsafe-inline` without nonce guidance. OWASP 2025 flags both as defeating CSP's XSS protection.
+3. The in-memory `Map` rate limiter had no serverless/edge warning — resets on cold start, not shared across instances.
+4. The CSRF helper was missing the Next.js 15+ note that `headers()` must be `await`-ed.
+**Suggested fix (applied):** Removed `X-XSS-Protection`; added nonce-based CSP Option A + fallback Option B; added serverless warning to rate limiter with Upstash/Redis example; added explicit Next.js 15+ note to CSRF helper; added `What's New` table; bumped to v2.1.
+**Priority:** High
+
+---
+
+## 2026-03-31 — SIGNAL:stale — prisma
+
+**Trigger:** Routine staleness verification of `skills/generic/prisma/SKILL.md` (17 days since last verified, cadence is 14 days).
+**Gap:** The schema generator block in the skill had `previewFeatures = ["driverAdapters"]`. In Prisma 6, `driverAdapters` was promoted to GA — including it in `previewFeatures` now causes a deprecation warning and will become an error in future minor versions. Projects following the skill would generate noisy warnings in every `prisma generate` run.
+**Suggested fix (applied):** Removed `previewFeatures = ["driverAdapters"]` from the schema example. Added a `driverAdapters is GA` entry to the `## 🆕 What's New` table with a clear note. Updated `lastVerified` to 2026-03-31 and added `fileAssertions` + `sources` to the registry entry for automatic future detection.
+**Priority:** High

@@ -12,6 +12,12 @@
 #                       root       → deploy to repo root only
 #                       opencode   → deploy to .opencode/ only
 #                       both       → deploy to root AND .opencode/
+#   --profile <name>  Deploy only skills for a specific project type (default: full)
+#                       web-app    → nextjs, db, auth, ui, testing, api (10 skills)
+#                       mobile     → react-native, state, performance, testing (5 skills)
+#                       static     → nextjs, ui, seo, performance, a11y (6 skills)
+#                       api        → api-design, db, security, error-handling (6 skills)
+#                       full       → all skills (default)
 #   --dry-run         Show what would be copied without actually copying
 #   --force           Overwrite even if target files are newer
 #   --help            Show this help message
@@ -19,6 +25,7 @@
 # Examples:
 #   ./deploy.sh ../my-project
 #   ./deploy.sh ../my-project --mode both
+#   ./deploy.sh ../my-project --profile web-app
 #   ./deploy.sh ../my-project --dry-run
 # ==============================================================================
 
@@ -39,11 +46,20 @@ LIBRARY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # ── Defaults ────────────────────────────────────────────────────────────────
 TARGET_REPO=""
 MODE="auto"
+PROFILE="full"
 DRY_RUN=false
 FORCE=false
 COPIED=0
 SKIPPED=0
 ERRORS=0
+
+# ── Skill Profiles ─────────────────────────────────────────────────────────
+# Each profile is a space-separated list of skill directory names.
+PROFILE_WEB_APP="nextjs-core database security typescript react-patterns ui-engineering error-handling testing api-design env-config"
+PROFILE_MOBILE="react-native typescript state-management performance testing"
+PROFILE_STATIC="nextjs-core ui-engineering seo performance typescript accessibility"
+PROFILE_API="api-design database security error-handling typescript env-config"
+# "full" = all skills (no filtering)
 
 # ── Helpers ─────────────────────────────────────────────────────────────────
 log()    { echo -e "${BLUE}[deploy]${RESET} $*"; }
@@ -64,6 +80,12 @@ Options:
                       root       → deploy to repo root only
                       opencode   → deploy to .opencode/ only
                       both       → deploy to root AND .opencode/
+  --profile <name>  Deploy only skills for a specific project type (default: full)
+                      web-app    → nextjs, db, auth, ui, testing, api (10 skills)
+                      mobile     → react-native, state, performance, testing (5 skills)
+                      static     → nextjs, ui, seo, performance, a11y (6 skills)
+                      api        → api-design, db, security, error-handling (6 skills)
+                      full       → all skills (default)
   --dry-run         Show what would be copied without actually copying
   --force           Overwrite even if target files are newer
   --help            Show this help message
@@ -71,6 +93,7 @@ Options:
 Examples:
   ./deploy.sh ../my-project
   ./deploy.sh ../my-project --mode both
+  ./deploy.sh ../my-project --profile web-app
   ./deploy.sh ../my-project --dry-run
   ./deploy.sh ../my-project --mode opencode --force
 EOF
@@ -132,6 +155,63 @@ copy_dir() {
   cp -r "$src/." "$dst/"
   ok "${dst#"$TARGET_REPO/"}"
   ((COPIED++)) || true
+}
+
+# Resolve the active profile into a skill list
+get_profile_skills() {
+  case "$PROFILE" in
+    web-app) echo "$PROFILE_WEB_APP" ;;
+    mobile)  echo "$PROFILE_MOBILE" ;;
+    static)  echo "$PROFILE_STATIC" ;;
+    api)     echo "$PROFILE_API" ;;
+    full)    echo "" ;;  # empty = no filtering
+    *)
+      error "Unknown profile: $PROFILE. Use web-app | mobile | static | api | full"
+      exit 1
+      ;;
+  esac
+}
+
+# Check if a skill name is in the active profile
+skill_in_profile() {
+  local skill="$1"
+  local skills
+  skills="$(get_profile_skills)"
+
+  # "full" profile → no filtering, all skills pass
+  if [[ -z "$skills" ]]; then
+    return 0
+  fi
+
+  for s in $skills; do
+    if [[ "$s" == "$skill" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+# Copy skills from a source dir to a destination, respecting --profile
+copy_skills_filtered() {
+  local src="$1"
+  local dst="$2"
+
+  if [[ ! -d "$src" ]]; then
+    warn "Source dir not found, skipping: $src"
+    return
+  fi
+
+  for skill_dir in "$src"/*/; do
+    [[ -d "$skill_dir" ]] || continue
+    local skill_name
+    skill_name="$(basename "$skill_dir")"
+    if skill_in_profile "$skill_name"; then
+      copy_dir "$skill_dir" "$dst/$skill_name"
+    else
+      skip "Skill '$skill_name' not in profile '$PROFILE', skipped"
+      ((SKIPPED++)) || true
+    fi
+  done
 }
 
 # ── Generate project CLAUDE.md (only for new projects) ──────────────────────
@@ -228,8 +308,7 @@ deploy_root() {
   # Agents
   copy_dir "$LIBRARY_DIR/agents"     "$target/agents"
 
-  # Skills (everything under skills/)
-  copy_dir "$LIBRARY_DIR/skills/generic"       "$target/skills/generic"
+  # Skills — meta skills and index (always deployed)
   copy_file "$LIBRARY_DIR/skills/_index.md"    "$target/skills/_index.md"
   copy_file "$LIBRARY_DIR/skills/README.md"    "$target/skills/README.md"
   copy_dir "$LIBRARY_DIR/skills/skill-creator" "$target/skills/skill-creator"
@@ -246,8 +325,8 @@ deploy_root() {
   copy_dir "$LIBRARY_DIR/.claude/agents"     "$target/.claude/agents"
 
   # Native Claude Code skills — enables `skills:` field in subagent definitions
-  # Copies skills/generic/* → .claude/skills/* (e.g. skills/generic/testing → .claude/skills/testing)
-  copy_dir "$LIBRARY_DIR/skills/generic"     "$target/.claude/skills"
+  # Copies skills/generic/* → .claude/skills/* (filtered by --profile)
+  copy_skills_filtered "$LIBRARY_DIR/skills/generic" "$target/.claude/skills"
 }
 
 # ── Deploy to .opencode/ ─────────────────────────────────────────────────────
@@ -257,7 +336,7 @@ deploy_opencode() {
 
   # .opencode has its own agents/ and skills/ (same content, different location)
   copy_dir "$LIBRARY_DIR/.opencode/agents"  "$target/agents"
-  copy_dir "$LIBRARY_DIR/skills/generic"    "$target/skills/generic"
+  copy_skills_filtered "$LIBRARY_DIR/skills/generic" "$target/skills/generic"
   copy_file "$LIBRARY_DIR/skills/_index.md" "$target/skills/_index.md"
   copy_dir "$LIBRARY_DIR/skills/skill-creator" "$target/skills/skill-creator"
   copy_dir "$LIBRARY_DIR/skills/skill-sync"    "$target/skills/skill-sync"
@@ -301,6 +380,10 @@ while [[ $# -gt 0 ]]; do
       MODE="$2"
       shift 2
       ;;
+    --profile)
+      PROFILE="$2"
+      shift 2
+      ;;
     -*)
       error "Unknown option: $1"
       exit 1
@@ -337,10 +420,14 @@ fi
 
 # ── Summary header ───────────────────────────────────────────────────────────
 echo ""
+# ── Validate profile ──────────────────────────────────────────────────────────
+get_profile_skills > /dev/null  # exits with error if invalid
+
 echo -e "${BOLD}AI Library Deploy${RESET}"
 echo -e "  Library : ${CYAN}$LIBRARY_DIR${RESET}"
 echo -e "  Target  : ${CYAN}$TARGET_REPO${RESET}"
 echo -e "  Mode    : ${CYAN}$MODE${RESET}"
+echo -e "  Profile : ${CYAN}$PROFILE${RESET}"
 $DRY_RUN && echo -e "  ${YELLOW}DRY RUN — no files will be written${RESET}"
 $FORCE   && echo -e "  ${YELLOW}FORCE — newer destination files will be overwritten${RESET}"
 echo ""
