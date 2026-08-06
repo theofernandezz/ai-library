@@ -478,6 +478,8 @@ deploy_root() {
   copy_dir "$LIBRARY_DIR/.claude/agents"     "$target/.claude/agents"
 
   copy_skills_filtered "$LIBRARY_DIR/skills/generic" "$target/.claude/skills"
+  # Also at skills/generic — the path CLAUDE.md/AGENTS.md/GEMINI.md document and non-Claude tools read.
+  copy_skills_filtered "$LIBRARY_DIR/skills/generic" "$target/skills/generic"
 }
 
 # ── Deploy to .opencode/ ──────────────────────────────────────────────────────

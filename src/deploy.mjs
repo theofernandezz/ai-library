@@ -162,6 +162,8 @@ function deployRoot(ctx, libraryDir, target, profile, customSkills) {
 
   copyDir(ctx, join(libraryDir, '.claude', 'agents'), join(target, '.claude', 'agents'))
   copySkillsFiltered(ctx, join(libraryDir, 'skills', 'generic'), join(target, '.claude', 'skills'), profile, customSkills)
+  // Also at skills/generic — the path CLAUDE.md/AGENTS.md/GEMINI.md document and non-Claude tools read.
+  copySkillsFiltered(ctx, join(libraryDir, 'skills', 'generic'), join(target, 'skills', 'generic'), profile, customSkills)
 
   return claudeMdGenerated
 }
