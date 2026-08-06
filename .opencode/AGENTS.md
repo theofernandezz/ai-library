@@ -186,6 +186,7 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | `skill-creator` | Create new AI agent skills          | [SKILL.md](skills/skill-creator/SKILL.md) |
 | `skill-sync`    | Sync skill metadata to AGENTS.md    | [SKILL.md](skills/skill-sync/SKILL.md)    |
 | `feedback-loop` | Self-improvement, capture learnings | [SKILL.md](skills/feedback-loop/SKILL.md) |
+| `project-setup` | Interview + document project context in CLAUDE.md | [SKILL.md](skills/project-setup/SKILL.md) |
 
 ---
 

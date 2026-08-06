@@ -99,7 +99,10 @@ function generateProjectClaudeMd(ctx, libraryDir, target) {
 
 ## 📋 Project Context
 
-<!-- Fill this in. Claude uses this to make decisions consistent with your project. -->
+<!-- Claude: if the fields below are still empty, this section hasn't been filled in yet.
+     Before starting other work, ask the developer if they want to fill it in now (2-3 min).
+     If yes, read skills/project-setup/SKILL.md and run its Interview Protocol — one question
+     at a time, editing this file after each answer. If no, drop it and continue normally. -->
 
 ### Stack
 - Framework:

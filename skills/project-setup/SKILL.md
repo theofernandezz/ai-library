@@ -7,12 +7,13 @@ description: |
 license: MIT
 metadata:
   author: ai-library
-  version: "1.0"
+  version: "1.1"
   scope: [root]
   auto_invoke:
     - "Setting up a new project"
     - "Onboarding to an existing project"
     - "Filling in CLAUDE.md project context"
+    - "CLAUDE.md Project Context section is still empty/placeholder"
 ---
 
 # Project Setup - Context Documentation
@@ -76,6 +77,30 @@ Fill in the **Project Context** section of your `CLAUDE.md`. Each field below is
 
 ---
 
+## Interview Protocol
+
+> **Trigger:** The Project Context section in this project's `CLAUDE.md` still has the placeholder comments (unfilled) when you read the file at the start of a session.
+
+Don't fill the section in yourself from guesswork, and don't dump all four categories on the developer at once. Run a short interview:
+
+1. **Ask, don't assume you should start.** Before anything else, tell the developer the section is empty and ask if they want to fill it in now (2-3 minutes) — if they say no or "later", drop it and move on to their actual request.
+2. **One question at a time**, in this order: Stack → Key decisions → Domain conventions → Constraints. Wait for the answer before asking the next.
+3. **Skip what the repo already tells you.** Don't ask "what framework do you use" if `package.json` says `next: 16.x` — confirm instead: "Veo Next.js 16 + Supabase, ¿correcto, o hay algo distinto (auth propio, otro ORM)?"
+4. **Edit `CLAUDE.md` after every answer, not at the end.** If the conversation gets interrupted, whatever was answered so far is already saved.
+5. **A "skip"/"nada" answer is valid.** Leave that category's placeholder as-is and move to the next — don't force an answer that isn't there.
+6. **When done**, tell the developer the file was updated and remind them to commit it.
+
+Suggested phrasing per category (adapt to what you already see in the repo, don't read these verbatim):
+
+| Category | Ask |
+|----------|-----|
+| Stack | "Veo [detected stack]. ¿Confirmás, o hay algo distinto?" |
+| Key decisions | "¿Alguna decisión de arquitectura no obvia que tomaste, que no se ve mirando el código?" |
+| Domain conventions | "¿Hay términos de tu dominio que se puedan confundir entre sí? (ej. 'listing' vs 'product')" |
+| Constraints | "¿Hay restricciones de performance, compliance, o reglas de equipo que deba respetar siempre?" |
+
+---
+
 ## When to Update
 
 Update your `CLAUDE.md` project context when:
@@ -99,4 +124,4 @@ The signal that context is missing: Claude gives you technically correct code th
 
 ---
 
-*Skill Version: 1.0.0 | Meta-skill — not technology-specific*
+*Skill Version: 1.1.0 | Meta-skill — not technology-specific*

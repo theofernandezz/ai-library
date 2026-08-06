@@ -83,6 +83,7 @@ For special library tasks:
 | Create new skill    | `skill-creator` | Read `skills/skill-creator/SKILL.md` and follow the template |
 | Sync AGENTS.md      | `skill-sync`    | Run `./skills/skill-sync/assets/sync.sh`                     |
 | Record improvements | `feedback-loop` | Read `skills/feedback-loop/SKILL.md`                         |
+| Fill in Project Context (interview) | `project-setup` | Read `skills/project-setup/SKILL.md` and run its Interview Protocol |
 
 ---
 
