@@ -29,6 +29,19 @@ export async function runWizard({ libraryDir, presetTarget }) {
   }
 
   if (!targetRepo) {
+    const cwd = process.cwd()
+    if (cwd !== libraryDir) {
+      const useCwd = bail(
+        await confirm({
+          message: `Deploy into the current directory? (${cwd})`,
+          initialValue: true,
+        }),
+      )
+      if (useCwd) targetRepo = cwd
+    }
+  }
+
+  if (!targetRepo) {
     const input = bail(
       await text({
         message: 'Path to the project you want to deploy into',

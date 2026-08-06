@@ -232,8 +232,13 @@ EOF
 # ── Resolve and validate target path ─────────────────────────────────────────
 resolve_and_validate_target_repo() {
   if [[ -z "$TARGET_REPO" ]]; then
-    error "No target repo specified."
-    exit 1
+    # Flags given but no positional target → deploy into the current directory.
+    if $CLI_OPTIONS_PROVIDED && [[ "$(pwd)" != "$LIBRARY_DIR" ]]; then
+      TARGET_REPO="$(pwd)"
+    else
+      error "No target repo specified."
+      exit 1
+    fi
   fi
 
   TARGET_REPO="$(cd "$TARGET_REPO" 2>/dev/null && pwd)" || {
@@ -544,12 +549,24 @@ ask_target_repo() {
   echo -e "${BOLD}Step 1 → Target repository${RESET}"
   echo -e "${DIM}Path to the project you want to deploy the library into.${RESET}"
   echo ""
+  local cwd
+  cwd="$(pwd)"
+  local suggest_cwd=true
+  [[ "$cwd" == "$LIBRARY_DIR" ]] && suggest_cwd=false
   while true; do
-    printf "  Enter path (absolute or relative): "
+    if $suggest_cwd; then
+      printf "  Enter path (absolute or relative) [${cwd}]: "
+    else
+      printf "  Enter path (absolute or relative): "
+    fi
     read -r input_path
     if [[ -z "$input_path" ]]; then
-      echo -e "  ${RED}Path cannot be empty.${RESET}"
-      continue
+      if $suggest_cwd; then
+        input_path="$cwd"
+      else
+        echo -e "  ${RED}Path cannot be empty.${RESET}"
+        continue
+      fi
     fi
     # Expand ~ manually
     input_path="${input_path/#\~/$HOME}"

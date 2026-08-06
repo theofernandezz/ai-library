@@ -34,16 +34,13 @@ export async function run(argv) {
   if (!hasExplicitFlags) {
     opts = await runWizard({ libraryDir: LIBRARY_DIR, presetTarget: positionals[0] })
   } else {
-    if (positionals.length === 0) {
-      log.error('No target repo specified.')
-      process.exit(1)
-    }
     if (positionals.length > 1) {
       log.error('Multiple target paths provided. Use a single target directory.')
       process.exit(1)
     }
+    // No positional target with explicit flags → deploy into the current directory.
     opts = {
-      targetRepo: resolve(positionals[0]),
+      targetRepo: positionals.length === 1 ? resolve(positionals[0]) : process.cwd(),
       mode: values.mode,
       profile: values.profile,
       customSkills: [],
