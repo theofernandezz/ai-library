@@ -16,10 +16,6 @@ metadata:
     - "Creating Zod schemas for DB"
     - "Optimizing database queries"
     - "Fixing slow queries"
-  patterns:
-    - "supabase/**/*"
-    - "lib/supabase/**/*"
-    - "lib/data/**/*"
 ---
 
 # Database Engineering - Supabase & Postgres

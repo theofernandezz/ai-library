@@ -15,13 +15,6 @@ metadata:
     - "Configuring React Navigation"
     - "Using native device APIs"
     - "React Native performance optimization"
-  patterns:
-    - "**/*.native.ts"
-    - "**/*.native.tsx"
-    - "app.json"
-    - "app.config.ts"
-    - "expo/**/*.ts"
-    - "expo/**/*.tsx"
 ---
 
 # React Native Engineering

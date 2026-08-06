@@ -14,11 +14,6 @@ metadata:
     - "Open Graph tags"
     - "Structured data"
     - "Creating sitemap"
-  patterns:
-    - "app/**/layout.tsx"
-    - "app/**/page.tsx"
-    - "app/sitemap.ts"
-    - "app/robots.ts"
 ---
 
 # SEO - Search Engine Optimization

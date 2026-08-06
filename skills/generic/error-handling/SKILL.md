@@ -14,9 +14,6 @@ metadata:
     - "Implementing try/catch"
     - "Logging and monitoring"
     - "Error recovery patterns"
-  patterns:
-    - "lib/actions/**/*.ts"
-    - "app/**/error.tsx"
 ---
 
 # Error Handling & Resilience

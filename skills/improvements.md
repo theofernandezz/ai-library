@@ -200,3 +200,32 @@ Both the SKILL.md, golden-prompts.json, and prompt-suite-registry.json were asse
 **Gap:** The schema generator block in the skill had `previewFeatures = ["driverAdapters"]`. In Prisma 6, `driverAdapters` was promoted to GA — including it in `previewFeatures` now causes a deprecation warning and will become an error in future minor versions. Projects following the skill would generate noisy warnings in every `prisma generate` run.
 **Suggested fix (applied):** Removed `previewFeatures = ["driverAdapters"]` from the schema example. Added a `driverAdapters is GA` entry to the `## 🆕 What's New` table with a clear note. Updated `lastVerified` to 2026-03-31 and added `fileAssertions` + `sources` to the registry entry for automatic future detection.
 **Priority:** High
+
+---
+
+## 2026-08-06 — SIGNAL:gap — skill-sync
+
+**Trigger:** Documenting 4 previously-undocumented Claude Code subagents (`data`, `feature`, `git`, `mobile` in `.claude/agents/`) that existed and worked but had no `agents/*.md`, `CLAUDE.md`, or `AGENTS.md` entry.
+**Gap:** Two separate issues found in `skills/skill-sync/assets/sync.sh`:
+1. `update_agents_file()` hardcodes scope→file mapping to only `root/ui/backend/auth/testing` (a `case` statement that errors on any other scope) — it cannot support new domains like `data` or `mobile` without editing the script itself.
+2. Even for supported scopes, the function doesn't write to the real `AGENTS.md` files — it only writes a preview to `/tmp/skill-sync-preview-$scope.md` (see the "In a real implementation, this would update the file" comment). The Auto-invoke tables actually committed in `AGENTS.md`/`CLAUDE.md` are maintained by hand, not by this script.
+**Suggested fix:** Either (a) finish the stubbed write logic and generalize the scope→file case statement to read from a config instead of hardcoding it, or (b) if hand-maintenance is intentional, update `skill-sync/SKILL.md` to say so explicitly instead of implying automation that doesn't happen. Also decide whether `data`/`feature`/`git`/`mobile` warrant their own `/<domain>/AGENTS.md` scoped docs (parity with ui/backend/auth/testing) or whether that four-domain split is deliberate and the rest should stay agents/*.md-only.
+**Priority:** Low — didn't block the task (added the 4 agents by hand, same as everything else in this file today), but the script's actual behavior no longer matches what `skill-sync/SKILL.md` claims it does.
+
+---
+
+## 2026-08-06 — SIGNAL:stale — agents/backend.md
+
+**Trigger:** Reading `agents/backend.md` as a style reference while writing `agents/data.md`, `agents/feature.md`, `agents/git.md`, `agents/mobile.md`.
+**Gap:** The "Workflow" section's last step says `5. Conectar a componente (useFormState)`. `useFormState` was removed in React 19 in favor of `useActionState` — this was already fixed in `nextjs-core`, `react-patterns`, and the root `changelog.md`, but `agents/backend.md` (and possibly `agents/ui.md`) still reference the old hook name.
+**Suggested fix (applied):** Replaced `useFormState` with `useActionState` in `agents/backend.md`'s Workflow section. Audited `agents/ui.md`, `agents/auth.md`, `agents/testing.md`, `agents/data.md`, `agents/feature.md`, `agents/git.md`, `agents/mobile.md` (and their `.claude/agents/` counterparts) — no other stale references found.
+**Priority:** High — this is the same breaking change already flagged Critical for `nextjs-core` on 2026-03-23; it just wasn't propagated to the `agents/*.md` docs at the time.
+
+---
+
+## 2026-08-06 — SIGNAL:gap — all generic skills (`metadata.patterns`)
+
+**Trigger:** Auditing skill descriptions for quality/optimization (requested review of all 24 skills).
+**Gap:** Every generic `SKILL.md` had a `metadata.patterns` field (file globs like `app/**/*.tsx`) that implied file-based auto-triggering. Grepped `skill-sync/assets/sync.sh`, `sync-opencode.sh`, and `skills/governance/*.mjs` — none of them read `patterns` anywhere. Only `metadata.auto_invoke` is actually parsed (by `skill-sync/assets/sync.sh`'s `extract_metadata()`). The field was pure documentation that looked like automation.
+**Suggested fix (applied):** Removed `metadata.patterns` from all 20 generic `SKILL.md` files and from `skill-creator`'s template + worked example, so new skills don't keep copying dead weight. Routing in practice happens via `CLAUDE.md`'s "Automatic Skill Detection" table and `skills/_index.md`, not file globs.
+**Priority:** Low — cosmetic/documentation cleanup, no behavior changed since the field was never read.

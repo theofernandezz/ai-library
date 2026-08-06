@@ -14,14 +14,22 @@ metadata:
     - "Implementing try/catch"
     - "Logging and monitoring"
     - "Error recovery patterns"
-  patterns:
-    - "lib/actions/**/*.ts"
-    - "app/**/error.tsx"
 ---
 
 # Error Handling & Resilience
 
 > **Core Principle:** Errors are expected, not exceptional. Every failure path should be designed, not discovered in production.
+
+---
+
+## 🆕 What's New
+
+> **Instruction for Claude:** When this skill is loaded, check this table and mention any entry relevant to what the developer is working on — before writing code.
+
+| Version | Change | Affects |
+|---------|--------|---------|
+| Next.js 16.2 | `unstable_retry()` — user-triggered retry inside `error.tsx` (currently unstable, watch for stable release) | `error.tsx` boundary components |
+| Next.js 16.2 | `unstable_catchError()` — component-level error handling without a full boundary (currently unstable) | Granular error handling in Server Components |
 
 ---
 

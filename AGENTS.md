@@ -25,8 +25,13 @@ When a task falls into a specific domain, **route to the specialized agent** whi
 | **Backend/Server** | [`/backend/AGENTS.md`](backend/AGENTS.md) | [`agents/backend.md`](agents/backend.md) | nextjs-core, database, security, error-handling, typescript |
 | **Auth**           | [`/auth/AGENTS.md`](auth/AGENTS.md)       | [`agents/auth.md`](agents/auth.md)       | database, security, error-handling, nextjs-core             |
 | **Testing**        | [`/testing/AGENTS.md`](testing/AGENTS.md) | [`agents/testing.md`](agents/testing.md) | testing, typescript, react-patterns                         |
+| **Data/Prisma**    | —                                          | [`agents/data.md`](agents/data.md)       | prisma, database, typescript, error-handling                |
+| **Full-stack Feature** | —                                      | [`agents/feature.md`](agents/feature.md) | nextjs-core, typescript, react-patterns, database, security, testing |
+| **Git**            | —                                          | [`agents/git.md`](agents/git.md)         | git-workflow                                                 |
+| **Mobile**         | —                                          | [`agents/mobile.md`](agents/mobile.md)   | react-native, typescript, state-management, performance, testing |
 
 > **Note:** Files in `/agents/` are optimized versions for Claude Code CLI. Gemini users can use them identically.
+> **Data/Prisma, Full-stack Feature, Git, and Mobile don't have a `/<domain>/AGENTS.md`** — that per-scope doc layer only exists for ui/backend/auth/testing today. Use `agents/*.md` directly for these four.
 
 ### Agent Hierarchy
 
@@ -48,6 +53,10 @@ AGENTS.md (Orchestrator Agent - OA)
 - For Backend/Server tasks → delegate to backend agent
 - For Authentication tasks → delegate to auth agent
 - For Testing tasks → delegate to testing agent
+- For Prisma/data modeling tasks → delegate to data agent
+- For full-stack features spanning multiple domains → delegate to feature agent
+- For commits/branches/PRs → delegate to git agent
+- For React Native/Expo tasks → delegate to mobile agent
 
 ---
 
@@ -122,6 +131,11 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | Test setup and configuration            | `testing`          |
 | Using Shadcn UI components              | `ui-engineering`   |
 | Webhook handlers                        | `api-design`       |
+| Sending transactional emails            | `email`            |
+| Building email templates                | `email`            |
+| Working with Resend                     | `email`            |
+| Applying hexagonal/ports-adapters architecture | `hexagonal-architecture` |
+| Integrating a payment gateway           | `hexagonal-architecture` |
 | Working with Supabase                   | `database`         |
 | Working with Tailwind classes           | `ui-engineering`   |
 | Working with app/ directory             | `nextjs-core`      |
@@ -135,9 +149,6 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | Creating mobile navigation              | `accessibility`    |
 | Adding breadcrumbs                      | `accessibility`    |
 | Structured data / JSON-LD               | `seo`              |
-| Creating videos with Remotion           | `remotion`         |
-| Working with video compositions         | `remotion`         |
-| Animating video content                 | `remotion`         |
 
 ---
 
@@ -158,13 +169,14 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | `testing`          | Vitest, Testing Library, MSW, behavior-driven           | [SKILL.md](skills/generic/testing/SKILL.md)          |
 | `git-workflow`     | Conventional Commits, branching, PRs                    | [SKILL.md](skills/generic/git-workflow/SKILL.md)     |
 | `api-design`       | REST APIs, webhooks, external integrations              | [SKILL.md](skills/generic/api-design/SKILL.md)       |
+| `email`            | Resend + React Email, typed templates, idempotent sends | [SKILL.md](skills/generic/email/SKILL.md)            |
+| `hexagonal-architecture` | Ports & adapters, ESLint-enforced boundaries       | [SKILL.md](skills/generic/hexagonal-architecture/SKILL.md) |
 | `i18n`             | Multi-language support with next-intl                   | [SKILL.md](skills/generic/i18n/SKILL.md)             |
 | `accessibility`    | WCAG 2.1, ARIA, keyboard navigation                     | [SKILL.md](skills/generic/accessibility/SKILL.md)    |
 | `performance`      | Core Web Vitals, lazy loading, optimization             | [SKILL.md](skills/generic/performance/SKILL.md)      |
 | `prisma`           | Prisma ORM, PostgreSQL, Neon serverless, service layer  | [SKILL.md](skills/generic/prisma/SKILL.md)           |
 | `seo`              | Meta tags, Open Graph, structured data, sitemap         | [SKILL.md](skills/generic/seo/SKILL.md)              |
 | `state-management` | Zustand vs Context decision matrix, stores, persistence | [SKILL.md](skills/generic/state-management/SKILL.md) |
-| `remotion`         | Video creation in React, programmatic videos            | [SKILL.md](skills/generic/remotion/SKILL.md)         |
 | `react-native`     | Expo, React Navigation, native APIs, mobile performance | [SKILL.md](skills/generic/react-native/SKILL.md)     |
 
 ### Meta Skills

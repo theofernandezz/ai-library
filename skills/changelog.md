@@ -92,10 +92,36 @@
 
 ---
 
-## api-design — v2.0
+## hexagonal-architecture — v1.0 (2026-08-06)
+
+> New skill.
 
 | Change | Affects |
 |--------|---------|
+| Ports (interfaces) required at real external boundaries — payment gateways, notifications, storage, data access | `lib/core/ports/**` |
+| Core/application code forbidden from importing `lib/adapters/**` directly, enforced via `eslint-plugin-boundaries` | `eslint.config.mjs` |
+| No DI container — wiring happens by hand in a single `lib/composition.ts` | `lib/composition.ts` |
+
+---
+
+## email — v1.0 (2026-08-06)
+
+> New skill.
+
+| Change | Affects |
+|--------|---------|
+| Typed React Email templates styled via the `Tailwind` wrapper (not `<style>` blocks) | `emails/**/*.tsx` |
+| Sends go through a `lib/email/send.ts` service layer, never inline in Server Actions | `lib/actions/**/*.ts` |
+| Every send uses an `idempotencyKey` (`<event-type>/<entity-id>` convention) | `resend.emails.send(...)` calls |
+| Bounce/complaint webhooks verified with `resend.webhooks.verify` (Svix headers) before processing | `app/api/webhooks/resend/route.ts` |
+
+---
+
+## api-design — v2.1 (2026-08-06)
+
+| Change | Affects |
+|--------|---------|
+| New "Payment Webhooks — Mercado Pago" section: signature verification with `WebhookSignatureValidator`, re-fetch-before-trust, idempotency keys | `app/api/webhooks/mercadopago/route.ts` |
 | Next.js 16.2: `javascript:` URLs blocked in `redirect()` and `router.push()` | API routes that redirect based on user input |
 | Next.js 15+: route handler `params` is now `Promise<{...}>` — must be `await`-ed | dynamic route handlers `[id]/route.ts` |
 
@@ -130,4 +156,4 @@
 
 ---
 
-*Last updated: 2026-03-31 | Skills with no tracked changes omitted (database, seo, i18n, remotion, env-config)*
+*Last updated: 2026-03-31 | Skills with no tracked changes omitted (database, seo, i18n, env-config)*

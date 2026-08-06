@@ -26,6 +26,8 @@ Cargá este agente cuando la tarea involucre:
 | `nextjs-core` | `skills/generic/nextjs-core/SKILL.md` | Server Actions, App Router |
 | `database` | `skills/generic/database/SKILL.md` | Supabase, queries, RLS |
 | `api-design` | `skills/generic/api-design/SKILL.md` | APIs externas, webhooks |
+| `email` | `skills/generic/email/SKILL.md` | Emails transaccionales (Resend + React Email) |
+| `hexagonal-architecture` | `skills/generic/hexagonal-architecture/SKILL.md` | Integraciones externas swappeables (pasarelas de pago, notificaciones) — no para CRUD interno |
 | `security` | `skills/generic/security/SKILL.md` | Validación, auth checks |
 | `error-handling` | `skills/generic/error-handling/SKILL.md` | Manejo de errores |
 | `typescript` | `skills/generic/typescript/SKILL.md` | Siempre |
@@ -60,6 +62,8 @@ Cargá este agente cuando la tarea involucre:
 | Logging and monitoring | `error-handling` |
 | Security headers | `security` |
 | Webhook handlers | `api-design` |
+| Sending transactional emails | `email` |
+| Working with Resend | `email` |
 | Working with Supabase | `database` |
 | Working with app/ directory | `nextjs-core` |
 | Working with app/api/ directory | `api-design` |
@@ -158,7 +162,7 @@ supabase/
 2. Crear service class (lib/services/)
 3. Crear Server Action (lib/actions/)
 4. Crear data fetcher (lib/data/)
-5. Conectar a componente (useFormState)
+5. Conectar a componente (useActionState)
 ```
 
 ---

@@ -15,10 +15,6 @@ metadata:
     - "Designing CRUD interfaces"
     - "Defining empty/loading/error states"
     - "Form UX and validation flows"
-  patterns:
-    - "app/**/page.tsx"
-    - "components/**/*.tsx"
-    - "lib/actions/**/*.ts"
 ---
 
 # UX Design Systems - Product Flows

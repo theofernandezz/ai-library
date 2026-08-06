@@ -14,11 +14,6 @@ metadata:
     - "State management patterns"
     - "Shared state across components"
     - "Client-side state"
-  patterns:
-    - "store/**/*.ts"
-    - "stores/**/*.ts"
-    - "lib/store/**/*.ts"
-    - "hooks/use-*.ts"
 ---
 
 # State Management - Zustand & Context

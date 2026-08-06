@@ -6,7 +6,7 @@ description: |
 license: MIT
 metadata:
   author: ai-library
-  version: "2.0"
+  version: "2.1"
   scope: [root, backend]
   auto_invoke:
     - "Creating API endpoints"
@@ -14,14 +14,25 @@ metadata:
     - "Webhook handlers"
     - "External API integrations"
     - "Working with app/api/ directory"
-  patterns:
-    - "app/api/**/*.ts"
-    - "lib/api/**/*.ts"
+    - "Mercado Pago payment integration"
+    - "Payment webhook notifications"
 ---
 
 # API Design - Next.js 16
 
 > **Core Principle:** Server Actions for internal operations, API Routes only for external integrations. Minimize the API surface.
+
+---
+
+## 🆕 What's New
+
+> **Instruction for Claude:** When this skill is loaded, check this table and mention any entry relevant to what the developer is working on — before writing code.
+
+| Version | Change | Affects |
+|---------|--------|---------|
+| 2.1 | Added Mercado Pago webhook signature verification + idempotency section | `app/api/webhooks/mercadopago/route.ts` |
+| Next.js 16.2 | `javascript:` URLs blocked automatically in `redirect()` and `router.push()` | Any API route that redirects based on user input |
+| Next.js 15+ | Route handler `params` is now `Promise<{...}>` — must be `await`-ed | All dynamic route handlers `[id]/route.ts` |
 
 ---
 
@@ -457,6 +468,96 @@ export async function streamChat(messages: Message[]) {
 
 ---
 
+## 💳 Payment Webhooks — Mercado Pago
+
+Mercado Pago notifications only carry a `topic` and an `id` — never trust the amount/status from the notification payload itself. Always re-fetch the resource from the API before updating your database.
+
+### 1. Verify the Signature
+
+```typescript
+// app/api/webhooks/mercadopago/route.ts
+import { WebhookSignatureValidator, InvalidWebhookSignatureError } from 'mercadopago'
+
+export async function POST(request: Request) {
+  const url = new URL(request.url)
+  const dataId = url.searchParams.get('data.id')
+  const xSignature = request.headers.get('x-signature')
+  const xRequestId = request.headers.get('x-request-id')
+
+  if (!dataId || !xSignature || !xRequestId) {
+    return Response.json({ error: 'Missing headers' }, { status: 400 })
+  }
+
+  try {
+    WebhookSignatureValidator.validate({
+      xSignature,
+      xRequestId,
+      dataId,
+      secret: process.env.MERCADOPAGO_WEBHOOK_SECRET!,
+    })
+  } catch (error) {
+    if (error instanceof InvalidWebhookSignatureError) {
+      return Response.json({ error: 'Invalid signature' }, { status: 401 })
+    }
+    throw error
+  }
+
+  // Signature valid — safe to process
+  return await handleNotification(dataId, request)
+}
+```
+
+### 2. Re-fetch Before Trusting
+
+```typescript
+// ❌ FORBIDDEN - trusting amount/status from the notification body
+async function handleNotification(dataId: string) {
+  const body = await request.json()
+  await markOrderPaid(body.data.id, body.transaction_amount) // body is unverified
+}
+
+// ✅ CORRECT - fetch the real payment from the API
+import { MercadoPagoConfig, Payment } from 'mercadopago'
+
+const client = new MercadoPagoConfig({ accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN! })
+const paymentClient = new Payment(client)
+
+async function handleNotification(dataId: string) {
+  const payment = await paymentClient.get({ id: dataId })
+
+  if (payment.status !== 'approved') return
+
+  // idempotent: use payment.id as the idempotency boundary, not the webhook delivery
+  await markOrderPaid(payment.external_reference!, payment.transaction_amount!)
+}
+```
+
+### 3. Idempotency on Creation
+
+```typescript
+// REQUIRED - pass an idempotency key on every payment creation call
+await paymentClient.create({
+  body: {
+    transaction_amount: 100,
+    description: 'Order #1234',
+    payment_method_id: 'pix',
+    payer: { email: user.email },
+    external_reference: orderId, // your own ID, returned unmodified in the payment object
+  },
+  requestOptions: { idempotencyKey: `order-${orderId}` },
+})
+```
+
+### Checklist
+
+- [ ] Signature verified with `WebhookSignatureValidator` before any processing
+- [ ] Notification body never trusted directly — always re-fetch via `Payment.get()`
+- [ ] `idempotencyKey` set on every payment creation, keyed by your own order ID
+- [ ] `external_reference` used to map back to your order — never rely on payment ID alone
+- [ ] Handler returns `200` even for ignored/duplicate notifications (Mercado Pago retries on non-2xx)
+
+---
+
 ## 📁 File Structure
 
 ```
@@ -521,4 +622,4 @@ types/
 
 ---
 
-*Skill Version: 2.0.0 | Compatible with Next.js 16.x*
+*Skill Version: 2.1.0 | Compatible with Next.js 16.x, Mercado Pago Node.js SDK 2.x*

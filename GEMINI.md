@@ -40,12 +40,13 @@ When working with these actions/files, **read the corresponding skill FIRST**:
 | Writing tests                        | `testing`                  | `skills/generic/testing/SKILL.md`          |
 | Making commits/PRs                   | `git-workflow`             | `skills/generic/git-workflow/SKILL.md`     |
 | Creating API routes/webhooks         | `api-design`               | `skills/generic/api-design/SKILL.md`       |
+| Sending transactional emails         | `email`                    | `skills/generic/email/SKILL.md`            |
+| Integrating external services (payments, etc.) | `hexagonal-architecture`   | `skills/generic/hexagonal-architecture/SKILL.md` |
 | Handling errors                      | `error-handling`           | `skills/generic/error-handling/SKILL.md`   |
 | Internationalizing content           | `i18n`                     | `skills/generic/i18n/SKILL.md`             |
 | Working on accessibility             | `accessibility`            | `skills/generic/accessibility/SKILL.md`    |
 | Optimizing performance               | `performance`              | `skills/generic/performance/SKILL.md`      |
 | Configuring SEO                      | `seo`                      | `skills/generic/seo/SKILL.md`              |
-| Creating videos with Remotion        | `remotion`                 | `skills/generic/remotion/SKILL.md`         |
 | Managing global/shared state         | `state-management`         | `skills/generic/state-management/SKILL.md` |
 | Building React Native apps/features  | `react-native`             | `skills/generic/react-native/SKILL.md`     |
 

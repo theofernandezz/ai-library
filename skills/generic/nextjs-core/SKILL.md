@@ -14,10 +14,6 @@ metadata:
     - "Creating Server Actions"
     - "Working with app/ directory"
     - "Handling forms and mutations"
-  patterns:
-    - "app/**/*.tsx"
-    - "app/**/*.ts"
-    - "lib/actions/**/*.ts"
 ---
 
 # Next.js 16.2.1 Core Patterns

@@ -16,11 +16,6 @@ metadata:
     - "Running migrations"
     - "Database service layer"
     - "Working with PostgreSQL via Neon"
-  patterns:
-    - "prisma/**/*.prisma"
-    - "lib/db/**/*.ts"
-    - "lib/services/**/*.ts"
-    - "prisma/seed.ts"
 ---
 
 # Prisma ORM Patterns

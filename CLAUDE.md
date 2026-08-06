@@ -39,12 +39,13 @@ When about to write code in these areas, **load the corresponding skill at that 
 | Writing tests                        | `testing`                  | `skills/generic/testing/SKILL.md`          |
 | Making commits/PRs                   | `git-workflow`             | `skills/generic/git-workflow/SKILL.md`     |
 | Creating API routes/webhooks         | `api-design`               | `skills/generic/api-design/SKILL.md`       |
+| Sending transactional emails         | `email`                    | `skills/generic/email/SKILL.md`            |
+| Integrating external services (payments, etc.) | `hexagonal-architecture`   | `skills/generic/hexagonal-architecture/SKILL.md` |
 | Handling errors                      | `error-handling`           | `skills/generic/error-handling/SKILL.md`   |
 | Internationalizing content           | `i18n`                     | `skills/generic/i18n/SKILL.md`             |
 | Working on accessibility             | `accessibility`            | `skills/generic/accessibility/SKILL.md`    |
 | Optimizing performance               | `performance`              | `skills/generic/performance/SKILL.md`      |
 | Configuring SEO                      | `seo`                      | `skills/generic/seo/SKILL.md`              |
-| Creating videos with Remotion        | `remotion`                 | `skills/generic/remotion/SKILL.md`         |
 | Managing global/shared state         | `state-management`         | `skills/generic/state-management/SKILL.md` |
 | Building React Native apps/features  | `react-native`             | `skills/generic/react-native/SKILL.md`     |
 
@@ -54,12 +55,16 @@ When about to write code in these areas, **load the corresponding skill at that 
 
 When a task belongs to a specific domain, **load the corresponding agent** to get full context:
 
-| Domain             | Agent               | When to use                                    |
-| ------------------ | ------------------- | ---------------------------------------------- |
-| **UI/Frontend**    | `agents/ui.md`      | Components, styles, animations, accessibility  |
-| **Backend/Server** | `agents/backend.md` | Server Actions, APIs, database, business logic |
-| **Auth**           | `agents/auth.md`    | Authentication, authorization, RLS, sessions   |
-| **Testing**        | `agents/testing.md` | Unit tests, integration, E2E                   |
+| Domain              | Agent                | When to use                                                    |
+| ------------------- | --------------------- | --------------------------------------------------------------- |
+| **UI/Frontend**     | `agents/ui.md`      | Components, styles, animations, accessibility                 |
+| **Backend/Server**  | `agents/backend.md` | Server Actions, APIs, database (Supabase), business logic     |
+| **Auth**            | `agents/auth.md`    | Authentication, authorization, RLS, sessions                   |
+| **Testing**         | `agents/testing.md` | Unit tests, integration, E2E                                    |
+| **Data/Prisma**     | `agents/data.md`    | Prisma schema, migrations, service layer, PostgreSQL/Neon      |
+| **Full-stack Feature** | `agents/feature.md` | Features that span UI, backend, auth, and testing at once   |
+| **Git**             | `agents/git.md`     | Commits, branching, pull requests                                |
+| **Mobile**          | `agents/mobile.md`  | React Native/Expo screens, navigation, native APIs               |
 
 ### How to "Delegate"
 

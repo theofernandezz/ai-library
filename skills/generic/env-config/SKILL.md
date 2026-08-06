@@ -14,9 +14,6 @@ metadata:
     - "Creating .env files"
     - "Accessing process.env"
     - "Configuring secrets"
-  patterns:
-    - "lib/env.ts"
-    - ".env*"
 ---
 
 # Environment Configuration

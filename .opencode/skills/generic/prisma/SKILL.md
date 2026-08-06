@@ -16,16 +16,24 @@ metadata:
     - "Running migrations"
     - "Database service layer"
     - "Working with PostgreSQL via Neon"
-  patterns:
-    - "prisma/**/*.prisma"
-    - "lib/db/**/*.ts"
-    - "lib/services/**/*.ts"
-    - "prisma/seed.ts"
 ---
 
 # Prisma ORM Patterns
 
 > **Core Principle:** Prisma is your type-safe interface to PostgreSQL. Keep all database access in a **service layer** — never write raw Prisma queries inside Server Actions, API routes, or components directly.
+
+---
+
+## 🆕 What's New
+
+> **Instruction for Claude:** When this skill is loaded, check this table and mention any entry relevant to what the developer is working on — before writing code.
+
+| Version | Change | Affects |
+|---------|--------|---------|
+| Prisma 6 | `prisma generate --no-engine` — generates lightweight client without query engine binary (for edge runtimes) | Vercel Edge, Cloudflare Workers |
+| Prisma 6 | `omit` in queries — exclude specific fields instead of listing all included ones. Example: `omit: { passwordHash: true }` | Any query that hides sensitive columns |
+| Prisma 6 | `prisma.client.$transaction` now supports `isolation level` option | Critical write operations |
+| Prisma 6 | `driverAdapters` is **GA** — remove it from `previewFeatures` in `schema.prisma`. Keeping it there causes a deprecation warning in Prisma 6. | All projects using Neon/PlanetScale adapters |
 
 ---
 
@@ -140,8 +148,8 @@ if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 ```prisma
 // prisma/schema.prisma
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
+  provider = "prisma-client-js"
+  // driverAdapters is GA in Prisma 6 — do NOT list it in previewFeatures
 }
 
 datasource db {
@@ -597,4 +605,4 @@ lib/
 
 ---
 
-*Skill Version: 1.0.0 | Prisma 6.x + PostgreSQL (Neon) + Next.js 16*
+*Skill Version: 1.1.0 | Prisma 6.x + PostgreSQL (Neon) + Next.js 16 | Last verified: 2026-03-31*

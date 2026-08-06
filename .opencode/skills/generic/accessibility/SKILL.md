@@ -17,16 +17,23 @@ metadata:
     - "Building navigation menus"
     - "Creating mobile navigation"
     - "Adding breadcrumbs"
-  patterns:
-    - "components/**/*.tsx"
-    - "app/**/*.tsx"
-    - "**/nav*.tsx"
-    - "**/header*.tsx"
 ---
 
 # Accessibility (a11y)
 
 > **Core Principle:** Build for everyone. If it's not accessible, it's not complete.
+
+---
+
+## 🆕 What's New
+
+> **Instruction for Claude:** When this skill is loaded, check this table and mention any entry relevant to what the developer is working on — before writing code.
+
+| Version | Change | Affects |
+|---------|--------|---------|
+| WCAG 2.2 | New criterion 2.5.7 — dragging movements must have a single-pointer alternative | Any drag-and-drop UI |
+| WCAG 2.2 | New criterion 2.5.8 — touch targets minimum 24×24 CSS pixels (up from no minimum) | Mobile/touch UIs |
+| WCAG 2.2 | Criterion 4.1.3 (Status Messages) now broadly enforced — `role="status"` required on dynamic feedback | Toast notifications, form feedback |
 
 ---
 

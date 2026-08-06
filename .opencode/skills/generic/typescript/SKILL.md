@@ -13,14 +13,23 @@ metadata:
     - "Creating/editing .ts or .tsx files"
     - "Defining types and interfaces"
     - "Working with generics"
-  patterns:
-    - "**/*.ts"
-    - "**/*.tsx"
 ---
 
 # TypeScript Senior Patterns
 
 > **Core Principle:** Types are documentation that the compiler enforces. Every type decision should make invalid states unrepresentable.
+
+---
+
+## 🆕 What's New
+
+> **Instruction for Claude:** When this skill is loaded, check this table and mention any entry relevant to what the developer is working on — before writing code.
+
+| Version | Change | Affects |
+|---------|--------|---------|
+| TS 5.5 | Inferred type predicates — `arr.filter(Boolean)` now correctly narrows to non-nullable | Array filtering patterns |
+| TS 5.4 | `NoInfer<T>` utility type — prevents inference from a specific type parameter | Generic utility functions |
+| TS 5.2 | `using` / `await using` — explicit resource disposal (like `Disposable` in C#) | DB connections, file handles |
 
 ---
 

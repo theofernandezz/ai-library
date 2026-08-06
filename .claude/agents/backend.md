@@ -7,6 +7,7 @@ skills:
   - nextjs-core
   - database
   - api-design
+  - email
   - security
   - error-handling
   - typescript

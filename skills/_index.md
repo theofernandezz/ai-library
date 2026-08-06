@@ -17,13 +17,14 @@
 | `error-handling`   | Custom error classes, Error Boundaries, structured logging                |
 | `testing`          | Vitest, Testing Library, MSW, unit/integration/E2E tests                  |
 | `api-design`       | Route Handlers, webhooks, external API integrations                       |
+| `email`            | Resend + React Email, typed templates, idempotent sends, delivery webhooks |
+| `hexagonal-architecture` | Ports & adapters for external integrations, ESLint-enforced boundaries |
 | `git-workflow`     | Commits, branching, PRs, Conventional Commits                             |
 | `i18n`             | next-intl, locale routing, translation keys                               |
 | `accessibility`    | WCAG 2.1, ARIA, keyboard navigation, screen readers                       |
 | `performance`      | Core Web Vitals, lazy loading, React Compiler, bundle optimization        |
 | `seo`              | Meta tags, Open Graph, structured data, sitemap generation                |
 | `state-management` | Zustand, React Context, global/shared state, persistence                  |
-| `remotion`         | Video creation in React, frame-based animations, rendering pipeline       |
 | `react-native`     | Expo, React Navigation, native APIs, mobile-specific patterns             |
 | `env-config`       | Zod env validation, server/public var separation, fail-fast at startup    |
 
@@ -38,4 +39,4 @@
 
 ---
 
-_Skills Index v1.7 | Total: 24 skills_
+_Skills Index v2.0 | Total: 25 skills_

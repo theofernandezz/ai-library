@@ -14,16 +14,21 @@ metadata:
     - "Open Graph tags"
     - "Structured data"
     - "Creating sitemap"
-  patterns:
-    - "app/**/layout.tsx"
-    - "app/**/page.tsx"
-    - "app/sitemap.ts"
-    - "app/robots.ts"
 ---
 
 # SEO - Search Engine Optimization
 
 > **Core Principle:** Every page should be discoverable, crawlable, and shareable with rich previews.
+
+---
+
+## 🆕 What's New
+
+> **Instruction for Claude:** When this skill is loaded, check this table and mention any entry relevant to what the developer is working on — before writing code.
+
+| Version | Change | Affects |
+|---------|--------|---------|
+| — | No tracked changes yet | — |
 
 ---
 

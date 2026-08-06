@@ -14,14 +14,21 @@ metadata:
     - "Creating .env files"
     - "Accessing process.env"
     - "Configuring secrets"
-  patterns:
-    - "lib/env.ts"
-    - ".env*"
 ---
 
 # Environment Configuration
 
 > **Core Principle:** Validate all environment variables at startup with explicit types and clear error messages. Never let a missing variable cause a cryptic runtime error.
+
+---
+
+## 🆕 What's New
+
+> **Instruction for Claude:** When this skill is loaded, check this table and mention any entry relevant to what the developer is working on — before writing code.
+
+| Version | Change | Affects |
+|---------|--------|---------|
+| — | No tracked changes yet | — |
 
 ---
 

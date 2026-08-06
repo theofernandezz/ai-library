@@ -45,13 +45,14 @@ For larger tasks, agents work as a team. The developer acts as Team Lead, coordi
 | `error-handling` | Custom error classes, Error Boundaries, structured logging |
 | `testing` | Vitest, Testing Library, MSW, behavior-driven tests |
 | `api-design` | Route Handlers, webhooks, external API integrations |
+| `email` | Resend + React Email, typed templates, idempotent sends |
+| `hexagonal-architecture` | Ports & adapters for external integrations, ESLint-enforced boundaries |
 | `git-workflow` | Conventional Commits, branching strategy, PR standards |
 | `i18n` | next-intl, locale routing, translation keys |
 | `accessibility` | WCAG 2.1, ARIA, keyboard navigation, screen readers |
 | `performance` | Core Web Vitals, lazy loading, bundle optimization |
 | `seo` | Meta tags, Open Graph, structured data, sitemaps |
 | `state-management` | Zustand, React Context, global/shared state |
-| `remotion` | Video creation in React, frame-based animations |
 | `react-native` | Expo, React Navigation, native APIs, mobile patterns |
 | `env-config` | Zod env validation, server/public var separation |
 
@@ -70,33 +71,47 @@ For larger tasks, agents work as a team. The developer acts as Team Lead, coordi
 
 ## Quick start
 
+No clone needed — run it straight from any project directory:
+
 ```bash
-# Clone the library
-git clone https://github.com/theofernandezz/ai-library.git
+# Interactive wizard (asks for target, mode, profile, dry-run/force)
+npx github:theofernandezz/ai-library
 
-# Deploy to your project
-./deploy.sh ../my-project
-
-# Deploy with a specific profile (fewer skills = less context)
-./deploy.sh ../my-project --profile web-app
+# Or pass the target and flags directly
+npx github:theofernandezz/ai-library ../my-project --profile web-app
 
 # Preview what would be deployed
+npx github:theofernandezz/ai-library ../my-project --profile mobile --dry-run
+```
+
+Requires Node.js ≥18.17. This runs `deploy.sh`'s logic through a small Node CLI (`@clack/prompts`) so it works with a single `npx` command from anywhere, without cloning the repo first.
+
+### Alternative: clone + `deploy.sh`
+
+If you already have the repo cloned locally, or want the extra power-user flags (`--mode`, interactive `custom` profile via arrow keys), the original bash script still works identically:
+
+```bash
+git clone https://github.com/theofernandezz/ai-library.git
+cd ai-library
+
+./deploy.sh ../my-project
+./deploy.sh ../my-project --profile web-app
 ./deploy.sh ../my-project --profile mobile --dry-run
 ```
 
-After deploying, open your project with Claude Code (or your preferred AI tool) and start working. The AI will automatically follow the library's patterns.
+Both tools produce the exact same output — pick whichever fits your workflow. After deploying, open your project with Claude Code (or your preferred AI tool) and follow the "Next steps" printed at the end.
 
 ## Deploy profiles
 
-Not every project needs all 20 skills. Profiles deploy only the skills relevant to your project type:
+Not every project needs all 21 skills. Profiles deploy only the skills relevant to your project type:
 
 | Profile | Skills | Best for |
 |---------|--------|----------|
-| `web-app` | nextjs-core, database, security, typescript, react-patterns, ui-engineering, error-handling, testing, api-design, env-config | Full-stack Next.js applications |
+| `web-app` | nextjs-core, database, security, typescript, react-patterns, ui-engineering, error-handling, testing, api-design, email, env-config | Full-stack Next.js applications |
 | `mobile` | react-native, typescript, state-management, performance, testing | React Native / Expo apps |
 | `static` | nextjs-core, ui-engineering, seo, performance, typescript, accessibility | Marketing sites, blogs, landing pages |
-| `api` | api-design, database, security, error-handling, typescript, env-config | API-only backends |
-| `full` | All 20 skills | When you need everything (default) |
+| `api` | api-design, database, security, error-handling, typescript, email, env-config | API-only backends |
+| `full` | All 21 skills | When you need everything (default) |
 
 ## Agent Teams
 

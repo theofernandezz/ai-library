@@ -15,13 +15,6 @@ metadata:
     - "Configuring React Navigation"
     - "Using native device APIs"
     - "React Native performance optimization"
-  patterns:
-    - "**/*.native.ts"
-    - "**/*.native.tsx"
-    - "app.json"
-    - "app.config.ts"
-    - "expo/**/*.ts"
-    - "expo/**/*.tsx"
 ---
 
 # React Native Engineering
@@ -185,7 +178,7 @@ const parsedLocation = locationPayloadSchema.parse(nativeLocationPayload);
 
 ## Verification Metadata
 
-- Last verified: 2026-03-13
+- Last verified: 2026-03-23
 - Verification cadence: 7 days
 - Owner: @mobile
 

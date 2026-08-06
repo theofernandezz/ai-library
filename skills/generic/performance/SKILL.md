@@ -14,10 +14,6 @@ metadata:
     - "Core Web Vitals"
     - "Lazy loading"
     - "Image optimization"
-  patterns:
-    - "next.config.ts"
-    - "components/**/*.tsx"
-    - "app/**/*.tsx"
 ---
 
 # Performance Optimization

@@ -17,11 +17,6 @@ metadata:
     - "Building navigation menus"
     - "Creating mobile navigation"
     - "Adding breadcrumbs"
-  patterns:
-    - "components/**/*.tsx"
-    - "app/**/*.tsx"
-    - "**/nav*.tsx"
-    - "**/header*.tsx"
 ---
 
 # Accessibility (a11y)

@@ -17,11 +17,6 @@ metadata:
     - "Creating test files"
     - "Test setup and configuration"
     - "Mocking with MSW"
-  patterns:
-    - "**/*.test.ts"
-    - "**/*.test.tsx"
-    - "**/*.spec.ts"
-    - "__tests__/**/*"
 ---
 
 # Testing Patterns - Vitest

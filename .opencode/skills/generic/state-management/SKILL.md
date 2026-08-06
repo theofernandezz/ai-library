@@ -14,16 +14,23 @@ metadata:
     - "State management patterns"
     - "Shared state across components"
     - "Client-side state"
-  patterns:
-    - "store/**/*.ts"
-    - "stores/**/*.ts"
-    - "lib/store/**/*.ts"
-    - "hooks/use-*.ts"
 ---
 
 # State Management - Zustand & Context
 
 > **Core Principle:** Start with the simplest state mechanism that works. Server state first, URL state second, local component state third, shared client state (Zustand/Context) only when truly needed.
+
+---
+
+## 🆕 What's New
+
+> **Instruction for Claude:** When this skill is loaded, check this table and mention any entry relevant to what the developer is working on — before writing code.
+
+| Version | Change | Affects |
+|---------|--------|---------|
+| React 19 | `useOptimistic()` is now stable — prefer it over manual optimistic state patterns | Like, vote, toggle, reorder interactions |
+| React 19 | `use()` hook reads a Context or Promise synchronously — replaces `useContext` for many cases | Global state reads in deeply nested components |
+| Zustand 5 | `create` no longer requires wrapping in `immer` for nested updates — use `set` with draft directly | Any Zustand store with nested objects |
 
 ---
 

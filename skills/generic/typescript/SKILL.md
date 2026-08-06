@@ -13,9 +13,6 @@ metadata:
     - "Creating/editing .ts or .tsx files"
     - "Defining types and interfaces"
     - "Working with generics"
-  patterns:
-    - "**/*.ts"
-    - "**/*.tsx"
 ---
 
 # TypeScript Senior Patterns

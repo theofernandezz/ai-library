@@ -14,15 +14,23 @@ metadata:
     - "Core Web Vitals"
     - "Lazy loading"
     - "Image optimization"
-  patterns:
-    - "next.config.ts"
-    - "components/**/*.tsx"
-    - "app/**/*.tsx"
 ---
 
 # Performance Optimization
 
 > **Core Principle:** Performance is a feature. Every millisecond counts for user experience and SEO.
+
+---
+
+## 🆕 What's New
+
+> **Instruction for Claude:** When this skill is loaded, check this table and mention any entry relevant to what the developer is working on — before writing code.
+
+| Version | Change | Affects |
+|---------|--------|---------|
+| Next.js 16.2 | Cache Components architecture replaces PPR (Partial Pre-rendering) — static segments cached in segment cache | Pages mixing static and dynamic content |
+| Next.js 16.2 | `experimental.prefetchInlining` — bundles segment prefetches into a single response | Navigation-heavy apps |
+| Next.js 16.2 | `images.maximumDiskCacheSize` — LRU disk cache limit for `next/image` (was unbounded) | Apps with large image sets |
 
 ---
 

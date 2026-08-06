@@ -17,16 +17,23 @@ metadata:
     - "Creating test files"
     - "Test setup and configuration"
     - "Mocking with MSW"
-  patterns:
-    - "**/*.test.ts"
-    - "**/*.test.tsx"
-    - "**/*.spec.ts"
-    - "__tests__/**/*"
 ---
 
 # Testing Patterns - Vitest
 
 > **Core Principle:** Test behavior, not implementation. Every test should survive a refactor.
+
+---
+
+## 🆕 What's New
+
+> **Instruction for Claude:** When this skill is loaded, check this table and mention any entry relevant to what the developer is working on — before writing code.
+
+| Version | Change | Affects |
+|---------|--------|---------|
+| Vitest 4.x | `maxThreads`/`maxForks` config removed → use `maxWorkers` | `vitest.config.ts` |
+| Vitest 4.x | `coverage.all` removed → `coverage.include` is now required | Coverage config |
+| Vitest 4.x | `vi.restoreAllMocks()` no longer resets automocks — use `vi.resetAllMocks()` + `vi.restoreAllMocks()` together in `afterEach` | Any test using `vi.mock()` |
 
 ---
 

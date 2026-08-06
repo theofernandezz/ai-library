@@ -13,10 +13,6 @@ metadata:
     - "Creating custom hooks"
     - "State management patterns"
     - "React composition patterns"
-  patterns:
-    - "components/**/*.tsx"
-    - "hooks/**/*.ts"
-    - "app/**/*.tsx"
 ---
 
 # React 19 Patterns & Architecture

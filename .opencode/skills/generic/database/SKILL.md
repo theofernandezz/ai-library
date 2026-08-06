@@ -16,15 +16,21 @@ metadata:
     - "Creating Zod schemas for DB"
     - "Optimizing database queries"
     - "Fixing slow queries"
-  patterns:
-    - "supabase/**/*"
-    - "lib/supabase/**/*"
-    - "lib/data/**/*"
 ---
 
 # Database Engineering - Supabase & Postgres
 
 > **Core Principle:** Security by default. Performance by design. Every table has RLS. Every query is optimized. Zod schemas are the single source of truth.
+
+---
+
+## 🆕 What's New
+
+> **Instruction for Claude:** When this skill is loaded, check this table and mention any entry relevant to what the developer is working on — before writing code.
+
+| Version | Change | Affects |
+|---------|--------|---------|
+| — | No tracked changes yet | — |
 
 ---
 

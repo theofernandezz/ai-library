@@ -6,7 +6,7 @@ description: |
 license: MIT
 metadata:
   author: ai-library
-  version: "2.0"
+  version: "2.1"
   scope: [root]
   auto_invoke:
     - "Creating new skills"
@@ -43,13 +43,14 @@ name: [Skill Name]
 description: |
   [2-3 sentence description of what this skill enforces]
   Trigger: [When this skill should be auto-invoked]
-version: 1.0.0
-scope: [global | feature | project]
-auto_invoke:
-  patterns:
-    - "[file patterns that trigger this skill]"
-  actions:
-    - "[user actions that trigger this skill]"
+license: MIT
+metadata:
+  author: ai-library
+  version: "1.0"
+  scope: [root | ui | backend | auth | testing]
+  auto_invoke:
+    - "[user action that should trigger this skill]"
+    - "[another triggering action]"
 ---
 
 # [Skill Name]
@@ -279,17 +280,14 @@ name: Testing Patterns - Vitest
 description: |
   Production testing patterns using Vitest with Testing Library.
   Trigger: Activated when creating or editing test files.
-version: 1.0.0
-scope: global
-auto_invoke:
-  patterns:
-    - "**/*.test.ts"
-    - "**/*.test.tsx"
-    - "**/*.spec.ts"
-  actions:
-    - "write test"
-    - "create test"
-    - "add test"
+license: MIT
+metadata:
+  author: ai-library
+  version: "1.0"
+  scope: [root, testing]
+  auto_invoke:
+    - "Writing tests"
+    - "Creating test files"
 ---
 
 # Testing Patterns - Vitest
@@ -396,4 +394,4 @@ deprecation_notice: |
 
 ---
 
-*Meta-Skill Version: 2.0.0*
+*Meta-Skill Version: 2.1.0*

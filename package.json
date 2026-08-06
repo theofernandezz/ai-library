@@ -1,0 +1,17 @@
+{
+  "name": "ai-library",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Deploy skills, agents, and coding standards into any project — no clone required.",
+  "bin": {
+    "ai-library": "./bin/index.mjs"
+  },
+  "engines": {
+    "node": ">=18.17"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@clack/prompts": "^0.9.1"
+  }
+}

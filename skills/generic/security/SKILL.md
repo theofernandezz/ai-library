@@ -14,10 +14,6 @@ metadata:
     - "Authorization checks"
     - "Security headers"
     - "Input validation/sanitization"
-  patterns:
-    - "lib/actions/**/*.ts"
-    - "app/api/**/*.ts"
-    - "middleware.ts"
 ---
 
 # Security Best Practices

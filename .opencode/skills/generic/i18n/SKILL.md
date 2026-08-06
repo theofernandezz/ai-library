@@ -14,15 +14,21 @@ metadata:
     - "Locale handling"
     - "Working with i18n"
     - "Internationalizing content"
-  patterns:
-    - "messages/**/*.json"
-    - "lib/i18n/**/*.ts"
-    - "i18n.ts"
 ---
 
 # Internationalization (i18n) - next-intl
 
 > **Core Principle:** Never hardcode user-facing strings. All text should come from translation files.
+
+---
+
+## 🆕 What's New
+
+> **Instruction for Claude:** When this skill is loaded, check this table and mention any entry relevant to what the developer is working on — before writing code.
+
+| Version | Change | Affects |
+|---------|--------|---------|
+| — | No tracked changes yet | — |
 
 ---
 

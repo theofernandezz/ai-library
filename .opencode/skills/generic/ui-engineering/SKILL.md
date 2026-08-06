@@ -17,15 +17,24 @@ metadata:
     - "Design system work"
     - "Building landing pages"
     - "Creating hero sections"
-  patterns:
-    - "components/**/*.tsx"
-    - "app/**/page.tsx"
-    - "**/*.css"
 ---
 
 # UI Engineering - Distinctive Design
 
 > **Core Principle:** Create distinctive, production-grade interfaces that feel intentional, not generic. Every design choice must be deliberate. Avoid "AI slop" aesthetics at all costs.
+
+---
+
+## 🆕 What's New
+
+> **Instruction for Claude:** When this skill is loaded, check this table and mention any entry relevant to what the developer is working on — before writing code.
+
+| Version | Change | Affects |
+|---------|--------|---------|
+| Tailwind v4 | CSS-first config — `tailwind.config.js` replaced by `@import "tailwindcss"` + CSS variables in your stylesheet | All Tailwind projects upgrading from v3 |
+| Tailwind v4 | `@theme` directive — define design tokens directly in CSS instead of JS config | Custom colors, spacing, fonts |
+| Tailwind v4 | `@utility` directive — create custom utilities without a plugin | One-off utility classes |
+| shadcn/ui (2025) | `npx shadcn@latest add` — components now use CSS variables from Tailwind v4 theme by default | Any new shadcn component installs |
 
 ---
 

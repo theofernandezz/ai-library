@@ -17,10 +17,6 @@ metadata:
     - "Design system work"
     - "Building landing pages"
     - "Creating hero sections"
-  patterns:
-    - "components/**/*.tsx"
-    - "app/**/page.tsx"
-    - "**/*.css"
 ---
 
 # UI Engineering - Distinctive Design
