@@ -5,6 +5,9 @@ on:
     paths:
       - "skills/**"
       - "agents/**"
+      - ".claude/agents/**"
+      - ".opencode/agents/**"
+      - "generate-agents.sh"
       - "AGENTS.md"
       - "CLAUDE.md"
       - "GEMINI.md"
@@ -27,6 +30,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+
+      - name: Check generated agents are up to date
+        run: ./generate-agents.sh --check
 
       - name: Collect changed files (PR only)
         if: github.event_name == 'pull_request'
