@@ -1,1 +1,6 @@
 node_modules/
+
+# Runtime artifacts opencode drops in .opencode/ when run from this repo —
+# not managed by sync-opencode.sh, shouldn't be committed.
+.opencode/package-lock.json
+.opencode/bun.lock

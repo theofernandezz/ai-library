@@ -19,5 +19,15 @@ fi
 if [[ -f "$REPO_ROOT/sync-opencode.sh" ]]; then
   echo "[pre-commit] Syncing .opencode/..."
   "$REPO_ROOT/sync-opencode.sh"
-  git add "$REPO_ROOT/.opencode/"
+  # Stage only what sync-opencode.sh actually manages — not the whole
+  # .opencode/ tree, which can pick up stray files other tools drop there
+  # (e.g. opencode itself writing a package-lock.json at .opencode/ root).
+  git add \
+    "$REPO_ROOT/.opencode/AGENTS.md" \
+    "$REPO_ROOT/.opencode/agents/" \
+    "$REPO_ROOT/.opencode/skills/generic/" \
+    "$REPO_ROOT/.opencode/skills/_index.md" \
+    "$REPO_ROOT/.opencode/skills/skill-creator/" \
+    "$REPO_ROOT/.opencode/skills/skill-sync/" \
+    "$REPO_ROOT/.opencode/skills/feedback-loop/"
 fi
