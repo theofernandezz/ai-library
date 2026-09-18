@@ -119,8 +119,9 @@ Each step's subagent needs the previous step's output (file paths, exported name
 
 ## Pending Improvements
 
-**At the start of every session in this library, read both:**
-- **`skills/improvements.md`** — patterns identified in real usage not yet merged into skills
+**At the start of every session in this library, check both:**
+- **Open issues** — `gh issue list --repo theofernandezz/ai-library --state open` — signals filed from real usage, not yet merged into skills
+- **`skills/improvements.md`** — fallback signals from sessions where `gh` wasn't available
 - **`skills/changelog.md`** — recent breaking changes and new APIs across all skills
 
 Apply pending improvements when relevant. Before writing code, mention any changelog entry that applies to the developer's current task.
@@ -129,7 +130,7 @@ Apply pending improvements when relevant. Before writing code, mention any chang
 
 ## Self-Improvement Signals
 
-**You MUST write a SIGNAL to `skills/improvements.md` whenever you encounter any of these during a task:**
+**You MUST file a SIGNAL whenever you encounter any of these during a task — see skill `feedback-loop` (`skills/feedback-loop/SKILL.md`) for the exact mechanics:**
 
 | Signal Type       | When to write it                                                       |
 | ----------------- | ---------------------------------------------------------------------- |
@@ -139,20 +140,7 @@ Apply pending improvements when relevant. Before writing code, mention any chang
 | `SIGNAL:conflict` | Two loaded skills gave contradictory guidance for the same case        |
 | `SIGNAL:unclear`  | A skill rule was ambiguous and you had to guess the intent             |
 
-**Write signals immediately when you notice them — not at the end of the task.**
-
-Signal format (append to `skills/improvements.md`):
-
-```markdown
-## [Date] — SIGNAL:[type] — [skill-name or "new-skill"]
-
-**Trigger:** [one sentence: what you were doing when you hit this]
-**Gap:** [what was missing, stale, or unclear]
-**Suggested fix:** [what the skill should say / what new skill is needed]
-**Priority:** Critical | High | Low
-```
-
-This is the primary mechanism for the library to improve from real usage. Every signal you write is a future improvement waiting to be merged.
+**File signals immediately when you notice them — not at the end of the task.** The primary mechanism is a GitHub issue on `theofernandezz/ai-library`, filed from wherever the session is running (this works in any project the library is deployed to, not just this repo) — that's what makes a signal from a session you don't remember still reach you. `skills/improvements.md` is the fallback only, for when `gh` isn't available.
 
 ---
 
