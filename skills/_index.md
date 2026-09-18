@@ -40,4 +40,4 @@
 
 ---
 
-_Skills Index v2.0 | Total: 26 skills_
+_Total: 26 skills_

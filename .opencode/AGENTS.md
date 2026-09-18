@@ -309,7 +309,3 @@ pnpm lint && pnpm typecheck
 # Run tests
 pnpm test
 ```
-
----
-
-_Last Updated: 2026-02-25 | Version: 2.3.0_

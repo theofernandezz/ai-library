@@ -258,7 +258,3 @@ See `skills/_index.md` for a complete table of all available skills.
 ## Full Reference
 
 For detailed rules, auto-invoke tables, and full architecture: `AGENTS.md`
-
----
-
-_Claude Code Configuration v1.1 | Compatible with ai-library v2.3.0_

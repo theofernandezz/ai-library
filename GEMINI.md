@@ -186,7 +186,3 @@ See `skills/_index.md` for a complete table of all available skills.
 ## Full Reference
 
 For detailed rules, auto-invoke tables, and full architecture: `AGENTS.md`
-
----
-
-_Gemini Configuration v1.0 | Compatible with ai-library v2.3.0_
