@@ -1,0 +1,16 @@
+# Paths (relative to a target project) that the library used to deploy and no longer does.
+# deploy.sh / src/deploy.mjs move any of these that exist in the target into
+# .ai-library-backup/<timestamp>/ — nothing is deleted, and nothing outside this list is ever touched.
+#
+# When you remove a skill or agent from the library, add every path it was deployed to here.
+# One path per line; files or directories; no leading "/" and no "..".
+
+# feature agent (removed in the subagent migration)
+agents/feature.md
+.claude/agents/feature.md
+.opencode/agents/feature.md
+
+# remotion skill (removed)
+skills/generic/remotion
+.claude/skills/remotion
+.opencode/skills/generic/remotion

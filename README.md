@@ -67,7 +67,7 @@ For larger tasks, agents work as a team. The developer acts as Team Lead, coordi
 | `testing` | Vitest, Playwright, MSW | Writing or fixing tests |
 | `mobile` | React Native, Expo, native APIs | Mobile app development |
 | `git` | Conventional Commits, branching, PRs | Commits, branches, pull requests |
-| `feature` | Full-stack orchestrator | End-to-end features spanning multiple domains |
+| `verifier` | Fresh-context diff review against the request/spec | After any agent finishes, before calling it done |
 
 ## Quick start
 
@@ -101,6 +101,15 @@ cd ai-library
 
 Both tools produce the exact same output — pick whichever fits your workflow. After deploying, open your project with Claude Code (or your preferred AI tool) and follow the "Next steps" printed at the end.
 
+### Updating a project that already has the library
+
+Re-run the same command (preview first with `--dry-run`).
+
+- **`CLAUDE.md`**: everything above the `ai-library configuration` marker (your Project Context: stack, decisions, conventions, constraints) is never touched — not even with `--force`. Only the library block below the marker is refreshed. A `CLAUDE.md` with no marker is left as-is with a warning.
+- **Local edits**: each deploy writes `.ai-library-manifest` (a hash of every file it deployed — commit it). A skill/agent you edited by hand no longer matches its hash, so the next deploy keeps your version and lists it. `--force` overwrites those files, saving your version to `.ai-library-backup/<timestamp>/` first.
+- **First run on a project without a manifest** (deployed before this existed): local edits can't be told apart from older library versions, so every differing file is backed up to `.ai-library-backup/` before being overwritten. Review it, then delete it (or gitignore it).
+- **Removed from the library**: paths listed in `deprecated-paths.txt` (e.g. the `feature` agent, the `remotion` skill) are moved to `.ai-library-backup/`. Only listed paths are touched — your own agents and skills are never removed.
+
 ## Deploy profiles
 
 Not every project needs all 21 skills. Profiles deploy only the skills relevant to your project type:
@@ -123,7 +132,7 @@ Team Lead (you)
   |-- backend agent   -> server actions, business logic
   |-- auth agent      -> authentication, RLS policies
   |-- testing agent   -> tests for all layers
-  |-- feature agent   -> full-stack orchestration
+  |-- verifier agent  -> reviews the diff against the spec
 ```
 
 The Team Lead breaks down the task, assigns work to agents, and reviews their output. Agents work in parallel, each following the same skills and standards.
@@ -143,6 +152,8 @@ To add a new skill:
 3. Add it to `skills/_index.md`
 4. Add it to the relevant agent's `skills:` frontmatter in `.claude/agents/`
 5. Run `./skills/skill-sync/assets/sync.sh` to update AGENTS.md
+
+When removing a skill or agent from the library, add every path it was deployed to (root, `.claude/`, `.opencode/`) to `deprecated-paths.txt` — deploys only clean up what is listed there.
 
 When updating an existing skill: **replace the old pattern, don't append.** The file should stay the same length or get shorter. Always update the What's New table in the skill.
 

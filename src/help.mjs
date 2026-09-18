@@ -12,7 +12,7 @@ Options:
   --profile <name>   web-app | mobile | static | api | full   (default: full)
                       (use the interactive wizard for "custom" — picking individual skills)
   --dry-run          Preview what would be copied without writing anything
-  --force            Overwrite even if the target has newer files
+  --force            Overwrite files edited locally (backed up first; CLAUDE.md project context is never overwritten)
   --verbose          Print every file copied, not just the summary
   --help, -h         Show this help message
 

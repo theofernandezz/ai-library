@@ -20,8 +20,8 @@ export function printNextSteps({ targetRepo, mode, dryRun, claudeMdGenerated }) 
     lines.push('   can\'t infer on its own; everything below it is the library, don\'t edit it.')
   } else {
     lines.push('')
-    lines.push('2. CLAUDE.md already existed, so it was left untouched — re-run with --force')
-    lines.push('   if you want it regenerated with the project-context template.')
+    lines.push('2. CLAUDE.md already existed: your project context was left untouched. The ai-library')
+    lines.push('   block below the marker is refreshed only if the marker exists (see warnings above).')
   }
 
   lines.push('')
@@ -30,7 +30,7 @@ export function printNextSteps({ targetRepo, mode, dryRun, claudeMdGenerated }) 
   lines.push('')
   lines.push(`4. Full skill list: ${mode === 'opencode' ? '.opencode/skills/_index.md' : 'skills/_index.md'}`)
   lines.push('')
-  lines.push('5. To update later: re-run this same command with --force.')
+  lines.push('5. To update later: re-run this same command. CLAUDE.md project context is never overwritten.')
 
   note(lines.join('\n'), 'Next steps')
   outro('✔ Done. Happy shipping.')

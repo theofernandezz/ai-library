@@ -107,7 +107,7 @@ export async function runWizard({ libraryDir, presetTarget }) {
   let force = false
   if (!dryRun) {
     force = bail(
-      await confirm({ message: 'Overwrite files even if the target has newer versions?', initialValue: false }),
+      await confirm({ message: 'Overwrite files you edited locally? (they are backed up first)', initialValue: false }),
     )
   }
 
@@ -117,7 +117,7 @@ export async function runWizard({ libraryDir, presetTarget }) {
     `Profile  ${profile}${profile === 'custom' ? ` (${customSkills.join(', ')})` : ''}`,
   ]
   if (dryRun) summaryLines.push('Dry run — no files will be written')
-  if (force) summaryLines.push('Force — newer destination files will be overwritten')
+  if (force) summaryLines.push('Force — locally edited files will be backed up, then overwritten')
   note(summaryLines.join('\n'), 'Summary')
 
   const proceed = bail(await confirm({ message: 'Proceed with deployment?', initialValue: true }))

@@ -25,7 +25,7 @@
 #                       custom     → choose individual skills interactively
 #                       full       → all skills (default)
 #   --dry-run         Show what would be copied without actually copying
-#   --force           Overwrite even if target files are newer
+#   --force           Overwrite files edited locally (backed up first; CLAUDE.md project context is never overwritten)
 #   --help            Show this help message
 #
 # Examples:
@@ -216,7 +216,7 @@ Options:
                       custom     → choose individual skills interactively
                       full       → all skills (default)
   --dry-run         Show what would be copied without actually copying
-  --force           Overwrite even if target files are newer
+  --force           Overwrite files edited locally (backed up first; CLAUDE.md project context is never overwritten)
   --help            Show this help message
 
 Examples:
@@ -252,60 +252,229 @@ resolve_and_validate_target_repo() {
   fi
 }
 
-# ── Copy a single file, respecting --dry-run and --force ─────────────────────
+# ── Manifest: tells library-deployed content apart from local edits ─────────
+# .ai-library-manifest in the target holds "<sha256>  <path>" for every file the last
+# deploy wrote. A file whose hash still matches is untouched and safe to overwrite;
+# one that doesn't was edited locally.
+MANIFEST_NAME=".ai-library-manifest"
+BACKUP_ROOT_NAME=".ai-library-backup"
+MANIFEST_OLD=""
+MANIFEST_NEW=""
+BACKUP_DIR=""
+LAST_ACTION=""
+UNCHANGED=0
+KEPT=0
+KEPT_LIST=""
+BACKED_UP=0
+BACKED_UP_LIST=""
+REMOVED_LIST=""
+
+hash_file() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$1" | cut -d' ' -f1
+  else
+    shasum -a 256 "$1" | cut -d' ' -f1
+  fi
+}
+
+# Hash last deployed at path $1 (relative to target); empty if unknown.
+manifest_hash() {
+  [[ -f "$MANIFEST_OLD" ]] || return 0
+  awk -v p="$1" '{ h = $1; sub(/^[^ ]+  /, ""); if ($0 == p) { print h; exit } }' "$MANIFEST_OLD"
+}
+
+manifest_record() { echo "$2  $1" >> "$MANIFEST_NEW"; }
+
+init_manifest() {
+  MANIFEST_OLD="$TARGET_REPO/$MANIFEST_NAME"
+  MANIFEST_NEW="$(mktemp)"
+  BACKUP_DIR="$TARGET_REPO/$BACKUP_ROOT_NAME/$(date +%Y%m%d-%H%M%S)"
+}
+
+# Decide and apply for one file (sets LAST_ACTION). Honors --dry-run and --force.
+#   target missing                 → write
+#   identical to library           → unchanged
+#   matches last deployed hash     → untouched since last deploy → overwrite
+#   no record of a last deploy     → can't tell a local edit from an older library version → back up, overwrite
+#   differs from last deployed     → edited locally → keep as-is (--force: back up, overwrite)
+deploy_file() {
+  local src="$1"
+  local dst="$2"
+  local rel="${dst#"$TARGET_REPO/"}"
+  local src_hash dst_hash old_hash=""
+  src_hash="$(hash_file "$src")"
+  LAST_ACTION="write"
+
+  if [[ -f "$dst" ]]; then
+    dst_hash="$(hash_file "$dst")"
+    if [[ "$dst_hash" == "$src_hash" ]]; then
+      LAST_ACTION="unchanged"
+    else
+      old_hash="$(manifest_hash "$rel")"
+      if [[ -z "$old_hash" ]]; then
+        LAST_ACTION="backup"
+      elif [[ "$dst_hash" == "$old_hash" ]]; then
+        LAST_ACTION="write"
+      elif $FORCE; then
+        LAST_ACTION="backup"
+      else
+        LAST_ACTION="keep"
+      fi
+    fi
+  fi
+
+  case "$LAST_ACTION" in
+    unchanged)
+      ((UNCHANGED++)) || true
+      manifest_record "$rel" "$src_hash"
+      ;;
+    keep)
+      ((KEPT++)) || true
+      KEPT_LIST+="$rel"$'\n'
+      manifest_record "$rel" "$old_hash"
+      ;;
+    write|backup)
+      if [[ "$LAST_ACTION" == "backup" ]]; then
+        ((BACKED_UP++)) || true
+        BACKED_UP_LIST+="$rel"$'\n'
+      fi
+      if ! $DRY_RUN; then
+        if [[ "$LAST_ACTION" == "backup" ]]; then
+          mkdir -p "$(dirname "$BACKUP_DIR/$rel")"
+          cp "$dst" "$BACKUP_DIR/$rel"
+        fi
+        mkdir -p "$(dirname "$dst")"
+        cp "$src" "$dst"
+      fi
+      ((COPIED++)) || true
+      manifest_record "$rel" "$src_hash"
+      ;;
+  esac
+}
+
+# ── Copy a single file ───────────────────────────────────────────────────────
 copy_file() {
   local src="$1"
   local dst="$2"
+  local rel="${dst#"$TARGET_REPO/"}"
 
   if [[ ! -f "$src" ]]; then
     warn "Source not found, skipping: $src"
     return
   fi
 
-  local dst_dir
-  dst_dir="$(dirname "$dst")"
+  deploy_file "$src" "$dst"
 
-  if $DRY_RUN; then
-    echo -e "${YELLOW}  [dry-run]${RESET} cp $src → $dst"
-    ((COPIED++)) || true
-    return
-  fi
-
-  mkdir -p "$dst_dir"
-
-  if [[ -f "$dst" ]] && ! $FORCE; then
-    if [[ "$dst" -nt "$src" ]]; then
-      skip "Newer, skipped: ${dst#"$TARGET_REPO/"}"
-      ((SKIPPED++)) || true
-      return
-    fi
-  fi
-
-  cp "$src" "$dst"
-  ok "${dst#"$TARGET_REPO/"}"
-  ((COPIED++)) || true
+  case "$LAST_ACTION" in
+    write|backup)
+      if $DRY_RUN; then
+        echo -e "${YELLOW}  [dry-run]${RESET} $LAST_ACTION $rel"
+      else
+        ok "$rel"
+      fi
+      ;;
+    keep) skip "Edited locally, kept: $rel" ;;
+  esac
 }
 
-# ── Copy an entire directory recursively ─────────────────────────────────────
+# ── Copy an entire directory, file by file ───────────────────────────────────
 copy_dir() {
   local src="$1"
   local dst="$2"
+  local rel_dir="${dst#"$TARGET_REPO/"}"
 
   if [[ ! -d "$src" ]]; then
     warn "Source dir not found, skipping: $src"
     return
   fi
 
+  local before="$COPIED" f
+  while IFS= read -r f; do
+    deploy_file "$src/$f" "$dst/$f"
+  done < <(cd "$src" && find . -type f | sed 's|^\./||' | LC_ALL=C sort)
+
+  local n=$((COPIED - before))
+  if (( n > 0 )); then
+    if $DRY_RUN; then
+      echo -e "${YELLOW}  [dry-run]${RESET} $rel_dir ($n would be updated)"
+    else
+      ok "$rel_dir ($n updated)"
+    fi
+  fi
+}
+
+# ── Drop paths the library no longer ships (deprecated-paths.txt) ────────────
+# Only listed paths are touched — never "whatever isn't in the library", which
+# would delete a project's own agents/skills. They are moved to the backup dir.
+remove_deprecated() {
+  local list="$LIBRARY_DIR/deprecated-paths.txt" p
+  [[ -f "$list" ]] || return 0
+
+  while IFS= read -r p || [[ -n "$p" ]]; do
+    p="${p//[[:space:]]/}"
+    if [[ -z "$p" || "$p" == \#* || "$p" == /* || "$p" == *..* ]]; then
+      continue
+    fi
+    [[ -e "$TARGET_REPO/$p" ]] || continue
+    REMOVED_LIST+="$p"$'\n'
+    if ! $DRY_RUN; then
+      mkdir -p "$(dirname "$BACKUP_DIR/$p")"
+      mv "$TARGET_REPO/$p" "$BACKUP_DIR/$p"
+    fi
+  done < "$list"
+}
+
+# Entries from this run + entries from the old manifest for files not handled this run
+# (e.g. a different --mode or --profile) that still exist. Sorted by path.
+write_manifest() {
   if $DRY_RUN; then
-    echo -e "${YELLOW}  [dry-run]${RESET} cp -r $src → $dst"
-    ((COPIED++)) || true
+    rm -f "$MANIFEST_NEW"
     return
   fi
 
-  mkdir -p "$dst"
-  cp -r "$src/." "$dst/"
-  ok "${dst#"$TARGET_REPO/"}"
-  ((COPIED++)) || true
+  local merged
+  merged="$(mktemp)"
+  {
+    cat "$MANIFEST_NEW"
+    if [[ -f "$MANIFEST_OLD" ]]; then
+      awk 'FILENAME == ARGV[1] { p = $0; sub(/^[^ ]+  /, "", p); seen[p] = 1; next }
+           { p = $0; sub(/^[^ ]+  /, "", p); if (!(p in seen)) print }' "$MANIFEST_NEW" "$MANIFEST_OLD" |
+        while IFS= read -r line; do
+          if [[ -e "$TARGET_REPO/${line#*  }" ]]; then
+            echo "$line"
+          fi
+        done
+    fi
+  } | LC_ALL=C sort -k2,2 > "$merged"
+
+  mv "$merged" "$TARGET_REPO/$MANIFEST_NAME"
+  rm -f "$MANIFEST_NEW"
+}
+
+print_list() { printf '%s' "$1" | sed 's/^/      /'; }
+count_lines() { printf '%s' "$1" | grep -c '' || true; }
+
+print_report() {
+  local would=""
+  $DRY_RUN && would="would be "
+
+  if [[ -n "$REMOVED_LIST" ]]; then
+    warn "$(count_lines "$REMOVED_LIST") path(s) the library no longer ships ${would}moved to $BACKUP_ROOT_NAME/:"
+    print_list "$REMOVED_LIST"
+  fi
+
+  if [[ -n "$KEPT_LIST" ]]; then
+    warn "$KEPT file(s) edited locally ${would}kept as-is — library version NOT applied. Re-run with --force to overwrite them (a backup is saved first):"
+    print_list "$KEPT_LIST"
+  fi
+
+  if (( BACKED_UP > 0 )); then
+    warn "$BACKED_UP file(s) ${would}backed up to ${BACKUP_DIR#"$TARGET_REPO/"}/ before being overwritten."
+    if [[ ! -f "$MANIFEST_OLD" ]]; then
+      echo -e "${DIM}      No previous $MANIFEST_NAME, so local edits can't be told apart from older library versions:${RESET}"
+      echo -e "${DIM}      every differing file was backed up. From now on only real local edits are flagged.${RESET}"
+    fi
+  fi
 }
 
 # ── Resolve the active profile into a skill list ──────────────────────────────
@@ -365,14 +534,58 @@ copy_skills_filtered() {
   done
 }
 
-# ── Generate project CLAUDE.md ────────────────────────────────────────────────
+# ── Project CLAUDE.md ─────────────────────────────────────────────────────────
+# Marker line splitting the project-owned section (above) from the library block (below).
+CLAUDE_MD_MARKER='ai-library configuration'
+CLAUDE_MD_UPDATE_NOTE='<!-- Update: re-run the ai-library deploy (no --force needed). Only this block is refreshed; the project context above is never touched. -->'
+
+# Existing CLAUDE.md: keep everything up to and including the marker line
+# (project context is never touched, not even with --force), replace only the block below.
+refresh_library_block() {
+  local dst="$1"
+  local marker_line
+  # `|| true`: grep exits 1 when there's no marker, which would abort the whole deploy under set -e/pipefail.
+  marker_line="$(grep -n -F "$CLAUDE_MD_MARKER" "$dst" | head -1 | cut -d: -f1 || true)"
+
+  if [[ -z "$marker_line" ]]; then
+    warn "CLAUDE.md has no ai-library marker — left untouched. Paste the rules from $LIBRARY_DIR/CLAUDE.md by hand if you want them."
+    ((SKIPPED++)) || true
+    return
+  fi
+
+  local tmp
+  tmp="$(mktemp)"
+  {
+    head -n "$marker_line" "$dst"
+    echo "$CLAUDE_MD_UPDATE_NOTE"
+    echo
+    cat "$LIBRARY_DIR/CLAUDE.md"
+  } > "$tmp"
+
+  if cmp -s "$tmp" "$dst"; then
+    rm -f "$tmp"
+    ((UNCHANGED++)) || true
+    return
+  fi
+
+  if $DRY_RUN; then
+    rm -f "$tmp"
+    echo -e "${YELLOW}  [dry-run]${RESET} refresh ai-library block in CLAUDE.md (project context untouched)"
+    ((COPIED++)) || true
+    return
+  fi
+
+  mv "$tmp" "$dst"
+  ok "CLAUDE.md (ai-library block refreshed, project context untouched)"
+  ((COPIED++)) || true
+}
+
 generate_project_claude_md() {
   local target="$1"
   local dst="$target/CLAUDE.md"
 
-  if [[ -f "$dst" ]] && ! $FORCE; then
-    skip "CLAUDE.md already exists — skipping (run with --force to overwrite)"
-    ((SKIPPED++)) || true
+  if [[ -f "$dst" ]]; then
+    refresh_library_block "$dst"
     return
   fi
 
@@ -418,7 +631,7 @@ generate_project_claude_md() {
 ---
 
 <!-- ⬇️ ai-library configuration — do not edit below this line ⬇️ -->
-<!-- Update by re-running: ./deploy.sh $(pwd) --force -->
+$CLAUDE_MD_UPDATE_NOTE
 
 $(cat "$LIBRARY_DIR/CLAUDE.md")
 EOF
@@ -726,7 +939,7 @@ ask_options() {
   local options=(
     "Apply changes now (recommended)"
     "Preview only (--dry-run)"
-    "Apply and overwrite newer files (--force)"
+    "Apply and overwrite locally edited files (--force)"
     "Preview and overwrite (--dry-run + --force)"
   )
 
@@ -756,9 +969,9 @@ ask_options() {
   fi
 
   if $FORCE; then
-    echo -e "  ${YELLOW}✔${RESET} Force enabled (newer files may be overwritten)."
+    echo -e "  ${YELLOW}✔${RESET} Force enabled (locally edited files are backed up, then overwritten)."
   else
-    echo -e "  ${GREEN}✔${RESET} Force disabled (newer destination files are preserved)."
+    echo -e "  ${GREEN}✔${RESET} Force disabled (locally edited files are kept)."
   fi
 
   echo ""
@@ -777,7 +990,7 @@ confirm_deploy() {
     echo -e "  Skills   : ${CYAN}${CUSTOM_SKILLS[*]}${RESET}"
   fi
   $DRY_RUN && echo -e "  ${YELLOW}Dry run — no files will be written${RESET}"
-  $FORCE   && echo -e "  ${YELLOW}Force   — newer destination files overwritten${RESET}"
+  $FORCE   && echo -e "  ${YELLOW}Force   — locally edited files backed up, then overwritten${RESET}"
   echo ""
   divider
   echo ""
@@ -887,7 +1100,7 @@ if ! $INTERACTIVE; then
   echo -e "  Mode    : ${CYAN}$MODE${RESET}"
   echo -e "  Profile : ${CYAN}$PROFILE${RESET}"
   $DRY_RUN && echo -e "  ${YELLOW}DRY RUN — no files will be written${RESET}"
-  $FORCE   && echo -e "  ${YELLOW}FORCE — newer destination files will be overwritten${RESET}"
+  $FORCE   && echo -e "  ${YELLOW}FORCE — locally edited files will be backed up, then overwritten${RESET}"
   echo ""
 fi
 
@@ -898,6 +1111,9 @@ if [[ -x "$LIBRARY_DIR/generate-agents.sh" ]] && ! "$LIBRARY_DIR/generate-agents
 fi
 
 # ── Execute ───────────────────────────────────────────────────────────────────
+init_manifest
+remove_deprecated
+
 case "$MODE" in
   root)
     deploy_root "$TARGET_REPO"
@@ -918,11 +1134,15 @@ case "$MODE" in
     ;;
 esac
 
+write_manifest
+
 # ── Done ──────────────────────────────────────────────────────────────────────
 echo ""
+print_report
+echo ""
 if $DRY_RUN; then
-  echo -e "${YELLOW}Dry run complete.${RESET} Would have copied ${BOLD}$COPIED${RESET} items."
+  echo -e "${YELLOW}Dry run complete.${RESET} Would write ${BOLD}$COPIED${RESET} file(s) (${BOLD}$UNCHANGED${RESET} already up to date, ${BOLD}$KEPT${RESET} edited locally would be kept)."
 else
-  echo -e "${GREEN}✔ Done.${RESET} Copied ${BOLD}$COPIED${RESET} items, skipped ${BOLD}$SKIPPED${RESET} (destination was newer — use --force to overwrite)."
+  echo -e "${GREEN}✔ Done.${RESET} Wrote ${BOLD}$COPIED${RESET} file(s), ${BOLD}$UNCHANGED${RESET} already up to date, kept ${BOLD}$KEPT${RESET} edited locally (--force to overwrite)."
 fi
 echo ""
