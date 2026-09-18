@@ -56,8 +56,10 @@ for src in "$SRC_DIR"/*.md; do
     echo ""
     echo "> **Rol:** $description"
     echo ""
-    echo "**Skills:** $skills_inline"
-    echo ""
+    if [[ -n "$skills_inline" ]]; then
+      echo "**Skills:** $skills_inline"
+      echo ""
+    fi
     echo "---"
     echo ""
     echo "$body"

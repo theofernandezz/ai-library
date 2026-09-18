@@ -75,6 +75,12 @@ Each subagent is defined in `.claude/agents/<name>.md` — that's the source of 
 4. **Parallel delegation only with disjoint file sets.** Two subagents editing the same files can silently overwrite each other's work. If domains overlap on the same files, delegate sequentially instead.
 5. **You don't write domain code.** Your job is to route, pass context, and — once a subagent reports back — review its diff against the original request. If it drifted from what was asked, say so before accepting it.
 
+### Verification before "done"
+
+`verifier` is not a domain — it doesn't write code (no `Edit`/`Write`). It's a fresh-context review pass: invoke it after a domain subagent (or you) finishes a fix, feature, or refactor, before calling the task done — especially when a previously-failing gate (tests, build, lint) now passes, since that's exactly the case where the implementer's own context can't be trusted to have caught scope drift or a test quietly weakened to pass.
+
+Pass it the original request + a diff. Never the implementer's reasoning — that's the whole point of fresh context. If it reports a failure, send the specific delta back to the subagent that owns the file, don't re-delegate the whole task from scratch. If the same criterion fails repeatedly, stop and report the diagnosis instead of continuing to retry.
+
 ### Full-stack features (sequential delegation)
 
 A feature spanning schema → backend → UI → tests has real dependencies between steps — this is not a case for parallel delegation:
