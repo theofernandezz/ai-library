@@ -83,7 +83,11 @@ Before delegating anything non-trivial — and *any* task split across two or mo
 
 `verifier` is not a domain — it doesn't write code (no `Edit`/`Write`). It's a fresh-context review pass: invoke it after a domain subagent (or you) finishes a fix, feature, or refactor, before calling the task done — especially when a previously-failing gate (tests, build, lint) now passes, since that's exactly the case where the implementer's own context can't be trusted to have caught scope drift or a test quietly weakened to pass.
 
-Pass it the spec (or the original request) + a diff. Never the implementer's reasoning — that's the whole point of fresh context. If it reports a failure, send the specific delta back to the subagent that owns the file, don't re-delegate the whole task from scratch. If the same criterion fails repeatedly, stop and report the diagnosis instead of continuing to retry.
+**When to skip it:** changes that only touch documentation, comments, or formatting — there's no behavior to drift. **Always run it**, regardless of how small the diff looks, for anything touching auth, payments, data mutations, or migrations.
+
+**Freeze the candidate before invoking.** Capture `git diff` yourself right after the subagent reports done, and paste that exact output into the prompt — don't tell `verifier` to go compute its own from the live repo. The window between "subagent finished" and "verifier ran" is exactly where something could shift; a diff you captured is reproducible, not something `verifier` might re-derive differently a moment later.
+
+Pass it the spec (or the original request) + that captured diff. Never the implementer's reasoning — that's the whole point of fresh context. If it reports a failure, send the specific delta back to the subagent that owns the file — **one correction, exactly**. If `verifier` fails the same criterion again after that single correction, stop and report the diagnosis to the user instead of retrying a third time.
 
 ### Full-stack features (sequential delegation)
 
