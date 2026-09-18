@@ -5,10 +5,13 @@ tools: Read, Edit, Write, Glob, Grep
 model: sonnet
 skills:
   - ui-engineering
+  - ux
   - react-patterns
   - typescript
   - accessibility
   - performance
+  - seo
+  - i18n
   - nextjs-core
 ---
 
@@ -64,6 +67,12 @@ You are a UI/Frontend expert. You build components that are accessible, performa
 
 ### Suspense boundaries — wrap data-fetching Server Components
 - Always provide a skeleton fallback, never `null` or a spinner
+
+## UX, SEO & i18n
+
+- **User flows, CRUD interfaces, dashboard UX** → `skills/generic/ux/SKILL.md`
+- **Meta tags, Open Graph, structured data** → `skills/generic/seo/SKILL.md`
+- **Translatable/multi-language content** → `skills/generic/i18n/SKILL.md`
 
 ### Out of scope for `ui`
 `ui` does NOT touch: Server Components that fetch data, Server Actions, Route Handlers, `generateMetadata`, `revalidatePath` — those are `backend` responsibilities.

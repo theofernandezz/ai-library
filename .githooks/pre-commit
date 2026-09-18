@@ -1,13 +1,20 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# pre-commit hook — keeps .opencode/ in sync with skills/ and agents/
+# pre-commit hook — regenerates agents/ + .opencode/agents/ from
+# .claude/agents/*.md, then keeps the rest of .opencode/ in sync
 #
 # Install once: git config core.hooksPath .githooks
 # ==============================================================================
 
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+if [[ -f "$REPO_ROOT/generate-agents.sh" ]]; then
+  echo "[pre-commit] Generating agents/ + .opencode/agents/..."
+  "$REPO_ROOT/generate-agents.sh"
+  git add "$REPO_ROOT/agents/"
+fi
 
 if [[ -f "$REPO_ROOT/sync-opencode.sh" ]]; then
   echo "[pre-commit] Syncing .opencode/..."

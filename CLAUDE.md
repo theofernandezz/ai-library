@@ -53,29 +53,38 @@ When about to write code in these areas, **load the corresponding skill at that 
 
 ## Domain Delegation
 
-When a task belongs to a specific domain, **load the corresponding agent** to get full context:
+When a task belongs to a specific domain, **invoke the corresponding subagent** — do not read its file into your own context:
 
-| Domain              | Agent                | When to use                                                    |
-| ------------------- | --------------------- | --------------------------------------------------------------- |
-| **UI/Frontend**     | `agents/ui.md`      | Components, styles, animations, accessibility                 |
-| **Backend/Server**  | `agents/backend.md` | Server Actions, APIs, database (Supabase), business logic     |
-| **Auth**            | `agents/auth.md`    | Authentication, authorization, RLS, sessions                   |
-| **Testing**         | `agents/testing.md` | Unit tests, integration, E2E                                    |
-| **Data/Prisma**     | `agents/data.md`    | Prisma schema, migrations, service layer, PostgreSQL/Neon      |
-| **Full-stack Feature** | `agents/feature.md` | Features that span UI, backend, auth, and testing at once   |
-| **Git**             | `agents/git.md`     | Commits, branching, pull requests                                |
-| **Mobile**          | `agents/mobile.md`  | React Native/Expo screens, navigation, native APIs               |
+| Domain              | Subagent  | When to use                                                    |
+| ------------------- | --------- | --------------------------------------------------------------- |
+| **UI/Frontend**     | `ui`      | Components, styles, animations, accessibility                 |
+| **Backend/Server**  | `backend` | Server Actions, APIs, database (Supabase), business logic     |
+| **Auth**            | `auth`    | Authentication, authorization, RLS, sessions                   |
+| **Testing**         | `testing` | Unit tests, integration, E2E                                    |
+| **Data/Prisma**     | `data`    | Prisma schema, migrations, service layer, PostgreSQL/Neon      |
+| **Git**             | `git`     | Commits, branching, pull requests                                |
+| **Mobile**          | `mobile`  | React Native/Expo screens, navigation, native APIs               |
 
-### How to "Delegate"
+Each subagent is defined in `.claude/agents/<name>.md` — that's the source of truth. `agents/<name>.md` is a **generated** doc for humans and non-subagent tools (Gemini, Cursor); never edit it by hand, it gets overwritten.
 
-Delegation in Claude Code is done by loading additional context:
+### How to delegate
 
-```
-1. Read the agent file (e.g. agents/ui.md)
-2. Identify the skills it orchestrates
-3. Load each skill when you are about to write code in that domain
-4. Execute the task following the loaded patterns
-```
+1. **Delegate = invoke the `Agent` tool with `subagent_type: <domain>`.** Don't read the agent's file first — that defeats the isolation and reloads a full domain's worth of rules into your own context for no reason.
+2. **What to pass:** the original request (verbatim or close to it) plus the specific paths involved. **Never** your own reasoning or conclusions about the code — the subagent starts with zero context, and handing it your analysis reintroduces the exact blind spots isolation is meant to avoid. The prompt has to be self-contained.
+3. **When NOT to delegate:** a fresh subagent re-derives all context from scratch — real cost in tokens and latency. For a small, localized change you already understand, do it inline.
+4. **Parallel delegation only with disjoint file sets.** Two subagents editing the same files can silently overwrite each other's work. If domains overlap on the same files, delegate sequentially instead.
+5. **You don't write domain code.** Your job is to route, pass context, and — once a subagent reports back — review its diff against the original request. If it drifted from what was asked, say so before accepting it.
+
+### Full-stack features (sequential delegation)
+
+A feature spanning schema → backend → UI → tests has real dependencies between steps — this is not a case for parallel delegation:
+
+1. `data` (or `backend` if the project uses Supabase instead of Prisma) — schema + migration
+2. `backend` — Zod validation, service layer, Server Actions
+3. `ui` — components consuming the new actions/data fetchers
+4. `testing` — service unit + action integration + component tests
+
+Each step's subagent needs the previous step's output (file paths, exported names) explicitly passed in its prompt — it has no way to infer them from a step it never saw.
 
 ---
 

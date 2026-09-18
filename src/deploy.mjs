@@ -192,6 +192,18 @@ export async function deploy(opts) {
   if (mode === 'auto') mode = detectMode(targetRepo)
   resolveProfileSkills(profile, customSkills) // throws on unknown profile before we touch anything
 
+  const generateAgentsScript = join(libraryDir, 'generate-agents.sh')
+  if (existsSync(generateAgentsScript)) {
+    try {
+      execSync(`"${generateAgentsScript}" --check`, { stdio: 'ignore' })
+    } catch {
+      log.warn(
+        'agents/ and .opencode/agents/ are stale relative to .claude/agents/. ' +
+          `Run ./generate-agents.sh in ${libraryDir} before deploying, or this deploy will ship outdated agents.`,
+      )
+    }
+  }
+
   const ctx = makeCtx({ dryRun, force, verbose })
   const s = spinner()
   s.start(`Deploying (mode: ${mode}, profile: ${profile})…`)

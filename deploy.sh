@@ -891,6 +891,12 @@ if ! $INTERACTIVE; then
   echo ""
 fi
 
+# ── Warn if generated agents are stale ────────────────────────────────────────
+if [[ -x "$LIBRARY_DIR/generate-agents.sh" ]] && ! "$LIBRARY_DIR/generate-agents.sh" --check >/dev/null 2>&1; then
+  echo -e "${YELLOW}Warning: agents/ and .opencode/agents/ are stale relative to .claude/agents/.${RESET}"
+  echo -e "${YELLOW}Run ./generate-agents.sh in $LIBRARY_DIR before deploying, or this deploy will ship outdated agents.${RESET}"
+fi
+
 # ── Execute ───────────────────────────────────────────────────────────────────
 case "$MODE" in
   root)

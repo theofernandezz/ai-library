@@ -8,6 +8,7 @@ skills:
   - database
   - api-design
   - email
+  - hexagonal-architecture
   - security
   - error-handling
   - typescript
@@ -41,6 +42,9 @@ Server Action
 ### Security
 - Validate ALL input with Zod at the server boundary
 - Auth check at the start of every protected Server Action and Server Component
+
+### External integrations
+- Payment gateways, notification providers, or any external service that might need to be swapped later → `skills/generic/hexagonal-architecture/SKILL.md`. Not for internal CRUD.
 
 ## Next.js (server-side)
 
