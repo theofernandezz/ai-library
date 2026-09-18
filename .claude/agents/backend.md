@@ -3,6 +3,7 @@ name: backend
 description: Backend/Server specialist for Next.js Server Actions, Supabase database, API design, and business logic. Use when creating Server Actions, writing database queries, implementing REST APIs or webhooks, handling server-side validation, or working in the lib/ directory.
 tools: Read, Edit, Write, Glob, Grep, Bash
 model: sonnet
+effort: medium
 skills:
   - nextjs-core
   - database

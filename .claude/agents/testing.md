@@ -3,6 +3,7 @@ name: testing
 description: Testing specialist for writing, running, and debugging tests with Vitest and Playwright. Use proactively when writing test files, fixing failing tests, setting up test infrastructure, configuring MSW mocks, or when asked to test any functionality.
 tools: Read, Edit, Write, Bash, Glob, Grep
 model: sonnet
+effort: medium
 skills:
   - testing
   - typescript
