@@ -84,6 +84,7 @@ For special library tasks:
 | Sync AGENTS.md      | `skill-sync`    | Run `./skills/skill-sync/assets/sync.sh`                     |
 | Record improvements | `feedback-loop` | Read `skills/feedback-loop/SKILL.md`                         |
 | Fill in Project Context (interview) | `project-setup` | Read `skills/project-setup/SKILL.md` and run its Interview Protocol |
+| Write a spec before a non-trivial task | `spec-driven` | Read `skills/spec-driven/SKILL.md`, write `specs/<slug>.md` |
 
 ---
 

@@ -187,6 +187,7 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | `skill-sync`    | Sync skill metadata to AGENTS.md    | [SKILL.md](skills/skill-sync/SKILL.md)    |
 | `feedback-loop` | Self-improvement, capture learnings | [SKILL.md](skills/feedback-loop/SKILL.md) |
 | `project-setup` | Interview + document project context in CLAUDE.md | [SKILL.md](skills/project-setup/SKILL.md) |
+| `spec-driven` | Write a spec before delegating to subagents; template + lifecycle | [SKILL.md](skills/spec-driven/SKILL.md) |
 
 ---
 

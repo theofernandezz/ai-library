@@ -67,28 +67,51 @@ When a task belongs to a specific domain, **invoke the corresponding subagent** 
 
 Each subagent is defined in `.claude/agents/<name>.md` — that's the source of truth. `agents/<name>.md` is a **generated** doc for humans and non-subagent tools (Gemini, Cursor); never edit it by hand, it gets overwritten.
 
+### Write the spec first
+
+Before delegating anything non-trivial — and *any* task split across two or more subagents, even a small one — write a spec to `specs/<slug>.md`. See skill `spec-driven` (`skills/spec-driven/SKILL.md`) for the template and when to skip it. This is what keeps each subagent's independent guessing from diverging on the same ambiguity, and it's what `verifier` checks diffs against later — a spec that only ever existed inside a delegation prompt can't be reused for either.
+
 ### How to delegate
 
 1. **Delegate = invoke the `Agent` tool with `subagent_type: <domain>`.** Don't read the agent's file first — that defeats the isolation and reloads a full domain's worth of rules into your own context for no reason.
-2. **What to pass:** the original request (verbatim or close to it) plus the specific paths involved. **Never** your own reasoning or conclusions about the code — the subagent starts with zero context, and handing it your analysis reintroduces the exact blind spots isolation is meant to avoid. The prompt has to be self-contained.
+2. **What to pass:** the relevant slice of the spec (or the original request verbatim for something small enough to skip a spec) plus the specific paths involved. **Never** your own reasoning or conclusions about the code — the subagent starts with zero context, and handing it your analysis reintroduces the exact blind spots isolation is meant to avoid. The prompt has to be self-contained.
 3. **When NOT to delegate:** a fresh subagent re-derives all context from scratch — real cost in tokens and latency. For a small, localized change you already understand, do it inline.
 4. **Parallel delegation only with disjoint file sets.** Two subagents editing the same files can silently overwrite each other's work. If domains overlap on the same files, delegate sequentially instead.
-5. **You don't write domain code.** Your job is to route, pass context, and — once a subagent reports back — review its diff against the original request. If it drifted from what was asked, say so before accepting it.
+5. **You don't write domain code.** Your job is to route, pass context, and — once a subagent reports back — review its diff against the spec (or the original request). If it drifted from what was asked, say so before accepting it.
 
 ### Verification before "done"
 
 `verifier` is not a domain — it doesn't write code (no `Edit`/`Write`). It's a fresh-context review pass: invoke it after a domain subagent (or you) finishes a fix, feature, or refactor, before calling the task done — especially when a previously-failing gate (tests, build, lint) now passes, since that's exactly the case where the implementer's own context can't be trusted to have caught scope drift or a test quietly weakened to pass.
 
-Pass it the original request + a diff. Never the implementer's reasoning — that's the whole point of fresh context. If it reports a failure, send the specific delta back to the subagent that owns the file, don't re-delegate the whole task from scratch. If the same criterion fails repeatedly, stop and report the diagnosis instead of continuing to retry.
+Pass it the spec (or the original request) + a diff. Never the implementer's reasoning — that's the whole point of fresh context. If it reports a failure, send the specific delta back to the subagent that owns the file, don't re-delegate the whole task from scratch. If the same criterion fails repeatedly, stop and report the diagnosis instead of continuing to retry.
 
 ### Full-stack features (sequential delegation)
 
-A feature spanning schema → backend → UI → tests has real dependencies between steps — this is not a case for parallel delegation:
+A feature spanning schema → backend → UI → tests has real dependencies between steps — this is not a case for parallel delegation. Worked example, `specs/export-projects-csv.md`:
+
+```markdown
+## Outcome
+Authenticated user downloads their own projects as CSV from the dashboard.
+## Scope
+Server Action `exportProjectsCsv()` in lib/actions/projects.ts; button in
+components/projects/project-list.tsx.
+## Out of scope
+Configurable columns, other formats, async export.
+## Constraints
+Max 10,000 rows — over that, typed error, never a silent truncation.
+## Acceptance criteria
+- [ ] No projects → button disabled with a tooltip
+- [ ] Unauthenticated → action rejects via requireAuth()
+- [ ] CSV correctly escapes commas/quotes in names
+- [ ] >10k rows → visible error, no partial download
+- [ ] Each criterion above has a test exercising it
+```
 
 1. `data` (or `backend` if the project uses Supabase instead of Prisma) — schema + migration
-2. `backend` — Zod validation, service layer, Server Actions
-3. `ui` — components consuming the new actions/data fetchers
-4. `testing` — service unit + action integration + component tests
+2. `backend` — gets the Scope + Constraints slice, implements `exportProjectsCsv()`
+3. `ui` — gets the Scope slice plus the exact signature `backend` just produced, builds the button
+4. `testing` — gets the Acceptance criteria checklist verbatim, one test per line
+5. `verifier` — gets the full spec + the combined diff, reports PASS/FAIL per criterion
 
 Each step's subagent needs the previous step's output (file paths, exported names) explicitly passed in its prompt — it has no way to infer them from a step it never saw.
 
@@ -143,6 +166,7 @@ For special library tasks:
 | Sync AGENTS.md      | `skill-sync`    | Run `./skills/skill-sync/assets/sync.sh`                     |
 | Record improvements | `feedback-loop` | Read `skills/feedback-loop/SKILL.md`                         |
 | Fill in Project Context (interview) | `project-setup` | Read `skills/project-setup/SKILL.md` and run its Interview Protocol |
+| Write a spec before delegating | `spec-driven` | Read `skills/spec-driven/SKILL.md`, write `specs/<slug>.md` |
 
 ---
 
