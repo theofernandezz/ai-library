@@ -36,7 +36,7 @@
 | `skill-sync`    | Sync skill metadata to AGENTS.md                           |
 | `feedback-loop` | Capture improvement signals and learnings                  |
 | `project-setup` | Document project context in CLAUDE.md                      |
-| `spec-driven`   | Write a spec before delegating a task to subagents          |
+| `spec-driven`   | Size the spec to the risk: inline, mini-spec, or spec-first |
 
 ---
 

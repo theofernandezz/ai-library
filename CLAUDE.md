@@ -67,9 +67,9 @@ When a task belongs to a specific domain, **invoke the corresponding subagent** 
 
 Each subagent is defined in `.claude/agents/<name>.md` — that's the source of truth. `agents/<name>.md` is a **generated** doc for humans and non-subagent tools (Gemini, Cursor); never edit it by hand, it gets overwritten.
 
-### Write the spec first
+### Size the spec to the risk
 
-Before delegating anything non-trivial — and *any* task split across two or more subagents, even a small one — write a spec to `specs/<slug>.md`. See skill `spec-driven` (`skills/spec-driven/SKILL.md`) for the template and when to skip it. This is what keeps each subagent's independent guessing from diverging on the same ambiguity, and it's what `verifier` checks diffs against later — a spec that only ever existed inside a delegation prompt can't be reused for either.
+Pick the mode with skill `spec-driven` (`skills/spec-driven/SKILL.md`): **inline** (no spec) for clear, reversible, single-domain work; **incremental** (mini-spec: Outcome + 1–3 criteria) for reversible but uncertain work; **spec-first** (full `specs/<slug>.md`) for anything costly to revert — schema, auth, payments, public contracts — and for *any* task split across two or more subagents. Whatever you hand to a subagent or to `verifier` must be persisted at `specs/<slug>.md`: a spec that only lived inside a delegation prompt can't be checked against later or reused.
 
 ### How to delegate
 
@@ -184,7 +184,7 @@ For special library tasks:
 | Sync AGENTS.md      | `skill-sync`    | Run `./skills/skill-sync/assets/sync.sh`                     |
 | Record improvements | `feedback-loop` | Read `skills/feedback-loop/SKILL.md`                         |
 | Fill in Project Context (interview) | `project-setup` | Read `skills/project-setup/SKILL.md` and run its Interview Protocol |
-| Write a spec before delegating | `spec-driven` | Read `skills/spec-driven/SKILL.md`, write `specs/<slug>.md` |
+| Size a spec before delegating | `spec-driven` | Read `skills/spec-driven/SKILL.md`, pick the mode, write `specs/<slug>.md` if delegating |
 
 ---
 
