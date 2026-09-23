@@ -447,14 +447,13 @@ export async function createProject(
     description: formData.get('description'),
   }
 
+  let projectId: string
   try {
     const validated = createProjectSchema.parse(rawInput)
     
     const service = new ProjectService(supabase)
     const project = await service.create(validated, user.id)
-
-    revalidatePath('/projects')
-    redirect(`/projects/${project.id}`)
+    projectId = project.id
   } catch (error) {
     if (error instanceof z.ZodError) {
       return { errors: error.flatten().fieldErrors as Record<string, string[]> }
@@ -464,6 +463,10 @@ export async function createProject(
     }
     throw error // Re-throw unexpected errors
   }
+
+  // redirect() works by throwing — keep it outside try/catch so the catch can't swallow it
+  revalidatePath('/projects')
+  redirect(`/projects/${projectId}`)
 }
 ```
 
