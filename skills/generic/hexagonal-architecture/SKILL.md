@@ -202,16 +202,24 @@ Swapping Stripe for Mercado Pago, or changing how `payments` works internally, t
 'use server'
 import { z } from 'zod'
 import { cart } from '@/composition'
+import type { ActionResult } from '@/lib/action-result'
 
 const checkoutSchema = z.object({ cartId: z.string().uuid() })
 
-export async function checkoutAction(input: unknown) {
-  const { cartId } = checkoutSchema.parse(input)
-  return cart.checkout(cartId)
+export async function checkoutAction(input: unknown): Promise<ActionResult<{ transactionId: string }>> {
+  const parsed = checkoutSchema.safeParse(input)
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: { code: 'VALIDATION_ERROR', message: 'Invalid input', fields: parsed.error.flatten().fieldErrors },
+    }
+  }
+  const { transactionId } = await cart.checkout(parsed.data.cartId)
+  return { success: true, data: { transactionId } }
 }
 ```
 
-Server Actions are entry points, not business logic: validate, authenticate, call the module. See `nextjs-core` + `security` for the full action pattern.
+Server Actions are entry points, not business logic: validate, authenticate, call the module, return an `ActionResult` (`error-handling`). See `nextjs-core` + `security` for the full action pattern.
 
 ### 5. Testing — Fakes, No Mocking Library
 

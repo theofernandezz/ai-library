@@ -147,7 +147,10 @@ export async function createProject(formData: FormData) {
   })
 
   if (!validated.success) {
-    return { error: validated.error.flatten() }
+    return {
+      success: false,
+      error: { code: 'VALIDATION_ERROR', message: 'Please check your input', fields: validated.error.flatten().fieldErrors },
+    }
   }
 
   // Now safe to insert
@@ -471,24 +474,19 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { ProjectService, DatabaseError } from '@/lib/services/project-service'
 import { createProjectSchema } from '@/lib/validations/project'
+import type { ActionResult } from '@/lib/action-result'
 import { z } from 'zod'
 
-export type ActionState = {
-  errors?: Record<string, string[]>
-  message?: string
-  success?: boolean
-}
-
 export async function createProject(
-  prevState: ActionState,
+  _prevState: ActionResult | null,
   formData: FormData
-): Promise<ActionState> {
+): Promise<ActionResult> {
   const supabase = await createClient()
   
   // Auth check
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { errors: { _form: ['Not authenticated'] } }
+    return { success: false, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
   }
 
   // Validate
@@ -506,10 +504,17 @@ export async function createProject(
     projectId = project.id
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { errors: error.flatten().fieldErrors as Record<string, string[]> }
+      return {
+        success: false,
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Please check your input',
+          fields: error.flatten().fieldErrors,
+        },
+      }
     }
     if (error instanceof DatabaseError) {
-      return { errors: { _form: [error.message] } }
+      return { success: false, error: { code: 'DATABASE_ERROR', message: error.message } }
     }
     throw error // Re-throw unexpected errors
   }

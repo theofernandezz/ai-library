@@ -28,6 +28,7 @@
 | `params` and `searchParams` are now `Promise<{...}>` — must be `await`-ed | all dynamic routes `[id]` |
 | `useFormState` removed (React 19) — use `useActionState` from `react` (returns `[state, action, isPending]`) | forms wired to Server Actions |
 | `middleware.ts` deprecated in Next.js 16 — renamed `proxy.ts`, export `proxy` (Node.js runtime only; codemod: `middleware-to-proxy`) | `middleware.ts` |
+| Server Actions return `ActionResult<T>` (from `error-handling`) instead of `{ errors?, success? }` — forms read `state.error.fields` / `state.error.message` | Server Actions, `useActionState` forms |
 
 ---
 
@@ -131,6 +132,7 @@
 
 | Change | Affects |
 |--------|---------|
+| One canonical Server Action return shape: `ActionResult<T>` in `lib/action-result.ts`; `fields` values may be `undefined` (matches Zod's `flatten()`) | Server Actions in any skill |
 | Next.js 16.2: `unstable_retry()` — user-triggered retry inside `error.tsx` (unstable, watch for stable) | `error.tsx` boundary components |
 | Next.js 16.2: `unstable_catchError()` — component-level error handling without a full boundary (unstable) | granular error handling in Server Components |
 
