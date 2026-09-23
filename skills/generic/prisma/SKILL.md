@@ -157,88 +157,38 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ── Enums (use string unions in TS, but enums are fine in Prisma schema) ──
+// Enums are fine in the Prisma schema (use string unions in TS)
 enum UserRole {
   USER
   ADMIN
-  MODERATOR
 }
 
-enum PostStatus {
-  DRAFT
-  PUBLISHED
-  ARCHIVED
-}
-
-// ── Models ────────────────────────────────────────────────────────────────
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  role      UserRole @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deletedAt DateTime? // Soft delete
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String?
+  passwordHash String
+  role         UserRole  @default(USER)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime? // soft delete
 
-  posts     Post[]
-  profile   Profile?
+  profile      Profile?
 
-  @@index([email])
   @@index([createdAt])
-  @@map("users") // Snake_case table name
+  @@map("users")
 }
 
 model Profile {
-  id        String  @id @default(cuid())
-  bio       String?
-  avatarUrl String?
-  userId    String  @unique
-
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  userId String @unique // 1:1 — @unique on the FK
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("profiles")
 }
 
-model Post {
-  id          String     @id @default(cuid())
-  title       String
-  slug        String     @unique
-  content     String
-  status      PostStatus @default(DRAFT)
-  publishedAt DateTime?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  deletedAt   DateTime?  // Soft delete
-  authorId    String
-
-  author      User       @relation(fields: [authorId], references: [id])
-  tags        PostTag[]
-
-  @@index([slug])
-  @@index([authorId])
-  @@index([status, publishedAt])
-  @@map("posts")
-}
-
-model Tag {
-  id    String    @id @default(cuid())
-  name  String    @unique
-  posts PostTag[]
-
-  @@map("tags")
-}
-
-// Explicit many-to-many join table
-model PostTag {
-  postId String
-  tagId  String
-
-  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
-
-  @@id([postId, tagId])
-  @@map("post_tags")
-}
+// 1:N — FK column + @@index([fkId]) on the "many" side
+// N:M — explicit join table with @@id([aId, bId]) and onDelete: Cascade on both relations
 ```
 
 **Schema rules:**
@@ -250,147 +200,79 @@ model PostTag {
 
 ### 3. Service Layer Pattern
 
+- One exported service object per model; components and actions never import `prisma` directly
+- Reads always filter `deletedAt: null`
+- Never return the full model: define a `select` constant with `satisfies Prisma.XSelect` and derive the type with `Prisma.XGetPayload`
+- Hash secrets before persisting; never select `passwordHash`
+
 ```typescript
 // lib/services/user-service.ts
 import { prisma } from '@/lib/db'
-import { Prisma, type User } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import { hashPassword } from '@/lib/auth/password'
-
-// ── Types ─────────────────────────────────────────────────────────────────
-
-// Use Prisma.validator for type-safe input shapes
-const userWithProfile = Prisma.validator<Prisma.UserDefaultArgs>()({
-  include: { profile: true },
-})
-export type UserWithProfile = Prisma.UserGetPayload<typeof userWithProfile>
 
 const userPublicSelect = {
   id: true,
   name: true,
   email: true,
   role: true,
-  createdAt: true,
 } satisfies Prisma.UserSelect
 
 export type UserPublic = Prisma.UserGetPayload<{ select: typeof userPublicSelect }>
 
-// ── Service ───────────────────────────────────────────────────────────────
-
 export const userService = {
   async findById(id: string): Promise<UserPublic | null> {
-    return prisma.user.findUnique({
-      where: { id, deletedAt: null }, // Soft delete filter
-      select: userPublicSelect,
-    })
+    return prisma.user.findUnique({ where: { id, deletedAt: null }, select: userPublicSelect })
   },
 
-  async findByEmail(email: string): Promise<User | null> {
-    return prisma.user.findUnique({
-      where: { email, deletedAt: null },
-    })
-  },
-
-  async findWithProfile(id: string): Promise<UserWithProfile | null> {
-    return prisma.user.findUnique({
-      where: { id, deletedAt: null },
-      ...userWithProfile,
-    })
-  },
-
-  async create(data: {
-    email: string
-    name: string
-    password: string
-  }): Promise<UserPublic> {
-    const passwordHash = await hashPassword(data.password)
-
+  async create(data: { email: string; name: string; password: string }): Promise<UserPublic> {
     return prisma.user.create({
       data: {
         email: data.email,
         name: data.name,
-        passwordHash,
-        profile: {
-          create: {}, // Create empty profile automatically
-        },
+        passwordHash: await hashPassword(data.password),
+        profile: { create: {} }, // empty profile created with the user
       },
       select: userPublicSelect,
     })
   },
 
-  async update(id: string, data: Prisma.UserUpdateInput): Promise<UserPublic> {
-    return prisma.user.update({
-      where: { id },
-      data,
-      select: userPublicSelect,
-    })
-  },
-
   async softDelete(id: string): Promise<void> {
-    await prisma.user.update({
-      where: { id },
-      data: { deletedAt: new Date() },
-    })
+    await prisma.user.update({ where: { id }, data: { deletedAt: new Date() } })
   },
 }
 ```
 
 ### 4. Transactions
 
+- Use `$transaction` when 2+ writes must succeed or fail together
+- Inside the callback use only `tx`, never the global `prisma`; throwing rolls everything back
+- Read-then-write (balances, stock) needs `Serializable` isolation
+- Keep transactions short: no network calls inside
+
 ```typescript
 // lib/services/post-service.ts
 import { prisma } from '@/lib/db'
+import { Prisma } from '@prisma/client'
 
 export const postService = {
-  // Use $transaction for multi-step operations that must succeed together
   async publish(postId: string, tagNames: string[]): Promise<void> {
     await prisma.$transaction(async (tx) => {
-      // Step 1: Update post status
-      await tx.post.update({
-        where: { id: postId },
-        data: { status: 'PUBLISHED', publishedAt: new Date() },
-      })
-
-      // Step 2: Upsert tags and create join records
+      await tx.post.update({ where: { id: postId }, data: { status: 'PUBLISHED', publishedAt: new Date() } })
       const tags = await Promise.all(
-        tagNames.map((name) =>
-          tx.tag.upsert({
-            where: { name },
-            create: { name },
-            update: {},
-          })
-        )
+        tagNames.map((name) => tx.tag.upsert({ where: { name }, create: { name }, update: {} }))
       )
-
-      // Step 3: Link tags to post
-      await tx.postTag.createMany({
-        data: tags.map((tag) => ({ postId, tagId: tag.id })),
-        skipDuplicates: true,
-      })
+      await tx.postTag.createMany({ data: tags.map((t) => ({ postId, tagId: t.id })), skipDuplicates: true })
     })
   },
 
-  // Interactive transaction with manual commit/rollback control
-  async transferCredits(fromId: string, toId: string, amount: number) {
-    return prisma.$transaction(
+  async transferCredits(fromId: string, toId: string, amount: number): Promise<void> {
+    await prisma.$transaction(
       async (tx) => {
         const from = await tx.user.findUniqueOrThrow({ where: { id: fromId } })
-
-        if (from.credits < amount) {
-          throw new Error('Insufficient credits')
-        }
-
-        const [updatedFrom, updatedTo] = await Promise.all([
-          tx.user.update({
-            where: { id: fromId },
-            data: { credits: { decrement: amount } },
-          }),
-          tx.user.update({
-            where: { id: toId },
-            data: { credits: { increment: amount } },
-          }),
-        ])
-
-        return { from: updatedFrom, to: updatedTo }
+        if (from.credits < amount) throw new Error('Insufficient credits') // rolls back
+        await tx.user.update({ where: { id: fromId }, data: { credits: { decrement: amount } } })
+        await tx.user.update({ where: { id: toId }, data: { credits: { increment: amount } } })
       },
       { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
     )

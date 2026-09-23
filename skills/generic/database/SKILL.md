@@ -323,112 +323,45 @@ export async function updateSession(request: NextRequest) {
 
 ### 3. Service Layer Pattern
 
+- One service class per table; the constructor receives the Supabase client, never create it inside
+- Validate input with the Zod schema inside `create`/`update`, before touching the DB
+- Map `PGRST116` (no rows) to `null` in `getById`; wrap every other error in `DatabaseError`
+- `user_id` comes from the session, never from input; `update` sets `updated_at` explicitly
+
 ```typescript
 // lib/services/project-service.ts
-import { createClient } from '@/lib/supabase/server'
-import { 
-  createProjectSchema, 
-  updateProjectSchema,
-  type Project,
-  type CreateProject,
-  type UpdateProject 
-} from '@/lib/validations/project'
-
-export class ProjectService {
-  private supabase: Awaited<ReturnType<typeof createClient>>
-
-  constructor(supabase: Awaited<ReturnType<typeof createClient>>) {
-    this.supabase = supabase
-  }
-
-  async getById(id: string): Promise<Project | null> {
-    const { data, error } = await this.supabase
-      .from('projects')
-      .select('*')
-      .eq('id', id)
-      .single()
-
-    if (error) {
-      if (error.code === 'PGRST116') return null
-      throw new DatabaseError('Failed to fetch project', error)
-    }
-
-    return data
-  }
-
-  async getByUser(userId: string): Promise<Project[]> {
-    const { data, error } = await this.supabase
-      .from('projects')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false })
-
-    if (error) {
-      throw new DatabaseError('Failed to fetch projects', error)
-    }
-
-    return data
-  }
-
-  async create(input: CreateProject, userId: string): Promise<Project> {
-    // Validate input
-    const validated = createProjectSchema.parse(input)
-
-    const { data, error } = await this.supabase
-      .from('projects')
-      .insert({
-        ...validated,
-        user_id: userId,
-        status: 'active',
-      })
-      .select()
-      .single()
-
-    if (error) {
-      throw new DatabaseError('Failed to create project', error)
-    }
-
-    return data
-  }
-
-  async update(id: string, input: UpdateProject): Promise<Project> {
-    const validated = updateProjectSchema.parse(input)
-
-    const { data, error } = await this.supabase
-      .from('projects')
-      .update({
-        ...validated,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', id)
-      .select()
-      .single()
-
-    if (error) {
-      throw new DatabaseError('Failed to update project', error)
-    }
-
-    return data
-  }
-
-  async delete(id: string): Promise<void> {
-    const { error } = await this.supabase
-      .from('projects')
-      .delete()
-      .eq('id', id)
-
-    if (error) {
-      throw new DatabaseError('Failed to delete project', error)
-    }
-  }
-}
-
-// Custom error class
 export class DatabaseError extends Error {
   constructor(message: string, public cause: unknown) {
     super(message)
     this.name = 'DatabaseError'
   }
+}
+
+export class ProjectService {
+  constructor(private supabase: Awaited<ReturnType<typeof createClient>>) {}
+
+  async getById(id: string): Promise<Project | null> {
+    const { data, error } = await this.supabase.from('projects').select('*').eq('id', id).single()
+    if (error) {
+      if (error.code === 'PGRST116') return null // no rows
+      throw new DatabaseError('Failed to fetch project', error)
+    }
+    return data
+  }
+
+  async create(input: CreateProject, userId: string): Promise<Project> {
+    const validated = createProjectSchema.parse(input) // validate before the query
+    const { data, error } = await this.supabase
+      .from('projects')
+      .insert({ ...validated, user_id: userId })
+      .select()
+      .single()
+    if (error) throw new DatabaseError('Failed to create project', error)
+    return data
+  }
+
+  // update(): updateProjectSchema.parse + `updated_at: new Date().toISOString()`
+  // delete(): same error mapping, returns void
 }
 ```
 
@@ -465,58 +398,34 @@ export const preloadProject = (id: string) => {
 
 ### 5. Server Actions with Service Layer
 
+- Every action verifies the session, validates with Zod, then calls the service (see `nextjs-core` for the full Server Action shape)
+- Return `ActionResult`: `ZodError` → `VALIDATION_ERROR` with `fields`, `DatabaseError` → `DATABASE_ERROR`, re-throw anything else
+- `redirect()` works by throwing: keep it outside `try/catch`
+
 ```typescript
 // lib/actions/projects.ts
 'use server'
 
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
-import { ProjectService, DatabaseError } from '@/lib/services/project-service'
-import { createProjectSchema } from '@/lib/validations/project'
-import type { ActionResult } from '@/lib/action-result'
-import { z } from 'zod'
-
-export async function createProject(
-  _prevState: ActionResult | null,
-  formData: FormData
-): Promise<ActionResult> {
+export async function createProject(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
   const supabase = await createClient()
-  
-  // Auth check
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
-    return { success: false, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
-  }
-
-  // Validate
-  const rawInput = {
-    name: formData.get('name'),
-    description: formData.get('description'),
-  }
+  if (!user) return { success: false, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
 
   let projectId: string
   try {
-    const validated = createProjectSchema.parse(rawInput)
-    
-    const service = new ProjectService(supabase)
-    const project = await service.create(validated, user.id)
-    projectId = project.id
+    const validated = createProjectSchema.parse({
+      name: formData.get('name'),
+      description: formData.get('description'),
+    })
+    projectId = (await new ProjectService(supabase).create(validated, user.id)).id
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: {
-          code: 'VALIDATION_ERROR',
-          message: 'Please check your input',
-          fields: error.flatten().fieldErrors,
-        },
-      }
+      return { success: false, error: { code: 'VALIDATION_ERROR', message: 'Please check your input', fields: error.flatten().fieldErrors } }
     }
     if (error instanceof DatabaseError) {
       return { success: false, error: { code: 'DATABASE_ERROR', message: error.message } }
     }
-    throw error // Re-throw unexpected errors
+    throw error // unexpected: let the error boundary handle it
   }
 
   // redirect() works by throwing — keep it outside try/catch so the catch can't swallow it

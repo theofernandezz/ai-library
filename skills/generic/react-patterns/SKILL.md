@@ -257,66 +257,40 @@ function UserProfile({ userId }: { userId: string }) {
 
 Instant UI feedback with rollback.
 
+- Snapshot the previous value before applying the optimistic one; on error roll back and rethrow
+- The caller supplies the optimistic value; the hook replaces it with the server result on success
+
 ```tsx
 // hooks/use-optimistic-mutation.ts
-function useOptimisticMutation<T, V>({
-  mutationFn,
-  onSuccess,
-  onError,
-}: {
+function useOptimisticMutation<T, V>({ mutationFn, onSuccess, onError }: {
   mutationFn: (variables: V) => Promise<T>
   onSuccess?: (data: T) => void
   onError?: (error: Error, rollback: () => void) => void
 }) {
-  const [optimisticValue, setOptimisticValue] = useState<T | null>(null)
+  const [data, setData] = useState<T | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const previousValue = useRef<T | null>(null)
+  const previous = useRef<T | null>(null)
 
-  const mutate = useCallback(async (
-    variables: V,
-    optimistic: T
-  ) => {
-    // Store previous for rollback
-    previousValue.current = optimisticValue
-    
-    // Apply optimistic update immediately
-    setOptimisticValue(optimistic)
+  const mutate = useCallback(async (variables: V, optimistic: T) => {
+    previous.current = data // snapshot for rollback
+    setData(optimistic) // instant UI feedback
     setIsLoading(true)
-
     try {
       const result = await mutationFn(variables)
-      setOptimisticValue(result)
+      setData(result) // server value replaces the optimistic one
       onSuccess?.(result)
       return result
     } catch (error) {
-      // Rollback on error
-      const rollback = () => setOptimisticValue(previousValue.current)
+      const rollback = () => setData(previous.current)
       onError?.(error as Error, rollback)
       rollback()
       throw error
     } finally {
       setIsLoading(false)
     }
-  }, [mutationFn, onSuccess, onError, optimisticValue])
+  }, [data, mutationFn, onSuccess, onError])
 
-  return { data: optimisticValue, isLoading, mutate }
-}
-
-// Usage
-function LikeButton({ postId, initialLikes }: Props) {
-  const { data: likes, mutate } = useOptimisticMutation({
-    mutationFn: (liked: boolean) => toggleLike(postId, liked),
-    onError: (error, rollback) => {
-      toast.error('Failed to update')
-      rollback()
-    }
-  })
-
-  const handleClick = () => {
-    mutate(!liked, { ...likes, count: likes.count + 1 })
-  }
-
-  return <Button onClick={handleClick}>{likes?.count} ❤️</Button>
+  return { data, isLoading, mutate }
 }
 ```
 

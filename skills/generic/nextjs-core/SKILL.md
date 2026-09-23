@@ -190,15 +190,14 @@ async function StatsLoader() {
 
 Forms and mutations use Server Actions with proper validation.
 
+- Every mutation is a Server Action returning `ActionResult`; expected failures are returned, not thrown
+- Validate with Zod `safeParse`, check the session with `getUser()`, then mutate, then `revalidatePath`
+- Never expose DB error messages: map them to a generic message
+
 ```typescript
 // lib/actions/user.ts
 'use server'
-
-import { z } from 'zod'
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
-import type { ActionResult } from '@/lib/action-result'
+// imports: z, revalidatePath, createClient, ActionResult
 
 const updateProfileSchema = z.object({
   name: z.string().min(2).max(100),
@@ -206,46 +205,21 @@ const updateProfileSchema = z.object({
 })
 
 // ActionResult is the library-wide Server Action return shape — see `error-handling`
-export async function updateProfile(
-  _prevState: ActionResult | null,
-  formData: FormData
-): Promise<ActionResult> {
+export async function updateProfile(_prevState: ActionResult | null, formData: FormData): Promise<ActionResult> {
   // 1. Validate input
-  const validatedFields = updateProfileSchema.safeParse({
-    name: formData.get('name'),
-    bio: formData.get('bio'),
-  })
-
-  if (!validatedFields.success) {
-    return {
-      success: false,
-      error: {
-        code: 'VALIDATION_ERROR',
-        message: 'Please check your input',
-        fields: validatedFields.error.flatten().fieldErrors,
-      },
-    }
+  const parsed = updateProfileSchema.safeParse({ name: formData.get('name'), bio: formData.get('bio') })
+  if (!parsed.success) {
+    return { success: false, error: { code: 'VALIDATION_ERROR', message: 'Please check your input', fields: parsed.error.flatten().fieldErrors } }
   }
 
   // 2. Auth check
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  
-  if (!user) {
-    return { success: false, error: { code: 'UNAUTHORIZED', message: 'Unauthorized' } }
-  }
+  if (!user) return { success: false, error: { code: 'UNAUTHORIZED', message: 'Unauthorized' } }
 
-  // 3. Perform mutation
-  try {
-    const { error } = await supabase
-      .from('profiles')
-      .update(validatedFields.data)
-      .eq('id', user.id)
-
-    if (error) throw error
-  } catch (e) {
-    return { success: false, error: { code: 'UPDATE_FAILED', message: 'Failed to update profile' } }
-  }
+  // 3. Mutate
+  const { error } = await supabase.from('profiles').update(parsed.data).eq('id', user.id)
+  if (error) return { success: false, error: { code: 'UPDATE_FAILED', message: 'Failed to update profile' } }
 
   // 4. Revalidate and respond
   revalidatePath('/settings')

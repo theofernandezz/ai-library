@@ -177,6 +177,11 @@ export function validateUserInput(data: unknown) {
 
 ### 2. Security Headers (Proxy)
 
+- Set security headers in `proxy.ts`: `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy`
+- Do NOT set `X-XSS-Protection`: OWASP 2025 advises against it (it can introduce XSS in old browsers); protection comes from CSP
+- CSP: prefer a nonce-based `script-src` (`'nonce-${nonce}'`, nonce passed to the layout for `<Script nonce>`). `'unsafe-inline'`/`'unsafe-eval'` defeat XSS protection; `'unsafe-inline'` is acceptable only for `style-src` when nonces aren't possible
+- HSTS in production only
+
 ```typescript
 // proxy.ts (middleware.ts on Next.js 15 and earlier — see `nextjs-core`)
 import { NextResponse } from 'next/server'
@@ -184,63 +189,28 @@ import type { NextRequest } from 'next/server'
 
 export function proxy(request: NextRequest) {
   const response = NextResponse.next()
-  
-  // Security headers
   const headers = response.headers
-  
-  // Prevent clickjacking
+
   headers.set('X-Frame-Options', 'DENY')
-  
-  // Prevent MIME type sniffing
   headers.set('X-Content-Type-Options', 'nosniff')
-
-  // X-XSS-Protection intentionally OMITTED:
-  // OWASP 2025 recommends not setting this header — it can introduce XSS
-  // vulnerabilities in browsers older than Chrome 78 / IE 11.
-  // Modern protection comes from CSP, not this legacy header.
-
-  // Referrer policy
   headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
-  
-  // Permissions policy
-  headers.set(
-    'Permissions-Policy',
-    'camera=(), microphone=(), geolocation=()'
-  )
-  
-  // Content Security Policy
-  // ⚠️ OWASP 2025: 'unsafe-inline' and 'unsafe-eval' defeat CSP's XSS protection.
-  // Prefer nonce-based CSP for script-src. 'unsafe-inline' is acceptable for
-  // style-src only if you cannot use nonces (e.g., third-party component libraries).
-  //
-  // Option A — nonce-based (recommended for new apps):
-  //   const nonce = crypto.randomUUID()
-  //   headers.set('Content-Security-Policy',
-  //     `script-src 'self' 'nonce-${nonce}'; ...`)
-  //   // Pass nonce via header/cookie to layout for <Script nonce={nonce}>
-  //
-  // Option B — fallback for apps using inline scripts (e.g. next/script strategy="beforeInteractive"):
+  headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
   headers.set(
     'Content-Security-Policy',
     [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline'", // Replace with nonce if possible
+      "script-src 'self' 'unsafe-inline'", // fallback: replace with a nonce (see rules above)
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https:",
-      "font-src 'self'",
       "connect-src 'self' https://*.supabase.co",
       "frame-ancestors 'none'",
     ].join('; ')
   )
-  
-  // HSTS (only in production)
+
   if (process.env.NODE_ENV === 'production') {
-    headers.set(
-      'Strict-Transport-Security',
-      'max-age=31536000; includeSubDomains; preload'
-    )
+    headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload')
   }
-  
+
   return response
 }
 ```
@@ -292,70 +262,30 @@ export async function POST(request: Request) {
 
 ### 5. Rate Limiting
 
-> **WARNING (serverless/edge):** The in-memory `Map` implementation below resets on every cold start and is not shared across serverless function instances. It is only suitable for local development or long-lived Node.js servers. **For production on Vercel/edge, use Upstash Redis** (see Option B).
+- Production on Vercel/edge: Upstash Redis. An in-memory `Map` resets on every cold start and isn't shared across instances: use it only for local dev or a single long-lived Node server, behind the same `checkRateLimit` signature
+- Key by route + IP (`form:${ip}`); `headers()` must be awaited on Next.js 15+
+- Return a generic "too many requests" error, never internals
 
 ```typescript
-// lib/security/rate-limit.ts
+// lib/security/rate-limit.ts — Install: pnpm add @upstash/ratelimit @upstash/redis
+import { Ratelimit } from '@upstash/ratelimit'
+import { Redis } from '@upstash/redis'
 
-// ── Option A: In-memory (dev / single-instance Node server only) ──────────────
-import { headers } from 'next/headers'
+const ratelimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(10, '1 m'),
+})
 
-interface RateLimitOptions {
-  limit: number
-  windowMs: number
+export async function checkRateLimit(key: string): Promise<{ allowed: boolean; remaining: number }> {
+  const { success, remaining } = await ratelimit.limit(key)
+  return { allowed: success, remaining }
 }
 
-const rateLimit = new Map<string, { count: number; resetTime: number }>()
-
-export async function checkRateLimit(
-  key: string,
-  options: RateLimitOptions = { limit: 10, windowMs: 60000 }
-): Promise<{ allowed: boolean; remaining: number }> {
-  const now = Date.now()
-  const record = rateLimit.get(key)
-
-  if (!record || now > record.resetTime) {
-    rateLimit.set(key, { count: 1, resetTime: now + options.windowMs })
-    return { allowed: true, remaining: options.limit - 1 }
-  }
-
-  if (record.count >= options.limit) {
-    return { allowed: false, remaining: 0 }
-  }
-
-  record.count++
-  return { allowed: true, remaining: options.limit - record.count }
-}
-
-// ── Option B: Upstash Redis (recommended for Vercel / serverless) ─────────────
-// Install: pnpm add @upstash/ratelimit @upstash/redis
-//
-// import { Ratelimit } from '@upstash/ratelimit'
-// import { Redis } from '@upstash/redis'
-//
-// const ratelimit = new Ratelimit({
-//   redis: Redis.fromEnv(),
-//   limiter: Ratelimit.slidingWindow(10, '1 m'),
-// })
-//
-// export async function checkRateLimit(key: string) {
-//   const { success, remaining } = await ratelimit.limit(key)
-//   return { allowed: success, remaining }
-// }
-
-// Usage in Server Action
+// Usage in a Server Action
 export async function submitForm(formData: FormData) {
-  const headersList = await headers() // Next.js 15+: await required
-  const ip = headersList.get('x-forwarded-for') ?? 'unknown'
-
-  const { allowed } = await checkRateLimit(`form:${ip}`, {
-    limit: 5,
-    windowMs: 60000, // 5 requests per minute
-  })
-
-  if (!allowed) {
-    return { error: 'Too many requests. Please wait a moment.' }
-  }
+  const ip = (await headers()).get('x-forwarded-for') ?? 'unknown'
+  const { allowed } = await checkRateLimit(`form:${ip}`)
+  if (!allowed) return { error: 'Too many requests. Please wait a moment.' }
 
   // Process form...
 }

@@ -153,70 +153,45 @@ function Component() {
 
 ### 1. Basic Zustand Store
 
+- One store per domain, exported as `useXStore`; state and actions typed in a single interface
+- Immutable updates only: return new objects/arrays from `set`, never mutate `state`
+- When a field derives from another (`total`), update both in the same `set` through one helper
+- Wrap in `devtools` with a `name`
+
 ```typescript
 // store/cart.ts
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 
-interface CartItem {
-  id: string
-  name: string
-  price: number
-  quantity: number
-}
+interface CartItem { id: string; name: string; price: number; quantity: number }
 
 interface CartState {
   items: CartItem[]
   total: number
-  // Actions
   addItem: (item: Omit<CartItem, 'quantity'>) => void
   removeItem: (id: string) => void
-  updateQuantity: (id: string, quantity: number) => void
   clearCart: () => void
 }
 
+const withTotal = (items: CartItem[]) => ({
+  items,
+  total: items.reduce((sum, i) => sum + i.price * i.quantity, 0),
+})
+
 export const useCartStore = create<CartState>()(
   devtools(
-    (set, get) => ({
+    (set) => ({
       items: [],
       total: 0,
-
-      addItem: (item) => set((state) => {
-        const existing = state.items.find((i) => i.id === item.id)
-
-        const items = existing
-          ? state.items.map((i) =>
-              i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-            )
+      addItem: (item) => set((state) => withTotal(
+        state.items.some((i) => i.id === item.id)
+          ? state.items.map((i) => (i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i))
           : [...state.items, { ...item, quantity: 1 }]
-
-        return {
-          items,
-          total: items.reduce((sum, i) => sum + i.price * i.quantity, 0),
-        }
-      }),
-
-      removeItem: (id) => set((state) => {
-        const items = state.items.filter((i) => i.id !== id)
-        return {
-          items,
-          total: items.reduce((sum, i) => sum + i.price * i.quantity, 0),
-        }
-      }),
-
-      updateQuantity: (id, quantity) => set((state) => {
-        const items = state.items.map((i) =>
-          i.id === id ? { ...i, quantity } : i
-        )
-        return {
-          items,
-          total: items.reduce((sum, i) => sum + i.price * i.quantity, 0),
-        }
-      }),
-
+      )),
+      removeItem: (id) => set((state) => withTotal(state.items.filter((i) => i.id !== id))),
       clearCart: () => set({ items: [], total: 0 }),
     }),
-    { name: 'cart-store' } // Name shown in Redux DevTools
+    { name: 'cart-store' } // name shown in Redux DevTools
   )
 )
 ```
@@ -225,82 +200,37 @@ export const useCartStore = create<CartState>()(
 
 For complex domains, split with slices then compose:
 
+- Split large domains into `StateCreator` slices, one file per slice, each exporting its interface and `createXSlice`
+- Compose in one store: `(...a) => ({ ...createA(...a), ...createB(...a) })`
+- Persist only UI preferences with `partialize`, never notifications or server data
+
 ```typescript
-// store/slices/notifications.ts
-import type { StateCreator } from 'zustand'
-
-export interface Notification {
-  id: string
-  type: 'success' | 'error' | 'warning' | 'info'
-  message: string
-  duration?: number
-}
-
-export interface NotificationSlice {
-  notifications: Notification[]
-  addNotification: (n: Omit<Notification, 'id'>) => void
-  removeNotification: (id: string) => void
-  clearNotifications: () => void
-}
-
-export const createNotificationSlice: StateCreator<
-  NotificationSlice,
-  [],
-  [],
-  NotificationSlice
-> = (set) => ({
-  notifications: [],
-
-  addNotification: (n) => set((state) => ({
-    notifications: [
-      ...state.notifications,
-      { ...n, id: crypto.randomUUID() },
-    ],
-  })),
-
-  removeNotification: (id) => set((state) => ({
-    notifications: state.notifications.filter((n) => n.id !== id),
-  })),
-
-  clearNotifications: () => set({ notifications: [] }),
-})
-
 // store/slices/ui.ts
 import type { StateCreator } from 'zustand'
 
 export interface UISlice {
   sidebarOpen: boolean
-  theme: 'light' | 'dark' | 'system'
   toggleSidebar: () => void
-  setTheme: (theme: UISlice['theme']) => void
 }
 
 export const createUISlice: StateCreator<UISlice, [], [], UISlice> = (set) => ({
   sidebarOpen: true,
-  theme: 'system',
   toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
-  setTheme: (theme) => set({ theme }),
 })
 
-// store/app.ts - Composed store
+// store/app.ts — compose slices (NotificationSlice follows the same shape in ./slices/notifications)
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { createNotificationSlice, type NotificationSlice } from './slices/notifications'
-import { createUISlice, type UISlice } from './slices/ui'
 
 type AppStore = NotificationSlice & UISlice
 
 export const useAppStore = create<AppStore>()(
   devtools(
     persist(
-      (...a) => ({
-        ...createNotificationSlice(...a),
-        ...createUISlice(...a),
-      }),
+      (...a) => ({ ...createNotificationSlice(...a), ...createUISlice(...a) }),
       {
         name: 'app-store',
-        partialize: (state) => ({ theme: state.theme, sidebarOpen: state.sidebarOpen }),
-        // Only persist UI preferences, not notifications
+        partialize: (state) => ({ sidebarOpen: state.sidebarOpen }), // UI preferences only
       }
     ),
     { name: 'app-store' }
