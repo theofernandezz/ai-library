@@ -75,9 +75,9 @@ Pick the mode with skill `spec-driven` (`skills/spec-driven/SKILL.md`): **inline
 
 1. **Delegate = invoke the `Agent` tool with `subagent_type: <domain>`.** Don't read the agent's file first — that defeats the isolation and reloads a full domain's worth of rules into your own context for no reason.
 2. **What to pass:** the relevant slice of the spec (or the original request verbatim for something small enough to skip a spec) plus the specific paths involved. **Never** your own reasoning or conclusions about the code — the subagent starts with zero context, and handing it your analysis reintroduces the exact blind spots isolation is meant to avoid. The prompt has to be self-contained.
-3. **When NOT to delegate:** a fresh subagent re-derives all context from scratch — real cost in tokens and latency. For a small, localized change you already understand, do it inline.
+3. **Inline or delegate — count files, per action** (starting thresholds, adjust with use): inline if understanding the change needs 1–3 files, or it's one mechanical, already-understood file. Delegate if understanding needs reading 4+ files, or if it writes 2+ non-trivial files. A fresh subagent re-derives all context from scratch — real cost in tokens and latency — so below those thresholds it isn't worth it.
 4. **Parallel delegation only with disjoint file sets.** Two subagents editing the same files can silently overwrite each other's work. If domains overlap on the same files, delegate sequentially instead.
-5. **You don't write domain code.** Your job is to route, pass context, and — once a subagent reports back — review its diff against the spec (or the original request). If it drifted from what was asked, say so before accepting it.
+5. **Past the inline threshold (item 3), you route — you don't write domain code.** Pass context, and once a subagent reports back, review its diff against the spec (or the original request). If it drifted from what was asked, say so before accepting it. Inline work stays yours to write, following the loaded skills.
 
 ### Verification before "done"
 
@@ -231,6 +231,10 @@ type UserRole = (typeof USER_ROLES)[keyof typeof USER_ROLES];
 - RLS on ALL Supabase tables
 - NEVER trust client-side checks
 - NEVER expose internal errors to the user
+
+### Tests
+
+- A test that already existed and now fails is never edited to make it pass. Stop and report: either the diagnosis or the test is wrong, and that's the user's call. Exception: the task or spec explicitly changes that test or behavior.
 
 ### Imports
 
