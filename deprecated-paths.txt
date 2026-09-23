@@ -14,3 +14,22 @@ agents/feature.md
 skills/generic/remotion
 .claude/skills/remotion
 .opencode/skills/generic/remotion
+
+# skill freshness governance and golden prompt suites (removed)
+skills/governance
+skills/generic/api-design/references/golden-prompts.json
+skills/generic/database/references/golden-prompts.json
+skills/generic/nextjs-core/references/golden-prompts.json
+skills/generic/prisma/references/golden-prompts.json
+skills/generic/security/references/golden-prompts.json
+skills/generic/testing/references/golden-prompts.json
+skills/generic/ui-engineering/references/golden-prompts.json
+skills/generic/ux/references/golden-prompts.json
+.claude/skills/api-design/references/golden-prompts.json
+.claude/skills/database/references/golden-prompts.json
+.claude/skills/nextjs-core/references/golden-prompts.json
+.claude/skills/prisma/references/golden-prompts.json
+.claude/skills/security/references/golden-prompts.json
+.claude/skills/testing/references/golden-prompts.json
+.claude/skills/ui-engineering/references/golden-prompts.json
+.claude/skills/ux/references/golden-prompts.json

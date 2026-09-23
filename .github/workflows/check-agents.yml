@@ -1,0 +1,30 @@
+name: Generated agents
+
+on:
+  pull_request:
+    paths:
+      - "agents/**"
+      - ".claude/agents/**"
+      - ".opencode/agents/**"
+      - "generate-agents.sh"
+      - ".github/workflows/check-agents.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: agents-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-generated-agents:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      # Fails if agents/ or .opencode/agents/ differ from what .claude/agents/ generates
+      # (e.g. a commit that skipped the pre-commit hook).
+      - name: Check generated agents are up to date
+        run: ./generate-agents.sh --check

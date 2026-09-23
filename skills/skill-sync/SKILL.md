@@ -50,7 +50,6 @@ Exit `0` when everything is registered; exit `1` and one `✗` line per missing 
 - **It never writes a file.** Registration is manual. An earlier version tried to generate the `AGENTS.md` Auto-invoke tables from `metadata.auto_invoke` and never worked, so it was removed.
 - **It only checks that the name appears.** Keeping the Auto-invoke rows in `AGENTS.md` in step with the skill's `metadata.auto_invoke` is manual.
 - **Only `skills/generic/`.** Meta skills at the root of `skills/` are not checked.
-- **Freshness is a different check** — see `skills/governance/`.
 
 ---
 

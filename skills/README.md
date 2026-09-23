@@ -113,24 +113,6 @@ metadata:
 ./skill-sync/assets/sync.sh
 ```
 
-## Freshness Governance
-
-Use the governance module to prevent stale skill content:
-
-```bash
-# Full strict check (metadata + live source checks)
-node skills/governance/check-skills-freshness.mjs --strict
-
-# Fast local check without network
-node skills/governance/check-skills-freshness.mjs --strict --no-fetch
-```
-
-Registry and process docs:
-
-- `skills/governance/skill-release-registry.json`
-- `skills/governance/README.md`
-- `.github/workflows/skills-freshness.yml`
-
 ---
 
 _Last Updated: 2026-01-16_

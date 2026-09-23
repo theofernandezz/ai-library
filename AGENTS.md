@@ -313,9 +313,6 @@ Skills can be combined. When multiple skills are active:
 # Check every skill is registered in the indexes (exit 1 if not)
 ./skills/skill-sync/assets/sync.sh
 
-# Verify skill freshness and release drift
-node skills/governance/check-skills-freshness.mjs --strict
-
 # Validate project against all skills
 pnpm lint && pnpm typecheck
 

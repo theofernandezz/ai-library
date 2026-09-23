@@ -678,7 +678,7 @@ deploy_root() {
     copy_file "$skill_file" "$target/skills/$(basename "$skill_file")"
   done
 
-  # Copy all non-generic skill directories (meta-skills, governance, project-setup, etc.)
+  # Copy all non-generic skill directories (meta-skills, project-setup, etc.)
   for skill_dir in "$LIBRARY_DIR"/skills/*/; do
     [[ -d "$skill_dir" ]] || continue
     local dir_name
@@ -714,7 +714,7 @@ deploy_opencode() {
     copy_file "$skill_file" "$target/skills/$(basename "$skill_file")"
   done
 
-  # Copy all non-generic skill directories (meta-skills, governance, project-setup, etc.)
+  # Copy all non-generic skill directories (meta-skills, project-setup, etc.)
   for skill_dir in "$LIBRARY_DIR"/skills/*/; do
     [[ -d "$skill_dir" ]] || continue
     local dir_name
