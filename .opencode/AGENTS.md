@@ -141,6 +141,10 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | Creating docker-compose.yml             | `docker`           |
 | Containerizing a Next.js app            | `docker`           |
 | Setting up local development with Docker | `docker`          |
+| Creating GitHub Actions workflows       | `ci-cd`            |
+| Editing .github/workflows               | `ci-cd`            |
+| Setting up CI                           | `ci-cd`            |
+| Debugging a failing CI run              | `ci-cd`            |
 | Working with Supabase                   | `database`         |
 | Working with Tailwind classes           | `ui-engineering`   |
 | Working with app/ directory             | `nextjs-core`      |
@@ -177,6 +181,7 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | `email`            | Resend + React Email, typed templates, idempotent sends | [SKILL.md](skills/generic/email/SKILL.md)            |
 | `hexagonal-architecture` | Ports & adapters, ESLint-enforced boundaries       | [SKILL.md](skills/generic/hexagonal-architecture/SKILL.md) |
 | `docker`           | Multi-stage Next.js images, Compose Watch, no baked secrets | [SKILL.md](skills/generic/docker/SKILL.md)           |
+| `ci-cd`            | GitHub Actions workflows, concurrency, least privilege  | [SKILL.md](skills/generic/ci-cd/SKILL.md)            |
 | `i18n`             | Multi-language support with next-intl                   | [SKILL.md](skills/generic/i18n/SKILL.md)             |
 | `accessibility`    | WCAG 2.1, ARIA, keyboard navigation                     | [SKILL.md](skills/generic/accessibility/SKILL.md)    |
 | `performance`      | Core Web Vitals, lazy loading, optimization             | [SKILL.md](skills/generic/performance/SKILL.md)      |

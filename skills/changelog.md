@@ -118,6 +118,18 @@
 
 ---
 
+## ci-cd — v1.0 (2026-09-23)
+
+> New skill.
+
+| Change | Affects |
+|--------|---------|
+| `concurrency` group required when tests hit shared external state (`cancel-in-progress: false` for deploys) | `.github/workflows/*.yml` |
+| Least-privilege `permissions`, third-party actions pinned to a full commit SHA, no `pull_request_target` with PR code | `.github/workflows/*.yml` |
+| Debug CI-only failures from logs and the upstream tracker before adding retries or workarounds | failing CI runs |
+
+---
+
 ## email — v1.0 (2026-08-06)
 
 > New skill.
