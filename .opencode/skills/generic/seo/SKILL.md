@@ -111,66 +111,27 @@ export const metadata = {
 
 ### 1. Root Layout Metadata
 
+- `metadataBase` is required: it resolves relative OG image URLs
+- `title` uses `default` + `template` (`%s | My App`) so child pages inherit the suffix
+- Always define `openGraph` (image 1200x630) and `twitter` with `summary_large_image`
+- Set `robots` explicitly
+
 ```typescript
 // app/layout.tsx
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://myapp.com'),
-
-  title: {
-    default: 'My App - The Best Solution',
-    template: '%s | My App',
-  },
-
+  title: { default: 'My App - The Best Solution', template: '%s | My App' },
   description: 'My App helps you do amazing things. Start free today.',
-
-  keywords: ['saas', 'productivity', 'collaboration'],
-
-  authors: [{ name: 'My Company' }],
-
-  creator: 'My Company',
-
   openGraph: {
     type: 'website',
-    locale: 'en_US',
     url: 'https://myapp.com',
     siteName: 'My App',
-    title: 'My App - The Best Solution',
-    description: 'My App helps you do amazing things.',
-    images: [
-      {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'My App Preview',
-      },
-    ],
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'My App Preview' }],
   },
-
-  twitter: {
-    card: 'summary_large_image',
-    title: 'My App - The Best Solution',
-    description: 'My App helps you do amazing things.',
-    images: ['/og-image.jpg'],
-    creator: '@mycompany',
-  },
-
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-
-  verification: {
-    google: 'google-verification-code',
-  },
+  twitter: { card: 'summary_large_image', images: ['/og-image.jpg'] },
+  robots: { index: true, follow: true },
 }
 ```
 
@@ -300,84 +261,36 @@ export default function robots(): MetadataRoute.Robots {
 
 ### 5. Structured Data (JSON-LD)
 
-```typescript
-// components/structured-data.tsx
-export function OrganizationSchema() {
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: 'My Company',
-    url: 'https://myapp.com',
-    logo: 'https://myapp.com/logo.png',
-    sameAs: [
-      'https://twitter.com/mycompany',
-      'https://linkedin.com/company/mycompany',
-    ],
-  }
+- One typed component per schema.org type (Organization, Article, Product), rendered in the Server Component that owns the data
+- Serialize with `JSON.stringify` and escape `<` as `<`: otherwise a field containing `</script>` breaks out of the tag (XSS)
 
+```tsx
+// components/structured-data.tsx
+function JsonLd({ data }: { data: Record<string, unknown> }) {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, '\\u003c') }}
     />
   )
 }
 
 export function ArticleSchema({ post }: { post: Post }) {
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: post.title,
-    description: post.excerpt,
-    image: post.coverImage,
-    datePublished: post.publishedAt,
-    dateModified: post.updatedAt,
-    author: {
-      '@type': 'Person',
-      name: post.author.name,
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'My Company',
-      logo: {
-        '@type': 'ImageObject',
-        url: 'https://myapp.com/logo.png',
-      },
-    },
-  }
-
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    <JsonLd
+      data={{
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: post.title,
+        datePublished: post.publishedAt,
+        dateModified: post.updatedAt,
+        author: { '@type': 'Person', name: post.author.name },
+      }}
     />
   )
 }
 
-export function ProductSchema({ product }: { product: Product }) {
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: product.name,
-    description: product.description,
-    image: product.images,
-    offers: {
-      '@type': 'Offer',
-      price: product.price,
-      priceCurrency: 'USD',
-      availability: product.inStock
-        ? 'https://schema.org/InStock'
-        : 'https://schema.org/OutOfStock',
-    },
-  }
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  )
-}
+// OrganizationSchema / ProductSchema: same pattern with their own '@type' and fields
 ```
 
 ### 6. Canonical URLs
