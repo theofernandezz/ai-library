@@ -155,10 +155,10 @@ export default getRequestConfig(async ({ locale }) => {
 })
 ```
 
-### 2. Middleware Configuration
+### 2. Proxy Configuration (formerly Middleware)
 
 ```typescript
-// middleware.ts
+// proxy.ts (middleware.ts on Next.js 15 and earlier — see `nextjs-core`)
 import createMiddleware from 'next-intl/middleware'
 import { locales, defaultLocale } from './i18n'
 
@@ -469,7 +469,7 @@ function TimeAgo({ date }: { date: Date }) {
 ```
 project/
 ├── i18n.ts                    # Configuration
-├── middleware.ts              # Locale detection
+├── proxy.ts                   # Locale detection (middleware.ts before Next.js 16)
 ├── messages/
 │   ├── en.json
 │   ├── es.json
