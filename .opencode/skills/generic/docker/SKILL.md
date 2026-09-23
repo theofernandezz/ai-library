@@ -110,7 +110,7 @@ CMD ["node", "server.js"]
 
 ### 1. Multi-Stage Dockerfile (production + dev targets)
 
-Requires `output: 'standalone'` in `next.config.ts`. Adapted from the official Next.js `with-docker` example.
+Requires `output: 'standalone'` in `next.config.ts` and a `public/` folder (`COPY .../public` fails if it is missing — `create-next-app` includes one; otherwise add `public/.gitkeep`). Adapted from the official Next.js `with-docker` example.
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -144,7 +144,7 @@ RUN pnpm build
 
 FROM node:${NODE_VERSION} AS runner
 WORKDIR /app
-# The standalone server.js binds to $HOSTNAME.
+# Docker sets HOSTNAME to the container id; the standalone server.js binds to it.
 ENV NODE_ENV=production PORT=3000 HOSTNAME=0.0.0.0
 COPY --from=builder --chown=node:node /app/public ./public
 RUN mkdir .next && chown node:node .next
@@ -155,7 +155,7 @@ EXPOSE 3000
 CMD ["node", "server.js"]
 ```
 
-Build production with `docker build --target runner --build-arg NEXT_PUBLIC_...=... .`; development uses `target: dev` from compose. `HOSTNAME=0.0.0.0` is required — without it the standalone server binds to the container hostname and nothing outside the container can reach it.
+Build production with `docker build --target runner --build-arg NEXT_PUBLIC_...=... .`; development uses `target: dev` from compose. Keep `HOSTNAME=0.0.0.0`: the standalone `server.js` listens on `$HOSTNAME`, which Docker sets to the container id, so without it the server only binds the container's own IP. Published ports still work, but `localhost` *inside* the container is refused (`ECONNREFUSED`) — that breaks in-container health checks and sidecars.
 
 ### 2. .dockerignore
 
@@ -204,7 +204,7 @@ services:
 
 ### 4. File-Watching Fallback for Bind Mounts
 
-If you use a bind mount and edits don't trigger hot reload (native file events don't cross the mount), enable polling. The setting depends on the bundler:
+Try a bind mount without polling first — file events crossed the mount on Docker Desktop for Mac. Enable polling only when edits don't trigger a reload (native file events don't cross the mount). The setting depends on the bundler:
 
 ```typescript
 // next.config.ts — Turbopack (default in Next.js 16)
