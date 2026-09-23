@@ -35,7 +35,7 @@
 | Skill           | Purpose                                                    |
 | --------------- | ---------------------------------------------------------- |
 | `skill-creator` | Create a new skill following the standard template         |
-| `skill-sync`    | Sync skill metadata to AGENTS.md                           |
+| `skill-sync`    | Check every skill is registered in the indexes             |
 | `feedback-loop` | Capture improvement signals and learnings                  |
 | `project-setup` | Document project context in CLAUDE.md                      |
 | `spec-driven`   | Size the spec to the risk: inline, mini-spec, or spec-first |

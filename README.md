@@ -153,7 +153,7 @@ To add a new skill:
 2. Create your skill in `skills/generic/<skill-name>/SKILL.md`
 3. Add it to `skills/_index.md`
 4. Add it to the relevant agent's `skills:` frontmatter in `.claude/agents/`
-5. Run `./skills/skill-sync/assets/sync.sh` to update AGENTS.md
+5. Run `./skills/skill-sync/assets/sync.sh` to check the skill is registered everywhere
 
 When removing a skill or agent from the library, add every path it was deployed to (root, `.claude/`, `.opencode/`) to `deprecated-paths.txt` — deploys only clean up what is listed there.
 

@@ -106,6 +106,14 @@
 
 ---
 
+## skill-sync — v2.0 (2026-09-23)
+
+| Change | Affects |
+|--------|---------|
+| `sync.sh` is now a registration check (exit 1 if a `skills/generic/` skill is missing from `_index.md`, README, AGENTS, CLAUDE or GEMINI); the `--dry-run`/`--scope` generator is removed | `skills/skill-sync/assets/sync.sh` |
+
+---
+
 ## docker — v1.0 (2026-09-23)
 
 > New skill.

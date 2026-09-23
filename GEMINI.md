@@ -35,6 +35,7 @@ When working with these actions/files, **read the corresponding skill FIRST**:
 | Designing UX flows / CRUD dashboards | `ux`                       | `skills/generic/ux/SKILL.md`               |
 | Working with Supabase/DB             | `database`                 | `skills/generic/database/SKILL.md`         |
 | Working with Prisma/PostgreSQL       | `prisma`                   | `skills/generic/prisma/SKILL.md`           |
+| Working with env vars / secrets      | `env-config`               | `skills/generic/env-config/SKILL.md`       |
 | Creating Server Actions              | `nextjs-core` + `security` | Read both skills                           |
 | Handling authentication              | `security`                 | `skills/generic/security/SKILL.md`         |
 | Writing tests                        | `testing`                  | `skills/generic/testing/SKILL.md`          |
@@ -83,7 +84,7 @@ For special library tasks:
 | Task                | Skill           | Instructions                                                 |
 | ------------------- | --------------- | ------------------------------------------------------------ |
 | Create new skill    | `skill-creator` | Read `skills/skill-creator/SKILL.md` and follow the template |
-| Sync AGENTS.md      | `skill-sync`    | Run `./skills/skill-sync/assets/sync.sh`                     |
+| Check skill registration | `skill-sync` | Run `./skills/skill-sync/assets/sync.sh` (fails if a skill isn't registered) |
 | Record improvements | `feedback-loop` | Read `skills/feedback-loop/SKILL.md`                         |
 | Fill in Project Context (interview) | `project-setup` | Read `skills/project-setup/SKILL.md` and run its Interview Protocol |
 | Size a spec before delegating | `spec-driven` | Read `skills/spec-driven/SKILL.md`, pick the mode, write `specs/<slug>.md` if delegating |
