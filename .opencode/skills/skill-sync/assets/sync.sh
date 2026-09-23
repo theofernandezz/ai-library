@@ -48,7 +48,9 @@ echo ""
 # Collect skill metadata
 # =============================================================================
 
-declare -A SCOPE_ACTIONS
+# bash 3.2 compatible (macOS default) — no associative arrays: one variable per scope
+SCOPES_SEEN=""
+scope_var() { echo "SCOPE_ACTIONS_${1//[^a-zA-Z0-9]/_}"; }
 
 # Find all SKILL.md files
 find_skills() {
@@ -101,9 +103,12 @@ extract_metadata() {
         scope=$(echo "$scope" | tr -d ' "')
         [[ -z "$scope" ]] && continue
         
+        local var
+        var=$(scope_var "$scope")
+        [[ " $SCOPES_SEEN " == *" $scope "* ]] || SCOPES_SEEN+="$scope "
         for action in "${actions[@]}"; do
             [[ -z "$action" ]] && continue
-            SCOPE_ACTIONS["$scope"]+="| $action | \`$skill_name\` |"$'\n'
+            printf -v "$var" '%s%s' "${!var}" "| $action | \`$skill_name\` |"$'\n'
         done
     done
 }
@@ -129,7 +134,9 @@ echo ""
 
 generate_table() {
     local scope="$1"
-    local actions="${SCOPE_ACTIONS[$scope]}"
+    local var
+    var=$(scope_var "$scope")
+    local actions="${!var}"
     
     if [[ -z "$actions" ]]; then
         echo "No actions found for scope: $scope"
@@ -201,7 +208,7 @@ echo ""
 if [[ -n "$SCOPE_FILTER" ]]; then
     update_agents_file "$SCOPE_FILTER"
 else
-    for scope in "${!SCOPE_ACTIONS[@]}"; do
+    for scope in $SCOPES_SEEN; do
         update_agents_file "$scope"
     done
 fi
