@@ -6,10 +6,11 @@
 
 ---
 
-## security — v2.1 (2026-03-31)
+## security — v2.2 (2026-09-23)
 
 | Change | Affects |
 |--------|---------|
+| Next.js 16 renamed `middleware.ts` → `proxy.ts` (export `proxy`, Node.js runtime) — security-headers example updated | `proxy.ts` |
 | `X-XSS-Protection` removed — OWASP 2025 recommends omitting it (can introduce XSS in IE/Chrome <78) | `middleware.ts` |
 | In-memory rate limiter is serverless-unsafe — use Upstash/Redis in production | `lib/security/rate-limit.ts` |
 | CSP `unsafe-eval` + `unsafe-inline` flagged by OWASP 2025 — prefer nonce-based CSP | `middleware.ts` |
