@@ -31,6 +31,7 @@ metadata:
 | 16.2.1 | `javascript:` URLs blocked automatically in `router.push`, `redirect`, `<Link>` | Any redirect/navigation code |
 | 15+ → 16 | `params` and `searchParams` are now `Promise<{...}>` — must be `await`-ed | All dynamic routes `[id]` |
 | React 19 | `useFormState` removed — use `useActionState` from `react` (not `react-dom`) | All forms wired to Server Actions |
+| 16 | `middleware.ts` deprecated — renamed `proxy.ts`, export `proxy` (Node.js runtime only; edge stays on `middleware`) | Auth/security-header interceptors |
 
 > **Instruction for Claude:** When working on Server Actions or dynamic routes, check this table and mention any applicable entry to the developer before writing code.
 
@@ -515,15 +516,17 @@ lib/
 
 ---
 
-## 🔒 Middleware Pattern
+## 🔒 Proxy Pattern (formerly Middleware)
+
+Next.js 16 renamed `middleware.ts` → `proxy.ts` and the export `middleware` → `proxy`. The old names still work but are deprecated. `proxy` runs on the Node.js runtime only — if you need the edge runtime, keep `middleware.ts`. Migrate with `npx @next/codemod@canary middleware-to-proxy .`
 
 ```typescript
-// middleware.ts
+// proxy.ts
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Refresh auth session
   const response = await updateSession(request)
   

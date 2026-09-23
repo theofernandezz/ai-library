@@ -27,6 +27,7 @@
 | `javascript:` URLs blocked automatically in `router.push`, `redirect`, `<Link>` | redirect/navigation code |
 | `params` and `searchParams` are now `Promise<{...}>` — must be `await`-ed | all dynamic routes `[id]` |
 | `useFormState` removed (React 19) — use `useActionState` from `react` (returns `[state, action, isPending]`) | forms wired to Server Actions |
+| `middleware.ts` deprecated in Next.js 16 — renamed `proxy.ts`, export `proxy` (Node.js runtime only; codemod: `middleware-to-proxy`) | `middleware.ts` |
 
 ---
 
