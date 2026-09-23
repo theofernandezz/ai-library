@@ -48,7 +48,7 @@ See `skills/generic/nextjs-core/SKILL.md` for full patterns and code examples.
 
 ### Boundaries — what `backend` does NOT own
 - `"use client"`, `next/image`, `next/font`, `loading.tsx`, `error.tsx`, Suspense UI → **`ui` agent**
-- `middleware.ts`, session refresh, auth redirects → **`auth` agent**
+- `proxy.ts` (`middleware.ts` before Next.js 16), session refresh, auth redirects → **`auth` agent**
 
 ## File structure
 

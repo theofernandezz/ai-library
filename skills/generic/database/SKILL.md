@@ -918,7 +918,7 @@ lib/
 ├── supabase/
 │   ├── client.ts          # Browser client
 │   ├── server.ts          # Server client
-│   └── middleware.ts      # Auth refresh middleware
+│   └── middleware.ts      # updateSession(), called from proxy.ts
 ├── services/
 │   ├── project-service.ts
 │   ├── user-service.ts

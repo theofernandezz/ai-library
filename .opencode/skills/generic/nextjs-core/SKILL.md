@@ -509,7 +509,7 @@ lib/
 └── supabase/
     ├── client.ts          # Browser client
     ├── server.ts          # Server client
-    └── middleware.ts      # Auth middleware
+    └── middleware.ts      # updateSession(), called from proxy.ts
 ```
 
 ---
