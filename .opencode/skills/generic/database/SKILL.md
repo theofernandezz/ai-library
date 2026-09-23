@@ -166,11 +166,12 @@ export async function createProject(formData: FormData) {
 ```typescript
 // ❌ FORBIDDEN - Client-side mutations with service role
 import { createBrowserClient } from '@supabase/ssr'
+import { env } from '@/lib/env'
 
 // Client component directly mutating data
 const supabase = createBrowserClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY! // NEVER EXPOSE THIS
+  env.NEXT_PUBLIC_SUPABASE_URL,
+  env.SUPABASE_SERVICE_ROLE_KEY // NEVER EXPOSE THIS
 )
 
 // ✅ CORRECT - Use Server Actions for mutations
@@ -224,14 +225,15 @@ export type UpdateProject = z.infer<typeof updateProjectSchema>
 // lib/supabase/server.ts
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { env } from '@/lib/env'
 import type { Database } from '@/types/database'
 
 export async function createClient() {
   const cookieStore = await cookies()
 
   return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
         getAll() {
@@ -255,12 +257,13 @@ export async function createClient() {
 ```typescript
 // lib/supabase/client.ts
 import { createBrowserClient } from '@supabase/ssr'
+import { env } from '@/lib/env'
 import type { Database } from '@/types/database'
 
 export function createClient() {
   return createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   )
 }
 ```
