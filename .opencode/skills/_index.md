@@ -19,6 +19,7 @@
 | `api-design`       | Route Handlers, webhooks, external API integrations                       |
 | `email`            | Resend + React Email, typed templates, idempotent sends, delivery webhooks |
 | `hexagonal-architecture` | Modular hexagonal: modules with a public interface, ports & adapters, ESLint-enforced boundaries |
+| `docker`           | Multi-stage Next.js images, Compose Watch dev, no secrets in layers        |
 | `git-workflow`     | Commits, branching, PRs, Conventional Commits                             |
 | `i18n`             | next-intl, locale routing, translation keys                               |
 | `accessibility`    | WCAG 2.1, ARIA, keyboard navigation, screen readers                       |

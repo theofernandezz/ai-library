@@ -47,6 +47,7 @@ For larger tasks, agents work as a team. The developer acts as Team Lead, coordi
 | `api-design` | Route Handlers, webhooks, external API integrations |
 | `email` | Resend + React Email, typed templates, idempotent sends |
 | `hexagonal-architecture` | Modular hexagonal: modules with a public interface, ports & adapters, ESLint-enforced boundaries |
+| `docker` | Multi-stage Next.js images, Compose Watch dev, no secrets in layers |
 | `git-workflow` | Conventional Commits, branching strategy, PR standards |
 | `i18n` | next-intl, locale routing, translation keys |
 | `accessibility` | WCAG 2.1, ARIA, keyboard navigation, screen readers |

@@ -41,6 +41,7 @@ When about to write code in these areas, **load the corresponding skill at that 
 | Creating API routes/webhooks         | `api-design`               | `skills/generic/api-design/SKILL.md`       |
 | Sending transactional emails         | `email`                    | `skills/generic/email/SKILL.md`            |
 | Integrating external services (payments, etc.) | `hexagonal-architecture`   | `skills/generic/hexagonal-architecture/SKILL.md` |
+| Writing Dockerfile/docker-compose    | `docker`                   | `skills/generic/docker/SKILL.md`           |
 | Handling errors                      | `error-handling`           | `skills/generic/error-handling/SKILL.md`   |
 | Internationalizing content           | `i18n`                     | `skills/generic/i18n/SKILL.md`             |
 | Working on accessibility             | `accessibility`            | `skills/generic/accessibility/SKILL.md`    |

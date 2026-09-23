@@ -105,6 +105,19 @@
 
 ---
 
+## docker — v1.0 (2026-09-23)
+
+> New skill.
+
+| Change | Affects |
+|--------|---------|
+| Multi-stage Next.js Dockerfile (standalone output, non-root, `HOSTNAME=0.0.0.0`) with dev and prod targets | `Dockerfile` |
+| Dev containers use Compose Watch; never bind-mount the project over `node_modules` | `docker-compose.yml` |
+| No secrets in `ARG`/`ENV` — only `NEXT_PUBLIC_*` are build args | `Dockerfile`, CI builds |
+| Turbopack file-watching fallback is `watchOptions.pollIntervalMs` (webpack: `WATCHPACK_POLLING`) | `next.config.ts` |
+
+---
+
 ## email — v1.0 (2026-08-06)
 
 > New skill.
