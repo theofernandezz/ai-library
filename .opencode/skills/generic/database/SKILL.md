@@ -850,6 +850,8 @@ CREATE POLICY "Author can manage"
 
 ## 📁 File Structure
 
+> **Hexagonal projects:** if the project's `CLAUDE.md` declares hexagonal/modular architecture, `hexagonal-architecture` sets the layout — queries live in a module's `adapters/` (behind a repository port) and actions in `app/**/actions.ts`, not in `lib/services/` or `lib/actions/`.
+
 ```
 lib/
 ├── supabase/

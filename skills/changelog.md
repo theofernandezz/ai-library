@@ -92,15 +92,14 @@
 
 ---
 
-## hexagonal-architecture — v1.0 (2026-08-06)
-
-> New skill.
+## hexagonal-architecture — v2.0 (2026-09-23)
 
 | Change | Affects |
 |--------|---------|
-| Ports (interfaces) required at real external boundaries — payment gateways, notifications, storage, data access | `lib/core/ports/**` |
-| Core/application code forbidden from importing `lib/adapters/**` directly, enforced via `eslint-plugin-boundaries` | `eslint.config.mjs` |
-| No DI container — wiring happens by hand in a single `lib/composition.ts` | `lib/composition.ts` |
+| Module-first layout `modules/<name>/{domain,application,adapters}` + public `index.ts` replaces `lib/core`, `lib/adapters`, `lib/composition.ts` | projects on the 1.0 layout |
+| Modules never import each other — the consumer owns the port, wiring lives in `composition/` | cross-module calls |
+| Full hexagonal scope for projects that adopt it (not only external integrations); plain CRUD stays a colocated service | new modules |
+| ESLint boundaries config rewritten for modules — element order matters (first match wins) | `eslint.config.mjs` |
 
 ---
 

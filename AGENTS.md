@@ -136,6 +136,7 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | Working with Resend                     | `email`            |
 | Applying hexagonal/ports-adapters architecture | `hexagonal-architecture` |
 | Integrating a payment gateway           | `hexagonal-architecture` |
+| Creating a new module or bounded context | `hexagonal-architecture` |
 | Working with Supabase                   | `database`         |
 | Working with Tailwind classes           | `ui-engineering`   |
 | Working with app/ directory             | `nextjs-core`      |

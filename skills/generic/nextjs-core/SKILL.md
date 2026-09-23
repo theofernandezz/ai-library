@@ -477,6 +477,8 @@ export default async function UsersPage() {
 
 ## 📁 File Structure Convention
 
+> **Hexagonal projects:** if the project's `CLAUDE.md` declares hexagonal/modular architecture, `hexagonal-architecture` sets the layout instead — Server Actions are colocated in `app/**/actions.ts` and call modules through `composition/`; there is no `lib/actions/`.
+
 ```
 app/
 ├── (marketing)/           # Public pages
