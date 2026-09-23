@@ -38,6 +38,46 @@
       "lastVerified": "2026-08-06"
     },
     {
+      "id": "docker",
+      "file": "skills/generic/docker/SKILL.md",
+      "owner": "@backend",
+      "cadenceDays": 30,
+      "lastVerified": "2026-09-23",
+      "fileAssertions": ["Skill Version:", "output: 'standalone'", "Compose Watch", "HOSTNAME=0.0.0.0"],
+      "sources": [
+        {
+          "name": "Next.js with-docker example",
+          "url": "https://raw.githubusercontent.com/vercel/next.js/canary/examples/with-docker/Dockerfile",
+          "mustContainAny": ["standalone", "HOSTNAME"]
+        },
+        {
+          "name": "Docker Compose file watch",
+          "url": "https://docs.docker.com/compose/how-tos/file-watch/",
+          "mustContainAny": ["develop", "sync"]
+        }
+      ]
+    },
+    {
+      "id": "ci-cd",
+      "file": "skills/generic/ci-cd/SKILL.md",
+      "owner": "@maintainers",
+      "cadenceDays": 30,
+      "lastVerified": "2026-09-23",
+      "fileAssertions": ["Skill Version:", "concurrency", "cancel-in-progress", "pull_request_target"],
+      "sources": [
+        {
+          "name": "GitHub Actions concurrency",
+          "url": "https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency",
+          "mustContainAny": ["cancel-in-progress"]
+        },
+        {
+          "name": "actions/setup-node README",
+          "url": "https://raw.githubusercontent.com/actions/setup-node/main/README.md",
+          "mustContainAny": ["pnpm"]
+        }
+      ]
+    },
+    {
       "id": "error-handling",
       "file": "skills/generic/error-handling/SKILL.md",
       "owner": "@backend",
