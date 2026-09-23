@@ -268,6 +268,56 @@ export function createClient() {
 }
 ```
 
+Session refresh helper — the `updateSession()` that `proxy.ts` (see `nextjs-core`) calls on every request:
+
+```typescript
+// lib/supabase/middleware.ts
+import { createServerClient } from '@supabase/ssr'
+import { NextResponse, type NextRequest } from 'next/server'
+import { env } from '@/lib/env'
+import type { Database } from '@/types/database'
+
+export async function updateSession(request: NextRequest) {
+  let supabaseResponse = NextResponse.next({ request })
+
+  // New client per request — never a module-level singleton
+  const supabase = createServerClient<Database>(
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet) {
+          // Pass the refreshed token to Server Components (request) and to the browser (response)
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+          supabaseResponse = NextResponse.next({ request })
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
+          )
+        },
+      },
+    }
+  )
+
+  // No code between createServerClient and getUser() — it triggers the token refresh.
+  // getUser() verifies the token with the Auth server; never trust getSession() server-side.
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const isPublic = ['/login', '/auth'].some((p) => request.nextUrl.pathname.startsWith(p))
+  if (!user && !isPublic) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
+  }
+
+  // Return supabaseResponse as-is: a different response object drops the refreshed cookies
+  // and signs the user out on the next request.
+  return supabaseResponse
+}
+```
+
 ### 3. Service Layer Pattern
 
 ```typescript
