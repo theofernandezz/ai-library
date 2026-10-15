@@ -62,7 +62,7 @@ These are runtime signals for when skills fail during actual work.
    ```
    Title format: `[type] skill-name: short summary` — `skill-name` is `new-skill` for `SIGNAL:missing`. `type` is the signal type without the `SIGNAL:` prefix (`gap`, `missing`, `stale`, `conflict`, `unclear`).
 
-3. **Fallback — if `gh` fails** (no auth, no network, rate-limited): append the same `**Trigger:**/**Gap:**/**Suggested fix:**/**Priority:**` block to `skills/improvements.md` under a `## [Date] — SIGNAL:[type] — [skill-name]` heading, exactly as before. Don't retry and don't block the task on this — the fallback exists so the signal isn't lost, not so filing it becomes a blocker.
+3. **Fallback — if `gh` fails** (no auth, no network, rate-limited): append the same `**Trigger:**/**Gap:**/**Suggested fix:**/**Priority:**` block to `skills/improvements.md` under a `## [Date] — SIGNAL:[type] — [skill-name]` heading. Don't retry and don't block the task on this — the fallback exists so the signal isn't lost, not so filing it becomes a blocker.
 
 ### Examples
 

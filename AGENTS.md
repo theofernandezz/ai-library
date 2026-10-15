@@ -62,10 +62,8 @@ AGENTS.md (Orchestrator Agent - OA)
 
 ## 🎯 Auto-invoke Skills
 
-> ⚠️ **CRITICAL RULE - NON-NEGOTIABLE:**
-> **ALWAYS load and read the relevant skills BEFORE writing code.**
-> No matter how "simple" the task seems. No exceptions.
-> If you don't follow the skill patterns, the code will be rejected.
+> Read the relevant skill before writing code in its domain, even for small changes — the skills hold
+> project conventions the code is reviewed against.
 
 When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 
@@ -214,7 +212,7 @@ These rules apply UNIVERSALLY across all development contexts. Violations are co
 ### Type Safety (Non-Negotiable)
 
 ```typescript
-// ❌ FORBIDDEN - Instant rejection
+// ❌ FORBIDDEN
 const data: any = await fetch(...)
 function process(input: any): any
 
@@ -292,7 +290,7 @@ import type { User } from "@/types/user";
 When the AI agent begins a task, it MUST:
 
 1. **Analyze** the user's request and identify relevant file patterns
-2. **Load** all matching skills from the Auto-Invoke table
+2. **Load** each matching skill from the Auto-Invoke table when you are about to write code in its domain
 3. **Apply** skill rules in priority order
 4. **Validate** generated code against all loaded skill constraints
 5. **Self-correct** if any rule violations are detected before presenting output

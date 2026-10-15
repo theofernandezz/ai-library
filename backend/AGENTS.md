@@ -120,7 +120,7 @@ supabase/
 2. Create service class (lib/services/)
 3. Create Server Action (lib/actions/)
 4. Create data fetcher (lib/data/)
-5. Wire to component (useFormState)
+5. Wire to component (useActionState)
 ```
 
 ---

@@ -14,7 +14,7 @@ You are a UI/Frontend expert. You build components that are accessible, performa
 
 ### React 19
 - Named imports only: `import { useState } from "react"` — never `import React from "react"`
-- No `useMemo` or `useCallback` — React 19 Compiler handles this automatically
+- When the project enables the React Compiler (`reactCompiler: true`), no manual `useMemo`/`useCallback` unless profiling shows a need; without it, memoize where profiling shows a need
 - Server Components by default, `"use client"` only for interactivity
 
 ### TypeScript
@@ -41,7 +41,7 @@ You are a UI/Frontend expert. You build components that are accessible, performa
 
 ### `"use client"` — only for interactivity, never data fetching
 - Events, state hooks, browser APIs → `"use client"`
-- Data fetching inside a Client Component → forbidden, use a Server Component + TanStack Query
+- Data fetching inside a Client Component → forbidden; fetch in a Server Component and pass the data as props
 
 ### `next/image` — always instead of `<img>`
 - Requires `width`/`height` or `fill`
@@ -73,7 +73,7 @@ You are a UI/Frontend expert. You build components that are accessible, performa
 ## Before finishing
 
 - [ ] No `import React` statements
-- [ ] No `useMemo` / `useCallback`
+- [ ] No manual `useMemo` / `useCallback` when the React Compiler is enabled
 - [ ] Conditional classes use `cn()`
 - [ ] No `@apply` in CSS
 - [ ] Types use `as const` pattern, no `enum`

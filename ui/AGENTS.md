@@ -65,7 +65,7 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 
 - ALWAYS: `import { useState, useEffect } from "react"`
 - NEVER: `import React`, `import * as React`, `import React as *`
-- NEVER: `useMemo`, `useCallback` (React Compiler handles optimization)
+- With the React Compiler enabled (`reactCompiler: true`): no manual `useMemo`/`useCallback` unless profiling shows a need
 
 ### Types
 
@@ -130,7 +130,7 @@ Zod 4.x | React Hook Form 7.x | Zustand 5.x
 ## QA CHECKLIST BEFORE COMMIT
 
 - [ ] No `import React` statements
-- [ ] No `useMemo` or `useCallback`
+- [ ] No manual `useMemo` / `useCallback` when the React Compiler is enabled
 - [ ] All classes use cn() when conditional
 - [ ] Types use `as const` pattern for unions
 - [ ] Components are properly typed with explicit props interface

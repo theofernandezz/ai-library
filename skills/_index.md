@@ -42,4 +42,4 @@
 
 ---
 
-_Total: 26 skills_
+_Total: 28 skills_
