@@ -85,7 +85,7 @@ Pick the mode with skill `spec-driven` (`skills/spec-driven/SKILL.md`): **inline
 
 `verifier` is not a domain — it doesn't write code (no `Edit`/`Write`). It's a fresh-context review pass: invoke it after a domain subagent (or you) finishes a fix, feature, or refactor, before calling the task done — especially when a previously-failing gate (tests, build, lint) now passes, since that's exactly the case where the implementer's own context can't be trusted to have caught scope drift or a test quietly weakened to pass.
 
-**When to skip it:** changes that only touch documentation, comments, or formatting — there's no behavior to drift. **Always run it**, regardless of how small the diff looks, for anything touching auth, payments, data mutations, or migrations.
+**When to skip it:** changes that only touch documentation, comments, or formatting — there's no behavior to drift. **Always run it**, regardless of how small the diff looks, for anything touching auth, payments, data mutations, or migrations — and for auth, payments, and migrations invoke it with `model: opus`: its default Sonnet is enough for routine diffs, but a missed flaw there is costly to revert.
 
 **Freeze the candidate before invoking.** Capture `git diff` yourself right after the subagent reports done, and paste that exact output into the prompt — don't tell `verifier` to go compute its own from the live repo. The window between "subagent finished" and "verifier ran" is exactly where something could shift; a diff you captured is reproducible, not something `verifier` might re-derive differently a moment later.
 
