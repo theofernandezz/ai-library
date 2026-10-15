@@ -2,7 +2,7 @@
 name: git
 description: Git workflow specialist for conventional commits, branching strategy, and pull requests. Use when making commits, creating branches, opening PRs, or reviewing git history.
 tools: Read, Bash
-model: sonnet
+model: haiku
 effort: medium
 skills:
   - git-workflow
