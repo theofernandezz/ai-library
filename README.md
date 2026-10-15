@@ -1,6 +1,6 @@
 # ai-library
 
-AI development library -- skills and agents for Claude Code, Cursor, Copilot, and OpenCode.
+AI development library -- skills and agents for Claude Code, omp, Cursor, Copilot, and OpenCode.
 
 ---
 
@@ -10,7 +10,7 @@ ai-library is a portable set of coding standards, patterns, and specialized agen
 
 The core idea: **code patterns should be version-controlled and shared, not typed into chat every session.** Each pattern is a "skill" -- a self-contained document that tells the AI exactly how to write code in a specific domain. Skills are loaded on demand, so the AI only reads what it needs for the current task.
 
-This works with Claude Code (CLI, desktop, web), VS Code with Copilot, Cursor, and OpenCode. The library adapts to each tool's configuration format.
+This works with Claude Code (CLI, desktop, web), [omp](https://omp.sh), VS Code with Copilot, Cursor, and OpenCode. The library adapts to each tool's configuration format.
 
 ## How it works
 
@@ -139,6 +139,12 @@ Team Lead (you)
 
 The Team Lead breaks down the task, assigns work to agents, and reviews their output. Agents work in parallel, each following the same skills and standards.
 
+## Using with omp
+
+A root-mode deploy also works in [omp](https://omp.sh): omp reads `AGENTS.md` and `.claude/skills/` as they are, and the same 8 agents ship in `.omp/agents/` (omp doesn't scan `.claude/agents/`). `generate-agents.sh` derives them from `.claude/agents/*.md`: Claude Code's `model: sonnet` becomes `anthropic/claude-sonnet-5-5`, `effort` becomes `thinking-level`, and `skills` becomes `autoload-skills`. Log in with `omp login` (Claude Pro/Max OAuth or an API key).
+
+omp does not read the root `CLAUDE.md` — only `AGENTS.md` — so the delegation and `verifier` rules in `CLAUDE.md` don't reach it.
+
 ## Requirements
 
 - **Claude Code** v2.1.32 or later
@@ -150,12 +156,12 @@ The Team Lead breaks down the task, assigns work to agents, and reviews their ou
 To add a new skill:
 
 1. Read `skills/skill-creator/SKILL.md` -- it has the template and guidelines
-2. Create your skill in `skills/generic/<skill-name>/SKILL.md`
+2. Create your skill in `skills/generic/<skill-name>/SKILL.md`, with `name: <skill-name>` in the frontmatter (omp and OpenCode match skills by it)
 3. Add it to `skills/_index.md`
 4. Add it to the relevant agent's `skills:` frontmatter in `.claude/agents/`
 5. Run `./skills/skill-sync/assets/sync.sh` to check the skill is registered everywhere
 
-When removing a skill or agent from the library, add every path it was deployed to (root, `.claude/`, `.opencode/`) to `deprecated-paths.txt` — deploys only clean up what is listed there.
+When removing a skill or agent from the library, add every path it was deployed to (root, `.claude/`, `.opencode/`, `.omp/`) to `deprecated-paths.txt` — deploys only clean up what is listed there.
 
 When updating an existing skill: **replace the old pattern, don't append.** The file should stay the same length or get shorter. Always update the What's New table in the skill.
 
