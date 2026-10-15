@@ -12,11 +12,11 @@ This library contains **skills** (code patterns) and **specialized agents** (dom
 
 **Load skills on demand — not all upfront.**
 
-1. Consult `skills/_index.md` to know what skills exist (lightweight, ~20 lines)
+1. Consult `skills/_index.md` to know what skills exist (lightweight)
 2. Load a skill ONLY when you are about to write code in that domain
 3. If the task touches multiple domains, load each skill at the moment you need to write in that domain — not all at the beginning
 
-If you don't follow the skill patterns, the code will be rejected.
+Code is reviewed against the skill patterns.
 
 ---
 
@@ -151,7 +151,7 @@ Not a domain from the table above — this doesn't go through the `Agent` tool a
 
 ## Pending Improvements
 
-**At the start of every session in this library, check both:**
+**At the start of every session in this library, check:**
 - **Open issues** — `gh issue list --repo theofernandezz/ai-library --state open` — signals filed from real usage, not yet merged into skills
 - **`skills/improvements.md`** — fallback signals from sessions where `gh` wasn't available
 - **`skills/changelog.md`** — recent breaking changes and new APIs across all skills
@@ -162,7 +162,7 @@ Apply pending improvements when relevant. Before writing code, mention any chang
 
 ## Self-Improvement Signals
 
-**You MUST file a SIGNAL whenever you encounter any of these during a task — see skill `feedback-loop` (`skills/feedback-loop/SKILL.md`) for the exact mechanics:**
+**File a SIGNAL whenever you encounter any of these during a task — see skill `feedback-loop` (`skills/feedback-loop/SKILL.md`) for the exact mechanics:**
 
 | Signal Type       | When to write it                                                       |
 | ----------------- | ---------------------------------------------------------------------- |
@@ -197,7 +197,7 @@ These rules are **NON-NEGOTIABLE** and apply to ALL code:
 ### Type Safety
 
 ```typescript
-// FORBIDDEN - Instant rejection
+// FORBIDDEN
 const data: any = await fetch(...)
 function process(input: any): any
 

@@ -64,7 +64,7 @@ lib/
 └── actions/
     └── auth.ts        # signIn, signUp, signOut actions
 
-middleware.ts          # Root middleware for session refresh
+proxy.ts               # Root proxy for session refresh (middleware.ts before Next.js 16)
 ```
 
 ---
@@ -109,8 +109,8 @@ export async function requireRole(allowedRoles: string[]) {
 
 ### Session Refresh Middleware
 ```typescript
-// middleware.ts
-export async function middleware(request: NextRequest) {
+// proxy.ts (middleware.ts before Next.js 16)
+export async function proxy(request: NextRequest) {
   return await updateSession(request)
 }
 ```

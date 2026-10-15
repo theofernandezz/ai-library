@@ -65,6 +65,9 @@ When a task belongs to a specific domain, **load the corresponding agent** for f
 | **Backend/Server** | `agents/backend.md` | Server Actions, APIs, database, business logic |
 | **Auth**           | `agents/auth.md`    | Authentication, authorization, RLS, sessions   |
 | **Testing**        | `agents/testing.md` | Unit tests, integration, E2E                   |
+| **Data/Prisma**    | `agents/data.md`    | Prisma schema, migrations, service layer       |
+| **Git**            | `agents/git.md`     | Commits, branching, pull requests              |
+| **Mobile**         | `agents/mobile.md`  | React Native/Expo screens, navigation          |
 
 ### How to "Delegate"
 
