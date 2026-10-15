@@ -1,5 +1,5 @@
 ---
-name: UI Engineering - Distinctive Design
+name: ui-engineering
 description: |
   Premium UI patterns with distinctive aesthetics. Anti "AI slop" design principles.
   Combines Tailwind v4, Shadcn UI, and Aceternity UI.
@@ -21,7 +21,7 @@ metadata:
 
 # UI Engineering - Distinctive Design
 
-> **Core Principle:** Create distinctive, production-grade interfaces that feel intentional, not generic. Every design choice must be deliberate. Avoid "AI slop" aesthetics at all costs.
+> **Core Principle:** Create distinctive, production-grade interfaces that feel intentional, not generic. Every design choice is deliberate, and none of the defaults listed below appears unless the brief asks for it.
 
 ---
 
@@ -40,7 +40,7 @@ metadata:
 
 ## 🚨 ANTI "AI SLOP" - Distinctive Design
 
-Before writing ANY UI code, establish a **bold aesthetic direction**. Generic designs are rejected.
+Before writing UI code, establish a **bold aesthetic direction**.
 
 ### The AI Slop Checklist (NEVER DO THESE)
 
@@ -52,6 +52,11 @@ Before writing ANY UI code, establish a **bold aesthetic direction**. Generic de
 | Generic hero with centered text | Seen a million times             |
 | Rounded corners everywhere      | Safe but forgettable             |
 | Stock-photo-style illustrations | Impersonal, corporate            |
+| Cream/off-white page background | Default fallback, reads as template |
+| Italic accent word in headlines | Default fallback, reads as template |
+| "01 / 02 / 03" section labels   | Default fallback, reads as template |
+| Monospace eyebrow labels        | Default fallback, reads as template |
+| Pill-shaped buttons everywhere  | Default fallback, reads as template |
 
 ### Design Thinking Process
 

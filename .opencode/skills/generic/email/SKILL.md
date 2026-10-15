@@ -1,5 +1,5 @@
 ---
-name: Transactional Email - Resend & React Email
+name: email
 description: |
   Patterns for transactional emails with Resend and React Email: typed templates, sending from
   Server Actions/services, idempotency, and delivery event handling.

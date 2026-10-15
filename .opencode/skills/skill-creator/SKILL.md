@@ -39,7 +39,7 @@ Use this exact template when creating new skills:
 
 ````markdown
 ---
-name: [Skill Name]
+name: [skill-folder-name]  # must equal the folder name — omp and opencode match skills (and agents' autoload-skills) by it
 description: |
   [2-3 sentence description of what this skill enforces]
   Trigger: [When this skill should be auto-invoked]
@@ -276,7 +276,7 @@ Here's a complete example of creating a new skill:
 
 ```markdown
 ---
-name: Testing Patterns - Vitest
+name: testing
 description: |
   Production testing patterns using Vitest with Testing Library.
   Trigger: Activated when creating or editing test files.

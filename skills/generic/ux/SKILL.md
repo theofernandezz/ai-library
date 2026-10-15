@@ -1,5 +1,5 @@
 ---
-name: UX Design Systems - Product Flows
+name: ux
 description: |
   Practical UX rules for product interfaces: flows, information hierarchy, CRUD dashboards,
   forms, error prevention, and recovery states.

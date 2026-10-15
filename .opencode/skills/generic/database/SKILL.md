@@ -1,5 +1,5 @@
 ---
-name: Database Engineering - Supabase & Postgres
+name: database
 description: |
   Production patterns for Supabase with RLS, Zod schemas, service layer, and Postgres optimization.
   Trigger: Activated when working with database schemas, migrations, or Supabase queries.

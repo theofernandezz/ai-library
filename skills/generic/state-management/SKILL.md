@@ -1,5 +1,5 @@
 ---
-name: State Management - Zustand & Context
+name: state-management
 description: |
   Client-side state management patterns. Decision matrix for Zustand vs Context vs URL state.
   Trigger: Activated when managing shared state, creating stores, or discussing global state.

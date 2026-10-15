@@ -1,5 +1,5 @@
 ---
-name: Testing Patterns - Vitest
+name: testing
 description: |
   Production testing patterns with Vitest and Testing Library for reliable SaaS applications.
   Trigger: Activated when creating or editing test files.

@@ -6,6 +6,14 @@
 
 ---
 
+## all generic skills (2026-10-15)
+
+| Change | Affects |
+|--------|---------|
+| Frontmatter `name:` is now the folder name (`nextjs-core`, not `Next.js 16 Core Patterns`) — omp and OpenCode match skills and agents' `autoload-skills` by it | Anything that invoked a skill by its old display name |
+
+---
+
 ## security — v2.2 (2026-09-23)
 
 | Change | Affects |

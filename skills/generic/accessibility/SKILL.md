@@ -1,5 +1,5 @@
 ---
-name: Accessibility (a11y)
+name: accessibility
 description: |
   Accessibility patterns for inclusive web applications. WCAG 2.1 AA compliance, ARIA, keyboard navigation.
   Trigger: Activated when creating interactive components, forms, navigation, or discussing accessibility.

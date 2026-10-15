@@ -1,5 +1,5 @@
 ---
-name: SEO - Search Engine Optimization
+name: seo
 description: |
   SEO patterns for Next.js applications. Meta tags, structured data, sitemaps, Open Graph.
   Trigger: Activated when working on meta tags, SEO, or search optimization.

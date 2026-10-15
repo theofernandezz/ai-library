@@ -1,5 +1,5 @@
 ---
-name: Internationalization (i18n) - next-intl
+name: i18n
 description: |
   Multi-language support patterns with next-intl for Next.js App Router applications.
   Trigger: Activated when working with translations, locales, or multi-language features.
