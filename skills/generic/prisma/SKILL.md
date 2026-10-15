@@ -1,5 +1,5 @@
 ---
-name: Prisma ORM Patterns
+name: prisma
 description: |
   Production Prisma patterns with PostgreSQL and Neon serverless.
   Covers schema design, client singleton, service layer, transactions, and migrations.

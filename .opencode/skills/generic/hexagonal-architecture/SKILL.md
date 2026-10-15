@@ -1,5 +1,5 @@
 ---
-name: Hexagonal Architecture - Modules, Ports & Adapters
+name: hexagonal-architecture
 description: |
   Modular hexagonal architecture for Next.js: the app is split into modules that talk to the outside
   only through one public interface (index.ts) and never import each other. Inside a module,

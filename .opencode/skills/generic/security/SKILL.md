@@ -1,5 +1,5 @@
 ---
-name: Security Best Practices
+name: security
 description: |
   Security patterns for SaaS applications: input validation, XSS/CSRF prevention, auth, and secure headers.
   Trigger: Activated when handling user input, auth, or security-related code.

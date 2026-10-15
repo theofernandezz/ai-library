@@ -1,5 +1,5 @@
 ---
-name: Performance Optimization
+name: performance
 description: |
   Performance patterns for fast web applications. Core Web Vitals, lazy loading, image optimization.
   Trigger: Activated when optimizing performance, loading times, or Core Web Vitals.

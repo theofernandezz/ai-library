@@ -1,5 +1,5 @@
 ---
-name: Environment Configuration
+name: env-config
 description: |
   Patterns for validating and managing environment variables with Zod at startup.
   Fail fast with clear errors before the app reaches runtime with missing config.

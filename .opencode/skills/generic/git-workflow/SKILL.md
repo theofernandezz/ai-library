@@ -1,5 +1,5 @@
 ---
-name: Git Workflow & Conventional Commits
+name: git-workflow
 description: |
   Standardized Git workflow with Conventional Commits, branching strategy, and PR practices.
   Trigger: Activated when making commits, creating branches, or discussing Git workflow.

@@ -1,5 +1,5 @@
 ---
-name: React Native Engineering
+name: react-native
 description: |
   Production patterns for React Native apps using Expo/CLI, navigation, platform APIs, and mobile performance.
   Trigger: Activated when building or editing React Native or Expo screens, components, and app infrastructure.

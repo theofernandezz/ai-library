@@ -1,5 +1,5 @@
 ---
-name: CI/CD - GitHub Actions
+name: ci-cd
 description: |
   GitHub Actions workflow design for apps whose tests run against a real backing service: least-privilege
   permissions, a concurrency guard for shared external state, pinned actions, cheap-checks-first ordering,

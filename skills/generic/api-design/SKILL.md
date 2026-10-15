@@ -1,5 +1,5 @@
 ---
-name: API Design - Next.js 16
+name: api-design
 description: |
   REST API patterns for Next.js 16 with App Router. Server Actions first, API Routes for external integrations.
   Trigger: Activated when creating API endpoints, webhooks, or external integrations.

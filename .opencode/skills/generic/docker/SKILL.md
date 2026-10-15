@@ -1,5 +1,5 @@
 ---
-name: Docker - Next.js Containerization
+name: docker
 description: |
   Dockerfile and docker-compose patterns for Next.js apps: cache-friendly multi-stage production
   images (standalone output, non-root), no secrets baked into layers, and a dev container that

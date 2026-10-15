@@ -1,5 +1,5 @@
 ---
-name: Error Handling & Resilience
+name: error-handling
 description: |
   Production-grade error handling, logging, and recovery patterns for robust SaaS applications.
   Trigger: Activated when handling errors, creating try/catch, or implementing error boundaries.
