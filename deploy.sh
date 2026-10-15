@@ -694,6 +694,8 @@ deploy_root() {
   copy_file "$LIBRARY_DIR/testing/AGENTS.md" "$target/testing/AGENTS.md"      2>/dev/null || true
 
   copy_dir "$LIBRARY_DIR/.claude/agents"     "$target/.claude/agents"
+  # omp doesn't scan .claude/agents; it reads skills from .claude/skills below.
+  copy_dir "$LIBRARY_DIR/.omp/agents"        "$target/.omp/agents"
 
   copy_skills_filtered "$LIBRARY_DIR/skills/generic" "$target/.claude/skills"
   # Also at skills/generic — the path CLAUDE.md/AGENTS.md/GEMINI.md document and non-Claude tools read.
@@ -1106,7 +1108,7 @@ fi
 
 # ── Warn if generated agents are stale ────────────────────────────────────────
 if [[ -x "$LIBRARY_DIR/generate-agents.sh" ]] && ! "$LIBRARY_DIR/generate-agents.sh" --check >/dev/null 2>&1; then
-  echo -e "${YELLOW}Warning: agents/ and .opencode/agents/ are stale relative to .claude/agents/.${RESET}"
+  echo -e "${YELLOW}Warning: agents/, .opencode/agents/ and .omp/agents/ are stale relative to .claude/agents/.${RESET}"
   echo -e "${YELLOW}Run ./generate-agents.sh in $LIBRARY_DIR before deploying, or this deploy will ship outdated agents.${RESET}"
 fi
 

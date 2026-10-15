@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# pre-commit hook — regenerates agents/ + .opencode/agents/ from
+# pre-commit hook — regenerates agents/ + .opencode/agents/ + .omp/agents/ from
 # .claude/agents/*.md, then keeps the rest of .opencode/ in sync
 #
 # Install once: git config core.hooksPath .githooks
@@ -11,9 +11,9 @@ set -euo pipefail
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 
 if [[ -f "$REPO_ROOT/generate-agents.sh" ]]; then
-  echo "[pre-commit] Generating agents/ + .opencode/agents/..."
+  echo "[pre-commit] Generating agents/ + .opencode/agents/ + .omp/agents/..."
   "$REPO_ROOT/generate-agents.sh"
-  git add "$REPO_ROOT/agents/"
+  git add "$REPO_ROOT/agents/" "$REPO_ROOT/.omp/agents/"
 fi
 
 if [[ -f "$REPO_ROOT/sync-opencode.sh" ]]; then

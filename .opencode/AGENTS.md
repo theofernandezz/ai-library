@@ -29,7 +29,7 @@ When a task falls into a specific domain, **route to the specialized agent** whi
 | **Git**            | —                                          | [`agents/git.md`](agents/git.md)         | git-workflow                                                 |
 | **Mobile**         | —                                          | [`agents/mobile.md`](agents/mobile.md)   | react-native, typescript, state-management, performance, testing |
 
-> **Note:** Files in `/agents/` are **generated** from `.claude/agents/*.md` (the source of truth) — don't edit them by hand. Claude Code invokes `.claude/agents/*.md` directly as real subagents; Gemini and other tools without subagent support read the generated `/agents/*.md` docs instead.
+> **Note:** Files in `/agents/` are **generated** from `.claude/agents/*.md` (the source of truth) — don't edit them by hand. Claude Code invokes `.claude/agents/*.md` directly as real subagents; Gemini and other tools without subagent support read the generated `/agents/*.md` docs instead. omp reads its own generated copies in `.omp/agents/*.md`.
 > **Data/Prisma, Git, and Mobile don't have a `/<domain>/AGENTS.md`** — that per-scope doc layer only exists for ui/backend/auth/testing today. Use `agents/*.md` directly for these three.
 > There is no `feature` agent — a full-stack feature is sequential delegation across `data`/`backend` → `ui` → `testing`, coordinated by the orchestrator (see `CLAUDE.md`'s "Full-stack features" section).
 
@@ -62,10 +62,8 @@ AGENTS.md (Orchestrator Agent - OA)
 
 ## 🎯 Auto-invoke Skills
 
-> ⚠️ **CRITICAL RULE - NON-NEGOTIABLE:**
-> **ALWAYS load and read the relevant skills BEFORE writing code.**
-> No matter how "simple" the task seems. No exceptions.
-> If you don't follow the skill patterns, the code will be rejected.
+> Read the relevant skill before writing code in its domain, even for small changes — the skills hold
+> project conventions the code is reviewed against.
 
 When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 
@@ -214,7 +212,7 @@ These rules apply UNIVERSALLY across all development contexts. Violations are co
 ### Type Safety (Non-Negotiable)
 
 ```typescript
-// ❌ FORBIDDEN - Instant rejection
+// ❌ FORBIDDEN
 const data: any = await fetch(...)
 function process(input: any): any
 
@@ -292,7 +290,7 @@ import type { User } from "@/types/user";
 When the AI agent begins a task, it MUST:
 
 1. **Analyze** the user's request and identify relevant file patterns
-2. **Load** all matching skills from the Auto-Invoke table
+2. **Load** each matching skill from the Auto-Invoke table when you are about to write code in its domain
 3. **Apply** skill rules in priority order
 4. **Validate** generated code against all loaded skill constraints
 5. **Self-correct** if any rule violations are detected before presenting output

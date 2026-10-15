@@ -329,6 +329,8 @@ function deployRoot(ctx, libraryDir, target, profile, customSkills) {
   }
 
   copyDir(ctx, join(libraryDir, '.claude', 'agents'), join(target, '.claude', 'agents'))
+  // omp doesn't scan .claude/agents; it reads skills from .claude/skills below.
+  copyDir(ctx, join(libraryDir, '.omp', 'agents'), join(target, '.omp', 'agents'))
   copySkillsFiltered(ctx, join(libraryDir, 'skills', 'generic'), join(target, '.claude', 'skills'), profile, customSkills)
   // Also at skills/generic — the path CLAUDE.md/AGENTS.md/GEMINI.md document and non-Claude tools read.
   copySkillsFiltered(ctx, join(libraryDir, 'skills', 'generic'), join(target, 'skills', 'generic'), profile, customSkills)
@@ -366,7 +368,7 @@ export async function deploy(opts) {
       execSync(`"${generateAgentsScript}" --check`, { stdio: 'ignore' })
     } catch {
       log.warn(
-        'agents/ and .opencode/agents/ are stale relative to .claude/agents/. ' +
+        'agents/, .opencode/agents/ and .omp/agents/ are stale relative to .claude/agents/. ' +
           `Run ./generate-agents.sh in ${libraryDir} before deploying, or this deploy will ship outdated agents.`,
       )
     }

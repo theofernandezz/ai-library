@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# generate-agents.sh — Generates agents/*.md and .opencode/agents/*.md from
-# .claude/agents/*.md, the single source of truth for subagent definitions.
+# generate-agents.sh — Generates agents/*.md, .opencode/agents/*.md and
+# .omp/agents/*.md from .claude/agents/*.md, the single source of truth for
+# subagent definitions.
 #
 # .claude/agents/*.md are real Claude Code subagents (frontmatter: name,
 # description, tools, model, skills). This script derives:
@@ -9,6 +10,9 @@
 #                                 tools without subagent support (Gemini, Cursor)
 #   - .opencode/agents/<name>.md — opencode subagent (frontmatter: description,
 #                                 mode: subagent — opencode's own schema)
+#   - .omp/agents/<name>.md    — omp subagent (frontmatter: name, description,
+#                                 tools, model, thinking-level, autoload-skills —
+#                                 omp doesn't scan .claude/agents)
 #
 # Usage: ./generate-agents.sh [--check]
 #   --check  don't write anything; exit 1 if generated output would differ
@@ -21,6 +25,7 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SRC_DIR="$REPO_ROOT/.claude/agents"
 ROOT_OUT_DIR="$REPO_ROOT/agents"
 OPENCODE_OUT_DIR="$REPO_ROOT/.opencode/agents"
+OMP_OUT_DIR="$REPO_ROOT/.omp/agents"
 
 CHECK=0
 [[ "${1:-}" == "--check" ]] && CHECK=1
@@ -33,6 +38,18 @@ title_case() {
   case "$1" in
     ui) echo "UI" ;;
     *) echo "$(tr '[:lower:]' '[:upper:]' <<<"${1:0:1}")${1:1}" ;;
+  esac
+}
+
+# Claude Code model alias → omp selector. Claude Code's alias tracks the latest
+# model; omp needs a concrete provider/model-id (see `omp models anthropic`).
+# TODO: bump these IDs when a new Claude generation ships — omp won't follow the alias.
+omp_model() {
+  case "$1" in
+    sonnet) echo "anthropic/claude-sonnet-5-5" ;;
+    opus) echo "anthropic/claude-opus-5-5" ;;
+    haiku) echo "anthropic/claude-haiku-5-5" ;;
+    *) echo "generate-agents.sh: no omp mapping for model '$1'" >&2; exit 1 ;;
   esac
 }
 
@@ -75,7 +92,31 @@ for src in "$SRC_DIR"/*.md; do
     echo "$body"
   } >"$opencode_file"
 
-  for pair in "$root_file:$ROOT_OUT_DIR/$name.md" "$opencode_file:$OPENCODE_OUT_DIR/$name.md"; do
+  # omp: same tools lowercased plus `yield` (how an omp subagent submits its result —
+  # omp 18.8.9 adds it on its own, listing it keeps older versions working), effort → thinking-level,
+  # skills → autoload-skills. description is double-quoted — it contains ": ",
+  # which breaks a plain YAML scalar.
+  tools_csv="$(grep '^tools:' <<<"$frontmatter" | sed 's/^tools: *//' | tr '[:upper:]' '[:lower:]'), yield"
+  model="$(omp_model "$(grep '^model:' <<<"$frontmatter" | sed 's/^model: *//')")"
+  effort="$(grep '^effort:' <<<"$frontmatter" | sed 's/^effort: *//')"
+  skills_csv="$(sed -n '/^skills:/,$p' <<<"$frontmatter" | tail -n +2 | sed -n 's/^  - \(.*\)/\1/p' | paste -sd, - | sed 's/,/, /g')"
+  description_quoted="\"$(sed 's/\\/\\\\/g; s/"/\\"/g' <<<"$description")\""
+
+  omp_file="$TMP_DIR/omp-$name.md"
+  {
+    echo "---"
+    echo "name: $name"
+    echo "description: $description_quoted"
+    echo "tools: $tools_csv"
+    echo "model: $model"
+    [[ -n "$effort" ]] && echo "thinking-level: $effort"
+    [[ -n "$skills_csv" ]] && echo "autoload-skills: $skills_csv"
+    echo "---"
+    echo ""
+    echo "$body"
+  } >"$omp_file"
+
+  for pair in "$root_file:$ROOT_OUT_DIR/$name.md" "$opencode_file:$OPENCODE_OUT_DIR/$name.md" "$omp_file:$OMP_OUT_DIR/$name.md"; do
     new="${pair%%:*}"
     dst="${pair##*:}"
     if [[ "$CHECK" == "1" ]]; then
@@ -107,7 +148,7 @@ if [[ "$CHECK" == "1" ]]; then
     echo "Generated agents are stale. Run ./generate-agents.sh to fix." >&2
     exit 1
   fi
-  echo "agents/ and .opencode/agents/ are up to date."
+  echo "agents/, .opencode/agents/ and .omp/agents/ are up to date."
 else
-  echo "Generated $(ls "$SRC_DIR"/*.md | wc -l | tr -d ' ') agents → agents/, .opencode/agents/"
+  echo "Generated $(ls "$SRC_DIR"/*.md | wc -l | tr -d ' ') agents → agents/, .opencode/agents/, .omp/agents/"
 fi
