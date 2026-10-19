@@ -145,6 +145,8 @@ A root-mode deploy also works in [omp](https://omp.sh): omp reads `AGENTS.md` an
 
 omp does not read the root `CLAUDE.md` — only `AGENTS.md` — so the delegation and `verifier` rules in `CLAUDE.md` don't reach it.
 
+The project meta-skills `spec-driven`, `feedback-loop` and `project-setup` also ship to `.claude/skills/`, so omp lists them as skills. `spec-driven` still points to `CLAUDE.md` for the delegation details.
+
 ## Requirements
 
 - **Claude Code** v2.1.32 or later

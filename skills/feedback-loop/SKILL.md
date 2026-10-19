@@ -1,5 +1,5 @@
 ---
-name: Feedback Loop - Self-Improvement
+name: feedback-loop
 description: |
   Meta-skill for continuous improvement of the AI library. Files a GitHub issue on
   theofernandezz/ai-library when skills fail, are missing, or are stale — from wherever

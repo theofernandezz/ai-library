@@ -69,6 +69,10 @@ PROFILE_MOBILE="react-native typescript state-management performance testing"
 PROFILE_STATIC="nextjs-core ui-engineering seo performance typescript accessibility"
 PROFILE_API="api-design database security error-handling typescript email env-config"
 
+# Meta-skills used inside projects — also shipped to .claude/skills so Claude Code
+# and omp discover them natively. skill-creator/skill-sync only maintain the library.
+PROJECT_META_SKILLS="spec-driven feedback-loop project-setup"
+
 # ── All available generic skills (auto-discovered) ─────────────────────────────
 get_all_skills() {
   local generic_dir="$LIBRARY_DIR/skills/generic"
@@ -698,6 +702,10 @@ deploy_root() {
   copy_dir "$LIBRARY_DIR/.omp/agents"        "$target/.omp/agents"
 
   copy_skills_filtered "$LIBRARY_DIR/skills/generic" "$target/.claude/skills"
+  local meta_skill
+  for meta_skill in $PROJECT_META_SKILLS; do
+    copy_dir "$LIBRARY_DIR/skills/$meta_skill" "$target/.claude/skills/$meta_skill"
+  done
   # Also at skills/generic — the path CLAUDE.md/AGENTS.md/GEMINI.md document and non-Claude tools read.
   copy_skills_filtered "$LIBRARY_DIR/skills/generic" "$target/skills/generic"
 }

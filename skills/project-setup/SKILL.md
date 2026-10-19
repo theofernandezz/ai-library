@@ -1,5 +1,5 @@
 ---
-name: Project Setup - Context Documentation
+name: project-setup
 description: |
   Meta-skill for documenting project-specific context in CLAUDE.md so Claude
   can make decisions consistent with the project's history, stack, and constraints.

@@ -1,5 +1,5 @@
 ---
-name: Spec-Driven Development
+name: spec-driven
 description: |
   Meta-skill for the orchestrator: size the spec to the cost of being wrong. Inline for clear
   reversible work, a mini-spec + incremental loop for reversible-but-uncertain work, a full

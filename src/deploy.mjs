@@ -189,6 +189,10 @@ function printReport(ctx) {
   }
 }
 
+// Meta-skills used inside projects — also shipped to .claude/skills so Claude Code
+// and omp discover them natively. skill-creator/skill-sync only maintain the library.
+const PROJECT_META_SKILLS = ['spec-driven', 'feedback-loop', 'project-setup']
+
 function copyTopLevelSkillFiles(ctx, libraryDir, target) {
   const skillsDir = join(libraryDir, 'skills')
   for (const name of readdirSync(skillsDir)) {
@@ -332,6 +336,9 @@ function deployRoot(ctx, libraryDir, target, profile, customSkills) {
   // omp doesn't scan .claude/agents; it reads skills from .claude/skills below.
   copyDir(ctx, join(libraryDir, '.omp', 'agents'), join(target, '.omp', 'agents'))
   copySkillsFiltered(ctx, join(libraryDir, 'skills', 'generic'), join(target, '.claude', 'skills'), profile, customSkills)
+  for (const name of PROJECT_META_SKILLS) {
+    copyDir(ctx, join(libraryDir, 'skills', name), join(target, '.claude', 'skills', name))
+  }
   // Also at skills/generic — the path CLAUDE.md/AGENTS.md/GEMINI.md document and non-Claude tools read.
   copySkillsFiltered(ctx, join(libraryDir, 'skills', 'generic'), join(target, 'skills', 'generic'), profile, customSkills)
 

@@ -6,6 +6,14 @@
 
 ---
 
+## spec-driven, feedback-loop, project-setup (2026-10-19)
+
+| Change | Affects |
+|--------|---------|
+| Frontmatter `name:` is now the folder name, and root deploys also ship them to `.claude/skills/` — Claude Code and omp now discover them as native skills | Anything that invoked them by their old display name |
+
+---
+
 ## all generic skills (2026-10-15)
 
 | Change | Affects |
