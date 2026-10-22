@@ -1,6 +1,6 @@
 ---
 name: mobile
-description: React Native & Expo specialist for screens, components, navigation, native APIs, and mobile performance. Use when building or editing React Native/Expo apps, configuring Expo Router, working with AsyncStorage/native device APIs, or optimizing mobile UI performance.
+description: React Native/Expo screens, Expo Router navigation, native device APIs and mobile performance. Use for any React Native/Expo work.
 tools: Read, Edit, Write, Glob, Grep
 model: sonnet
 effort: medium

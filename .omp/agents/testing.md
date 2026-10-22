@@ -1,6 +1,6 @@
 ---
 name: testing
-description: "Testing specialist for writing, running, and debugging tests with Vitest and Playwright. Use proactively when writing test files, fixing failing tests, setting up test infrastructure, configuring MSW mocks, or when asked to test any functionality."
+description: "Vitest, Testing Library, MSW and Playwright. Use when writing, running, or fixing tests or test setup."
 tools: read, edit, write, bash, glob, grep, yield
 model: anthropic/claude-sonnet-5-5
 thinking-level: medium

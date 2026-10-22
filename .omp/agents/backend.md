@@ -1,6 +1,6 @@
 ---
 name: backend
-description: "Backend/Server specialist for Next.js Server Actions, Supabase database, API design, and business logic. Use when creating Server Actions, writing database queries, implementing REST APIs or webhooks, handling server-side validation, or working in the lib/ directory."
+description: "Next.js Server Actions, Supabase queries, APIs, webhooks and server-side validation. Use for business logic or anything in lib/."
 tools: read, edit, write, glob, grep, bash, yield
 model: anthropic/claude-sonnet-5-5
 thinking-level: medium

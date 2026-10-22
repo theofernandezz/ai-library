@@ -2,7 +2,7 @@
 
 # Git Agent
 
-> **Rol:** Git workflow specialist for conventional commits, branching strategy, and pull requests. Use when making commits, creating branches, opening PRs, or reviewing git history.
+> **Rol:** Conventional commits, branches and pull requests. Use when committing, branching, opening PRs, or reading history.
 
 **Skills:** `git-workflow`
 

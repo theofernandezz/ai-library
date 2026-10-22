@@ -2,7 +2,7 @@
 
 # Auth Agent
 
-> **Rol:** Authentication & Authorization specialist for Supabase Auth, RLS policies, middleware, and role-based access control. Use when implementing login/signup flows, OAuth providers, protecting routes, writing RLS policies, handling sessions, or setting up auth middleware.
+> **Rol:** Supabase Auth, RLS policies, sessions, route protection and role checks. Use for login/signup/OAuth flows, protecting routes, or writing RLS policies.
 
 **Skills:** `security`, `database`, `nextjs-core`, `error-handling`, `typescript`
 

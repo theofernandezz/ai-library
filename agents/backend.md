@@ -2,7 +2,7 @@
 
 # Backend Agent
 
-> **Rol:** Backend/Server specialist for Next.js Server Actions, Supabase database, API design, and business logic. Use when creating Server Actions, writing database queries, implementing REST APIs or webhooks, handling server-side validation, or working in the lib/ directory.
+> **Rol:** Next.js Server Actions, Supabase queries, APIs, webhooks and server-side validation. Use for business logic or anything in lib/.
 
 **Skills:** `nextjs-core`, `database`, `api-design`, `email`, `hexagonal-architecture`, `security`, `error-handling`, `typescript`
 

@@ -1,6 +1,6 @@
 ---
 name: git
-description: "Git workflow specialist for conventional commits, branching strategy, and pull requests. Use when making commits, creating branches, opening PRs, or reviewing git history."
+description: "Conventional commits, branches and pull requests. Use when committing, branching, opening PRs, or reading history."
 tools: read, bash, yield
 model: anthropic/claude-haiku-5-5
 thinking-level: medium

@@ -1,6 +1,6 @@
 ---
 name: ui
-description: UI/Frontend specialist for React 19 components, Tailwind v4, shadcn/ui, Aceternity, accessibility, and performance. Use when creating or modifying React components, implementing animations, working with Tailwind classes, optimizing UI performance, or adding i18n/SEO. Also handles Next.js client-side concerns: Client Components, next/image, next/font, loading.tsx, error.tsx, and Suspense boundaries.
+description: React 19 components, Tailwind v4, shadcn/ui, Aceternity, accessibility, i18n/SEO, and client-side Next.js (Client Components, next/image, loading/error.tsx, Suspense). Use when creating or changing UI.
 tools: Read, Edit, Write, Glob, Grep
 model: sonnet
 effort: medium

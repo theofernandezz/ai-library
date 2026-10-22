@@ -1,6 +1,6 @@
 ---
 name: data
-description: Database schema & Prisma specialist for data modeling, migrations, service layer patterns, and PostgreSQL with Neon serverless. Use when working with prisma/schema.prisma, writing Prisma queries, creating database service files, running migrations, or modeling entities in lib/services/.
+description: Prisma schema, migrations, queries and the service layer on PostgreSQL/Neon. Use for prisma/schema.prisma, migrations, or lib/services/.
 tools: Read, Edit, Write, Glob, Grep, Bash
 model: sonnet
 effort: medium

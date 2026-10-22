@@ -1,6 +1,6 @@
 ---
 name: verifier
-description: "Reviews a diff against the original request or spec with fresh context — no memory of the implementer's reasoning. Detects scope drift, test-gaming (tests edited to pass, special-cased inputs), and unmet acceptance criteria. Use after any subagent (or yourself) finishes a fix, feature, or refactor, before calling it done — especially when a previously-failing gate (tests, build, lint) now passes."
+description: "Fresh-context review of a diff against the request or spec: scope drift, test-gaming, unmet criteria. Use after a fix, feature, or refactor, before calling it done."
 tools: read, grep, glob, bash, yield
 model: anthropic/claude-sonnet-5-5
 thinking-level: high
