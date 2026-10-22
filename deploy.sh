@@ -13,10 +13,7 @@
 #
 # Options:
 #   --mode <mode>     Deployment mode (default: auto)
-#                       auto       → detect structure and deploy accordingly
-#                       root       → deploy to repo root only
-#                       opencode   → deploy to .opencode/ only
-#                       both       → deploy to root AND .opencode/
+#                       root       → deploy to the repo root (auto is an alias)
 #   --profile <name>  Deploy only skills for a specific project type (default: full)
 #                       web-app    → nextjs, db, auth, ui, testing, api, email (11 skills)
 #                       mobile     → react-native, state, performance, testing (5 skills)
@@ -30,7 +27,6 @@
 #
 # Examples:
 #   ./deploy.sh ../my-project
-#   ./deploy.sh ../my-project --mode both
 #   ./deploy.sh ../my-project --profile web-app
 #   ./deploy.sh ../my-project --dry-run
 # ==============================================================================
@@ -208,10 +204,7 @@ Usage:
 
 Options:
   --mode <mode>     Deployment mode (default: auto)
-                      auto       → detect structure and deploy accordingly
-                      root       → deploy to repo root only
-                      opencode   → deploy to .opencode/ only
-                      both       → deploy to root AND .opencode/
+                      root       → deploy to the repo root (auto is an alias)
   --profile <name>  Deploy only skills for a specific project type (default: full)
                       web-app    → nextjs, db, auth, ui, testing, api, email (11 skills)
                       mobile     → react-native, state, performance, testing (5 skills)
@@ -225,10 +218,9 @@ Options:
 
 Examples:
   ./deploy.sh ../my-project
-  ./deploy.sh ../my-project --mode both
   ./deploy.sh ../my-project --profile web-app
   ./deploy.sh ../my-project --dry-run
-  ./deploy.sh ../my-project --mode opencode --force
+  ./deploy.sh ../my-project --force
 EOF
   exit 0
 }
@@ -671,7 +663,6 @@ deploy_root() {
   header "Root ($target)"
 
   copy_file "$LIBRARY_DIR/AGENTS.md"  "$target/AGENTS.md"
-  copy_file "$LIBRARY_DIR/GEMINI.md"  "$target/GEMINI.md"
   generate_project_claude_md "$target"
 
   copy_dir "$LIBRARY_DIR/agents"     "$target/agents"
@@ -706,53 +697,8 @@ deploy_root() {
   for meta_skill in $PROJECT_META_SKILLS; do
     copy_dir "$LIBRARY_DIR/skills/$meta_skill" "$target/.claude/skills/$meta_skill"
   done
-  # Also at skills/generic — the path CLAUDE.md/AGENTS.md/GEMINI.md document and non-Claude tools read.
+  # Also at skills/generic — the path CLAUDE.md/AGENTS.md document and non-Claude tools read.
   copy_skills_filtered "$LIBRARY_DIR/skills/generic" "$target/skills/generic"
-}
-
-# ── Deploy to .opencode/ ──────────────────────────────────────────────────────
-deploy_opencode() {
-  local target="$1/.opencode"
-  header ".opencode ($target)"
-
-  copy_dir "$LIBRARY_DIR/.opencode/agents"  "$target/agents"
-  copy_skills_filtered "$LIBRARY_DIR/skills/generic" "$target/skills/generic"
-
-  # Copy top-level skill files
-  for skill_file in "$LIBRARY_DIR"/skills/*.md "$LIBRARY_DIR"/skills/*.sh; do
-    [[ -f "$skill_file" ]] || continue
-    copy_file "$skill_file" "$target/skills/$(basename "$skill_file")"
-  done
-
-  # Copy all non-generic skill directories (meta-skills, project-setup, etc.)
-  for skill_dir in "$LIBRARY_DIR"/skills/*/; do
-    [[ -d "$skill_dir" ]] || continue
-    local dir_name
-    dir_name="$(basename "$skill_dir")"
-    # generic/ is handled separately via copy_skills_filtered above
-    [[ "$dir_name" == "generic" ]] && continue
-    copy_dir "$skill_dir" "$target/skills/$dir_name"
-  done
-
-  copy_file "$LIBRARY_DIR/AGENTS.md"  "$target/AGENTS.md"
-}
-
-# ── Auto-detect mode ──────────────────────────────────────────────────────────
-detect_mode() {
-  local target="$1"
-  local has_root=false
-  local has_opencode=false
-
-  [[ -f "$target/AGENTS.md" || -f "$target/CLAUDE.md" ]] && has_root=true
-  [[ -d "$target/.opencode" ]]                            && has_opencode=true
-
-  if $has_root && $has_opencode; then
-    echo "both"
-  elif $has_opencode; then
-    echo "opencode"
-  else
-    echo "root"
-  fi
 }
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -827,37 +773,9 @@ confirm_or_change_target_repo() {
   echo ""
 }
 
-# Ask for deployment mode
-ask_mode() {
-  echo -e "${BOLD}Step 2 → Deployment mode${RESET}"
-  echo -e "${DIM}Where should the files be placed in the target repo?${RESET}"
-  echo ""
-
-  local detected
-  detected="$(detect_mode "$TARGET_REPO")"
-
-  local options=(
-    "auto     → auto-detect (currently: $detected)"
-    "root     → deploy to repo root (AGENTS.md, skills/, etc.)"
-    "opencode → deploy to .opencode/ directory only"
-    "both     → deploy to root AND .opencode/"
-  )
-
-  menu_select "Select deployment mode" 1 "${options[@]}"
-  case "$MENU_SELECTED" in
-    1) MODE="auto" ;;
-    2) MODE="root" ;;
-    3) MODE="opencode" ;;
-    4) MODE="both" ;;
-  esac
-
-  echo -e "  ${GREEN}✔${RESET} Mode: ${CYAN}$MODE${RESET}"
-  echo ""
-}
-
 # Ask for profile / skills
 ask_profile() {
-  echo -e "${BOLD}Step 3 → Skills profile${RESET}"
+  echo -e "${BOLD}Step 2 → Skills profile${RESET}"
   echo -e "${DIM}Which skills do you want to include?${RESET}"
   echo ""
 
@@ -942,7 +860,7 @@ ask_custom_skills() {
 
 # Ask for extra options (dry-run, force)
 ask_options() {
-  echo -e "${BOLD}Step 4 → Options${RESET}"
+  echo -e "${BOLD}Step 3 → Options${RESET}"
   echo -e "${DIM}Choose how the deployment should run.${RESET}"
   echo ""
 
@@ -1021,7 +939,6 @@ run_interactive() {
   else
     ask_target_repo
   fi
-  ask_mode
   ask_profile
   ask_options
   confirm_deploy
@@ -1091,15 +1008,14 @@ if [[ -z "$TARGET_REPO" ]]; then
 fi
 
 # ── Auto-detect mode ──────────────────────────────────────────────────────────
-if [[ "$MODE" == "auto" ]]; then
-  MODE="$(detect_mode "$TARGET_REPO")"
-  if ! $INTERACTIVE; then
-    log "Auto-detected mode: ${BOLD}$MODE${RESET}"
-  fi
-fi
 
-# ── Validate profile ──────────────────────────────────────────────────────────
+# ── Validate profile and mode (before anything touches the target) ───────────
 get_profile_skills > /dev/null
+[[ "$MODE" == "auto" ]] && MODE="root"
+if [[ "$MODE" != "root" ]]; then
+  error "Unknown mode: $MODE. Use root | auto"
+  exit 1
+fi
 
 # ── Summary header (non-interactive) ─────────────────────────────────────────
 if ! $INTERACTIVE; then
@@ -1116,7 +1032,7 @@ fi
 
 # ── Warn if generated agents are stale ────────────────────────────────────────
 if [[ -x "$LIBRARY_DIR/generate-agents.sh" ]] && ! "$LIBRARY_DIR/generate-agents.sh" --check >/dev/null 2>&1; then
-  echo -e "${YELLOW}Warning: agents/, .opencode/agents/ and .omp/agents/ are stale relative to .claude/agents/.${RESET}"
+  echo -e "${YELLOW}Warning: agents/ and .omp/agents/ are stale relative to .claude/agents/.${RESET}"
   echo -e "${YELLOW}Run ./generate-agents.sh in $LIBRARY_DIR before deploying, or this deploy will ship outdated agents.${RESET}"
 fi
 
@@ -1128,19 +1044,6 @@ case "$MODE" in
   root)
     deploy_root "$TARGET_REPO"
     write_version_file "$TARGET_REPO"
-    ;;
-  opencode)
-    deploy_opencode "$TARGET_REPO"
-    write_version_file "$TARGET_REPO"
-    ;;
-  both)
-    deploy_root     "$TARGET_REPO"
-    deploy_opencode "$TARGET_REPO"
-    write_version_file "$TARGET_REPO"
-    ;;
-  *)
-    error "Unknown mode: $MODE. Use root | opencode | both | auto"
-    exit 1
     ;;
 esac
 

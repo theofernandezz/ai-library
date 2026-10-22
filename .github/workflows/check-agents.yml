@@ -5,7 +5,6 @@ on:
     paths:
       - "agents/**"
       - ".claude/agents/**"
-      - ".opencode/agents/**"
       - ".omp/agents/**"
       - "generate-agents.sh"
       - ".github/workflows/check-agents.yml"
@@ -25,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # Fails if agents/, .opencode/agents/ or .omp/agents/ differ from what .claude/agents/ generates
+      # Fails if agents/ or .omp/agents/ differ from what .claude/agents/ generates
       # (e.g. a commit that skipped the pre-commit hook).
       - name: Check generated agents are up to date
         run: ./generate-agents.sh --check

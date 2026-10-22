@@ -6,15 +6,6 @@ import { spinner, log } from '@clack/prompts'
 import { resolveProfileSkills } from './profiles.mjs'
 import { printNextSteps } from './next-steps.mjs'
 
-// ── Mode auto-detection (mirrors detect_mode() in deploy.sh) ─────────────────
-export function detectMode(target) {
-  const hasRoot = existsSync(join(target, 'AGENTS.md')) || existsSync(join(target, 'CLAUDE.md'))
-  const hasOpencode = existsSync(join(target, '.opencode')) && statSync(join(target, '.opencode')).isDirectory()
-  if (hasRoot && hasOpencode) return 'both'
-  if (hasOpencode) return 'opencode'
-  return 'root'
-}
-
 // ── Manifest: tells library-deployed content apart from local edits ─────────
 // .ai-library-manifest in the target holds "<sha256>  <path>" for every file the last
 // deploy wrote. A file whose hash still matches is untouched and safe to overwrite;
@@ -322,7 +313,6 @@ function writeVersionFile(ctx, libraryDir, target) {
 // ── Deploy to repo root (mirrors deploy_root() in deploy.sh) ─────────────────
 function deployRoot(ctx, libraryDir, target, profile, customSkills) {
   copyFile(ctx, join(libraryDir, 'AGENTS.md'), join(target, 'AGENTS.md'))
-  copyFile(ctx, join(libraryDir, 'GEMINI.md'), join(target, 'GEMINI.md'))
   const claudeMdGenerated = generateProjectClaudeMd(ctx, libraryDir, target)
 
   copyDir(ctx, join(libraryDir, 'agents'), join(target, 'agents'))
@@ -339,19 +329,10 @@ function deployRoot(ctx, libraryDir, target, profile, customSkills) {
   for (const name of PROJECT_META_SKILLS) {
     copyDir(ctx, join(libraryDir, 'skills', name), join(target, '.claude', 'skills', name))
   }
-  // Also at skills/generic — the path CLAUDE.md/AGENTS.md/GEMINI.md document and non-Claude tools read.
+  // Also at skills/generic — the path CLAUDE.md/AGENTS.md document and non-Claude tools read.
   copySkillsFiltered(ctx, join(libraryDir, 'skills', 'generic'), join(target, 'skills', 'generic'), profile, customSkills)
 
   return claudeMdGenerated
-}
-
-// ── Deploy to .opencode/ (mirrors deploy_opencode() in deploy.sh) ────────────
-function deployOpencode(ctx, libraryDir, targetRoot, profile, customSkills) {
-  const target = join(targetRoot, '.opencode')
-  copyDir(ctx, join(libraryDir, '.opencode', 'agents'), join(target, 'agents'))
-  copySkillsFiltered(ctx, join(libraryDir, 'skills', 'generic'), join(target, 'skills', 'generic'), profile, customSkills)
-  copyTopLevelSkillFiles(ctx, libraryDir, target)
-  copyFile(ctx, join(libraryDir, 'AGENTS.md'), join(target, 'AGENTS.md'))
 }
 
 export async function deploy(opts) {
@@ -366,7 +347,11 @@ export async function deploy(opts) {
     log.error('Target is the same as the library directory. Aborting.')
     process.exit(1)
   }
-  if (mode === 'auto') mode = detectMode(targetRepo)
+  if (mode === 'auto') mode = 'root'
+  if (mode !== 'root') {
+    log.error(`Unknown mode: ${mode}. Use root | auto`)
+    process.exit(1)
+  }
   resolveProfileSkills(profile, customSkills) // throws on unknown profile before we touch anything
 
   const generateAgentsScript = join(libraryDir, 'generate-agents.sh')
@@ -375,7 +360,7 @@ export async function deploy(opts) {
       execSync(`"${generateAgentsScript}" --check`, { stdio: 'ignore' })
     } catch {
       log.warn(
-        'agents/, .opencode/agents/ and .omp/agents/ are stale relative to .claude/agents/. ' +
+        'agents/ and .omp/agents/ are stale relative to .claude/agents/. ' +
           `Run ./generate-agents.sh in ${libraryDir} before deploying, or this deploy will ship outdated agents.`,
       )
     }
@@ -387,13 +372,7 @@ export async function deploy(opts) {
 
   removeDeprecated(ctx, libraryDir)
 
-  let claudeMdGenerated = false
-  if (mode === 'root' || mode === 'both') {
-    claudeMdGenerated = deployRoot(ctx, libraryDir, targetRepo, profile, customSkills)
-  }
-  if (mode === 'opencode' || mode === 'both') {
-    deployOpencode(ctx, libraryDir, targetRepo, profile, customSkills)
-  }
+  const claudeMdGenerated = deployRoot(ctx, libraryDir, targetRepo, profile, customSkills)
   writeVersionFile(ctx, libraryDir, targetRepo)
   writeManifest(ctx)
 
@@ -404,5 +383,5 @@ export async function deploy(opts) {
   )
   printReport(ctx)
 
-  printNextSteps({ targetRepo, mode, dryRun, claudeMdGenerated })
+  printNextSteps({ targetRepo, dryRun, claudeMdGenerated })
 }

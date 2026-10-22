@@ -8,7 +8,7 @@ Usage:
   npx github:theofernandezz/ai-library <TARGET_REPO_PATH> [OPTIONS]
 
 Options:
-  --mode <mode>      auto | root | opencode | both       (default: auto)
+  --mode <mode>      root (auto is an alias)             (default: auto)
   --profile <name>   web-app | mobile | static | api | full   (default: full)
                       (use the interactive wizard for "custom" — picking individual skills)
   --dry-run          Preview what would be copied without writing anything

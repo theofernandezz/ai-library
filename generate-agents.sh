@@ -1,15 +1,12 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# generate-agents.sh — Generates agents/*.md, .opencode/agents/*.md and
-# .omp/agents/*.md from .claude/agents/*.md, the single source of truth for
-# subagent definitions.
+# generate-agents.sh — Generates agents/*.md and .omp/agents/*.md from
+# .claude/agents/*.md, the single source of truth for subagent definitions.
 #
 # .claude/agents/*.md are real Claude Code subagents (frontmatter: name,
 # description, tools, model, skills). This script derives:
 #   - agents/<name>.md         — plain doc (no frontmatter) for humans and
-#                                 tools without subagent support (Gemini, Cursor)
-#   - .opencode/agents/<name>.md — opencode subagent (frontmatter: description,
-#                                 mode: subagent — opencode's own schema)
+#                                 tools without subagent support (Cursor, Copilot)
 #   - .omp/agents/<name>.md    — omp subagent (frontmatter: name, description,
 #                                 tools, model, thinking-level, autoload-skills —
 #                                 omp doesn't scan .claude/agents)
@@ -24,7 +21,6 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SRC_DIR="$REPO_ROOT/.claude/agents"
 ROOT_OUT_DIR="$REPO_ROOT/agents"
-OPENCODE_OUT_DIR="$REPO_ROOT/.opencode/agents"
 OMP_OUT_DIR="$REPO_ROOT/.omp/agents"
 
 CHECK=0
@@ -82,16 +78,6 @@ for src in "$SRC_DIR"/*.md; do
     echo "$body"
   } >"$root_file"
 
-  opencode_file="$TMP_DIR/opencode-$name.md"
-  {
-    echo "---"
-    echo "description: $description"
-    echo "mode: subagent"
-    echo "---"
-    echo ""
-    echo "$body"
-  } >"$opencode_file"
-
   # omp: same tools lowercased plus `yield` (how an omp subagent submits its result —
   # omp 18.8.9 adds it on its own, listing it keeps older versions working), effort → thinking-level,
   # skills → autoload-skills. description is double-quoted — it contains ": ",
@@ -116,7 +102,7 @@ for src in "$SRC_DIR"/*.md; do
     echo "$body"
   } >"$omp_file"
 
-  for pair in "$root_file:$ROOT_OUT_DIR/$name.md" "$opencode_file:$OPENCODE_OUT_DIR/$name.md" "$omp_file:$OMP_OUT_DIR/$name.md"; do
+  for pair in "$root_file:$ROOT_OUT_DIR/$name.md" "$omp_file:$OMP_OUT_DIR/$name.md"; do
     new="${pair%%:*}"
     dst="${pair##*:}"
     if [[ "$CHECK" == "1" ]]; then
@@ -132,7 +118,7 @@ for src in "$SRC_DIR"/*.md; do
 done
 
 # .claude/agents/feature.md was removed — drop any stale generated leftovers.
-for stale in "$ROOT_OUT_DIR/feature.md" "$OPENCODE_OUT_DIR/feature.md"; do
+for stale in "$ROOT_OUT_DIR/feature.md"; do
   if [[ -f "$stale" ]]; then
     if [[ "$CHECK" == "1" ]]; then
       echo "STALE: ${stale#"$REPO_ROOT/"} (source removed)"
@@ -148,7 +134,7 @@ if [[ "$CHECK" == "1" ]]; then
     echo "Generated agents are stale. Run ./generate-agents.sh to fix." >&2
     exit 1
   fi
-  echo "agents/, .opencode/agents/ and .omp/agents/ are up to date."
+  echo "agents/ and .omp/agents/ are up to date."
 else
-  echo "Generated $(ls "$SRC_DIR"/*.md | wc -l | tr -d ' ') agents → agents/, .opencode/agents/, .omp/agents/"
+  echo "Generated $(ls "$SRC_DIR"/*.md | wc -l | tr -d ' ') agents → agents/, .omp/agents/"
 fi

@@ -5,7 +5,6 @@
 > **Philosophy:** This library acts as the cognitive backbone for AI-assisted development. Every skill is a self-contained context module that gets injected into the AI's working memory based on the user's current action.
 
 > **Claude Code Users:** If you're using Claude Code CLI, read [`CLAUDE.md`](CLAUDE.md) for specific instructions.
-> **Gemini Users:** If you're using Gemini in VS Code, read [`GEMINI.md`](GEMINI.md) for specific instructions.
 
 > **Skills Reference**: For detailed patterns, use these skills:
 >
@@ -29,7 +28,7 @@ When a task falls into a specific domain, **route to the specialized agent** whi
 | **Git**            | —                                          | [`agents/git.md`](agents/git.md)         | git-workflow                                                 |
 | **Mobile**         | —                                          | [`agents/mobile.md`](agents/mobile.md)   | react-native, typescript, state-management, performance, testing |
 
-> **Note:** Files in `/agents/` are **generated** from `.claude/agents/*.md` (the source of truth) — don't edit them by hand. Claude Code invokes `.claude/agents/*.md` directly as real subagents; Gemini and other tools without subagent support read the generated `/agents/*.md` docs instead. omp reads its own generated copies in `.omp/agents/*.md`.
+> **Note:** Files in `/agents/` are **generated** from `.claude/agents/*.md` (the source of truth) — don't edit them by hand. Claude Code invokes `.claude/agents/*.md` directly as real subagents; tools without subagent support read the generated `/agents/*.md` docs instead. omp reads its own generated copies in `.omp/agents/*.md`.
 > **Data/Prisma, Git, and Mobile don't have a `/<domain>/AGENTS.md`** — that per-scope doc layer only exists for ui/backend/auth/testing today. Use `agents/*.md` directly for these three.
 > There is no `feature` agent — a full-stack feature is sequential delegation across `data`/`backend` → `ui` → `testing`, coordinated by the orchestrator (see `CLAUDE.md`'s "Full-stack features" section).
 
@@ -45,7 +44,7 @@ AGENTS.md (Orchestrator Agent - OA)
     └─► For simple tasks, go directly to Skills
 ```
 
-### Delegation Rules (OpenCode)
+### Delegation Rules
 
 **Automatic delegation:** When a task matches a domain, delegate to the specialized agent:
 

@@ -6,6 +6,17 @@
 
 ---
 
+## Gemini and the .opencode/ deploy mode removed (2026-10-22)
+
+| Change | Affects |
+|--------|---------|
+| `GEMINI.md`, `skills/setup.sh --gemini` and the `.opencode/` mirror are gone; `deploy.sh`/`npx` only deploy to the repo root (`--mode auto` is an alias of `root`) | Deploying, Gemini users, `--mode opencode`/`both` |
+| Re-deploying moves the library-installed `GEMINI.md` and `.opencode/` files into `.ai-library-backup/` — a project's own `.opencode/` config is left alone | Existing deployed projects |
+| `local-delegation` (Herdr + a local opencode session) stays | Local delegation |
+| `skill-sync` v2.2 no longer checks `GEMINI.md` | Registering a new skill |
+
+---
+
 ## CLAUDE.md, spec-driven v1.3, skill-sync v2.1 (2026-10-22)
 
 | Change | Affects |

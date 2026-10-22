@@ -1,6 +1,6 @@
 import { note, outro } from '@clack/prompts'
 
-export function printNextSteps({ targetRepo, mode, dryRun, claudeMdGenerated }) {
+export function printNextSteps({ targetRepo, dryRun, claudeMdGenerated }) {
   if (dryRun) {
     note(
       'Run the same command again and answer "No" to dry run (or drop --dry-run)\nto actually write the files.',
@@ -11,7 +11,7 @@ export function printNextSteps({ targetRepo, mode, dryRun, claudeMdGenerated }) 
   }
 
   const lines = []
-  lines.push(`1. Open ${targetRepo} in Claude Code (or Cursor / Copilot / OpenCode).`)
+  lines.push(`1. Open ${targetRepo} in Claude Code (or Cursor / Copilot).`)
 
   if (claudeMdGenerated) {
     lines.push('')
@@ -28,7 +28,7 @@ export function printNextSteps({ targetRepo, mode, dryRun, claudeMdGenerated }) 
   lines.push('3. Try a first prompt, e.g. "create a Server Action to update a user\'s name" —')
   lines.push('   the AI should load the matching skill on its own before writing code.')
   lines.push('')
-  lines.push(`4. Full skill list: ${mode === 'opencode' ? '.opencode/skills/_index.md' : 'skills/_index.md'}`)
+  lines.push(`4. Full skill list: skills/_index.md`)
   lines.push('')
   lines.push('5. To update later: re-run this same command. CLAUDE.md project context is never overwritten.')
 

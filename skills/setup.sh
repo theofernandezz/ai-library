@@ -33,7 +33,6 @@ CLAUDE=false
 CLAUDE_CODE=false
 CODEX=false
 GITHUB=false
-GEMINI=false
 CURSOR=false
 
 # Parse arguments
@@ -55,10 +54,6 @@ while [[ $# -gt 0 ]]; do
             GITHUB=true
             shift
             ;;
-        --gemini)
-            GEMINI=true
-            shift
-            ;;
         --cursor)
             CURSOR=true
             shift
@@ -68,7 +63,6 @@ while [[ $# -gt 0 ]]; do
             CLAUDE_CODE=true
             CODEX=true
             GITHUB=true
-            GEMINI=true
             CURSOR=true
             shift
             ;;
@@ -80,7 +74,6 @@ while [[ $# -gt 0 ]]; do
             echo "  --claude-code  Configure for Claude Code CLI"
             echo "  --codex        Configure for OpenAI Codex"
             echo "  --github    Configure for GitHub Copilot"
-            echo "  --gemini    Configure for Google Gemini"
             echo "  --cursor    Configure for Cursor IDE"
             echo "  --all       Configure for all assistants"
             echo "  --help      Show this help message"
@@ -114,14 +107,14 @@ echo ""
 # Interactive mode if no flags provided
 # =============================================================================
 
-if ! $CLAUDE && ! $CLAUDE_CODE && ! $CODEX && ! $GITHUB && ! $GEMINI && ! $CURSOR; then
+if ! $CLAUDE && ! $CLAUDE_CODE && ! $CODEX && ! $GITHUB && ! $CURSOR; then
     echo -e "${YELLOW}No assistant specified. Running in interactive mode...${NC}"
     echo ""
     echo "Select AI assistants to configure (space to toggle, enter to confirm):"
     echo ""
     
-    PS3="Enter your choice (1-8): "
-    options=("Claude (generic)" "Claude Code (CLI)" "Codex" "GitHub Copilot" "Gemini" "Cursor" "All" "Done")
+    PS3="Enter your choice (1-7): "
+    options=("Claude (generic)" "Claude Code (CLI)" "Codex" "GitHub Copilot" "Cursor" "All" "Done")
 
     selected=()
 
@@ -132,14 +125,12 @@ if ! $CLAUDE && ! $CLAUDE_CODE && ! $CODEX && ! $GITHUB && ! $GEMINI && ! $CURSO
                 "Claude Code (CLI)") CLAUDE_CODE=true; echo -e "${GREEN}✓ Claude Code selected${NC}" ;;
                 "Codex") CODEX=true; echo -e "${GREEN}✓ Codex selected${NC}" ;;
                 "GitHub Copilot") GITHUB=true; echo -e "${GREEN}✓ GitHub Copilot selected${NC}" ;;
-                "Gemini") GEMINI=true; echo -e "${GREEN}✓ Gemini selected${NC}" ;;
                 "Cursor") CURSOR=true; echo -e "${GREEN}✓ Cursor selected${NC}" ;;
                 "All")
                     CLAUDE=true
                     CLAUDE_CODE=true
                     CODEX=true
                     GITHUB=true
-                    GEMINI=true
                     CURSOR=true
                     echo -e "${GREEN}✓ All selected${NC}"
                     ;;
@@ -152,7 +143,7 @@ if ! $CLAUDE && ! $CLAUDE_CODE && ! $CODEX && ! $GITHUB && ! $GEMINI && ! $CURSO
 fi
 
 # Check if at least one selected
-if ! $CLAUDE && ! $CLAUDE_CODE && ! $CODEX && ! $GITHUB && ! $GEMINI && ! $CURSOR; then
+if ! $CLAUDE && ! $CLAUDE_CODE && ! $CODEX && ! $GITHUB && ! $CURSOR; then
     echo -e "${RED}No assistants selected. Exiting.${NC}"
     exit 1
 fi
@@ -334,19 +325,6 @@ EOF
     echo -e "${GREEN}✓ GitHub Copilot configured${NC}"
 }
 
-setup_gemini() {
-    echo -e "${CYAN}Setting up Gemini...${NC}"
-    mkdir -p .gemini
-    
-    if [ ! -L ".gemini/skills" ]; then
-        ln -sf ../skills .gemini/skills
-    fi
-    
-    # Note: Gemini requires experimental.skills in settings
-    echo -e "${YELLOW}Note: Enable experimental.skills in Gemini settings${NC}"
-    echo -e "${GREEN}✓ Gemini configured${NC}"
-}
-
 setup_cursor() {
     echo -e "${CYAN}Setting up Cursor...${NC}"
     mkdir -p .cursor
@@ -384,7 +362,6 @@ $CLAUDE && setup_claude
 $CLAUDE_CODE && setup_claude_code
 $CODEX && setup_codex
 $GITHUB && setup_github
-$GEMINI && setup_gemini
 $CURSOR && setup_cursor
 
 echo ""

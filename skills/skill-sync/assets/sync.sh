@@ -12,7 +12,7 @@ set -u
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 
 # Files that must list every generic skill by name, in backticks.
-PLACES="skills/_index.md README.md AGENTS.md GEMINI.md"
+PLACES="skills/_index.md README.md AGENTS.md"
 
 status=0
 count=0

@@ -39,7 +39,7 @@ Use this exact template when creating new skills:
 
 ````markdown
 ---
-name: [skill-folder-name]  # must equal the folder name — omp and opencode match skills (and agents' autoload-skills) by it
+name: [skill-folder-name]  # must equal the folder name — omp matches skills (and agents' autoload-skills) by it
 description: |
   [2-3 sentence description of what this skill enforces]
   Trigger: [When this skill should be auto-invoked]

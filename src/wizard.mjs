@@ -2,7 +2,6 @@ import { existsSync, statSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { intro, text, select, multiselect, confirm, note, isCancel, cancel } from '@clack/prompts'
 import { PROFILES, getAllSkills } from './profiles.mjs'
-import { detectMode } from './deploy.mjs'
 
 function bail(value) {
   if (isCancel(value)) {
@@ -59,20 +58,6 @@ export async function runWizard({ libraryDir, presetTarget }) {
     targetRepo = resolve(expandHome(input))
   }
 
-  const detected = detectMode(targetRepo)
-  const mode = bail(
-    await select({
-      message: 'Where should the files go?',
-      options: [
-        { value: 'auto', label: 'Auto-detect', hint: `currently: ${detected}` },
-        { value: 'root', label: 'Repo root', hint: 'AGENTS.md, skills/, agents/' },
-        { value: 'opencode', label: '.opencode/ only' },
-        { value: 'both', label: 'Root AND .opencode/' },
-      ],
-      initialValue: 'auto',
-    }),
-  )
-
   const allSkills = getAllSkills(libraryDir)
   const profile = bail(
     await select({
@@ -113,7 +98,6 @@ export async function runWizard({ libraryDir, presetTarget }) {
 
   const summaryLines = [
     `Target   ${targetRepo}`,
-    `Mode     ${mode}`,
     `Profile  ${profile}${profile === 'custom' ? ` (${customSkills.join(', ')})` : ''}`,
   ]
   if (dryRun) summaryLines.push('Dry run — no files will be written')
@@ -126,5 +110,5 @@ export async function runWizard({ libraryDir, presetTarget }) {
     process.exit(0)
   }
 
-  return { targetRepo, mode, profile, customSkills, dryRun, force, verbose: false }
+  return { targetRepo, mode: 'root', profile, customSkills, dryRun, force, verbose: false }
 }

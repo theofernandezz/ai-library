@@ -33,3 +33,28 @@ skills/generic/ux/references/golden-prompts.json
 .claude/skills/testing/references/golden-prompts.json
 .claude/skills/ui-engineering/references/golden-prompts.json
 .claude/skills/ux/references/golden-prompts.json
+
+# Gemini support and the .opencode/ deploy mode (removed). Only the files the
+# library installed are listed — a project's own .opencode/ config is never touched.
+GEMINI.md
+.opencode/AGENTS.md
+.opencode/agents/auth.md
+.opencode/agents/backend.md
+.opencode/agents/data.md
+.opencode/agents/git.md
+.opencode/agents/mobile.md
+.opencode/agents/testing.md
+.opencode/agents/ui.md
+.opencode/agents/verifier.md
+.opencode/skills/generic
+.opencode/skills/_index.md
+.opencode/skills/README.md
+.opencode/skills/changelog.md
+.opencode/skills/improvements.md
+.opencode/skills/setup.sh
+.opencode/skills/feedback-loop
+.opencode/skills/local-delegation
+.opencode/skills/project-setup
+.opencode/skills/skill-creator
+.opencode/skills/skill-sync
+.opencode/skills/spec-driven

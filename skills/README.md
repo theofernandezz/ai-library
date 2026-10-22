@@ -47,7 +47,6 @@ Skills are structured instructions that give AI assistants the context they need
 ./setup.sh --claude     # Claude/Anthropic
 ./setup.sh --codex      # OpenAI Codex
 ./setup.sh --github     # GitHub Copilot
-./setup.sh --gemini     # Google Gemini
 ./setup.sh --cursor     # Cursor IDE
 ./setup.sh --all        # All assistants
 ```
@@ -57,7 +56,6 @@ This creates symlinks in the appropriate directories:
 - `.claude/skills/`
 - `.codex/skills/`
 - `.github/skills/`
-- `.gemini/skills/`
 - `.cursor/skills/`
 
 > **Note**: Restart your AI coding assistant after running setup to load the skills.
