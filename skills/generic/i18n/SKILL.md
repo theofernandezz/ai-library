@@ -6,7 +6,7 @@ description: |
 license: MIT
 metadata:
   author: ai-library
-  version: "1.0"
+  version: "1.1"
   scope: [root, ui, backend]
   auto_invoke:
     - "Adding translations"
@@ -28,7 +28,10 @@ metadata:
 
 | Version | Change | Affects |
 |---------|--------|---------|
-| — | No tracked changes yet | — |
+| next-intl 4 + Next.js 16.3 | Config split into `i18n/routing.ts` (`defineRouting`), `i18n/request.ts` and `i18n/navigation.ts`; the root `i18n.ts` exporting `locales` is gone | Setup, imports of `locales` |
+| Next.js 16.3 | `request.ts` reads the locale from `next/root-params`; `requestLocale` is legacy. `[locale]/layout.tsx` must be the root layout | Request config, app structure |
+| Next.js 16.3 | Root params don't work in Server Actions — pass `locale` to `getTranslations({ locale, namespace })` | Server Actions |
+| next-intl 4 | `NextIntlClientProvider` inherits messages; no `getMessages()` in the layout | Root layout |
 
 ---
 
@@ -138,21 +141,58 @@ pnpm add next-intl
 ```
 
 ```typescript
-// i18n.ts (root)
+// next.config.ts — the plugin finds i18n/request.ts
+import type { NextConfig } from 'next'
+import createNextIntlPlugin from 'next-intl/plugin'
+
+const nextConfig: NextConfig = {}
+
+export default createNextIntlPlugin()(nextConfig)
+```
+
+```typescript
+// i18n/routing.ts — single source of locales
+import { defineRouting } from 'next-intl/routing'
+
+export const routing = defineRouting({
+  locales: ['en', 'es', 'pt'],
+  defaultLocale: 'en',
+  localePrefix: 'as-needed', // Only show /es, /pt, not /en
+})
+```
+
+```typescript
+// i18n/request.ts
+import * as rootParams from 'next/root-params'
 import { notFound } from 'next/navigation'
+import { hasLocale } from 'next-intl'
 import { getRequestConfig } from 'next-intl/server'
+import { routing } from './routing'
 
-export const locales = ['en', 'es', 'pt'] as const
-export type Locale = (typeof locales)[number]
-export const defaultLocale: Locale = 'en'
-
+// `locale` is set only when passed explicitly (Server Actions, Route Handlers);
+// otherwise read the [locale] root param (Next.js 16.3+).
+// `requestLocale` is the legacy pre-root-params API — don't use it.
 export default getRequestConfig(async ({ locale }) => {
-  if (!locales.includes(locale as Locale)) notFound()
+  if (!locale) {
+    const paramValue = await rootParams.locale()
+    if (!hasLocale(routing.locales, paramValue)) notFound()
+    locale = paramValue
+  }
 
   return {
-    messages: (await import(`./messages/${locale}.json`)).default,
+    locale,
+    messages: (await import(`../messages/${locale}.json`)).default,
   }
 })
+```
+
+```typescript
+// i18n/navigation.ts — locale-aware Link/router; use instead of next/navigation
+import { createNavigation } from 'next-intl/navigation'
+import { routing } from './routing'
+
+export const { Link, redirect, usePathname, useRouter, getPathname } =
+  createNavigation(routing)
 ```
 
 ### 2. Proxy Configuration (formerly Middleware)
@@ -160,16 +200,13 @@ export default getRequestConfig(async ({ locale }) => {
 ```typescript
 // proxy.ts (middleware.ts on Next.js 15 and earlier — see `nextjs-core`)
 import createMiddleware from 'next-intl/middleware'
-import { locales, defaultLocale } from './i18n'
+import { routing } from './i18n/routing'
 
-export default createMiddleware({
-  locales,
-  defaultLocale,
-  localePrefix: 'as-needed', // Only show /es, /pt, not /en
-})
+export default createMiddleware(routing)
 
 export const config = {
-  matcher: ['/', '/(es|pt|en)/:path*'],
+  // Everything except /api, /trpc, /_next, /_vercel and files with a dot
+  matcher: '/((?!api|trpc|_next|_vercel|.*\\..*).*)',
 }
 ```
 
@@ -196,19 +233,21 @@ messages/
 ### 4. Root Layout with Provider
 
 ```typescript
-// app/[locale]/layout.tsx
-import { NextIntlClientProvider } from 'next-intl'
-import { getMessages, getTranslations } from 'next-intl/server'
+// app/[locale]/layout.tsx — must be the root layout: no app/layout.tsx above it,
+// or next/root-params can't read [locale]
 import { notFound } from 'next/navigation'
-import { locales, Locale } from '@/i18n'
+import { hasLocale, NextIntlClientProvider } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
+import { routing } from '@/i18n/routing'
 
 interface Props {
   children: React.ReactNode
-  params: { locale: string }
+  params: Promise<{ locale: string }>
 }
 
+// Still required for static rendering
 export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }))
+  return routing.locales.map((locale) => ({ locale }))
 }
 
 export async function generateMetadata({ params }: Props) {
@@ -224,18 +263,15 @@ export async function generateMetadata({ params }: Props) {
 export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params
 
-  if (!locales.includes(locale as Locale)) {
+  if (!hasLocale(routing.locales, locale)) {
     notFound()
   }
-
-  const messages = await getMessages()
 
   return (
     <html lang={locale}>
       <body>
-        <NextIntlClientProvider messages={messages}>
-          {children}
-        </NextIntlClientProvider>
+        {/* Inherits messages from i18n/request.ts (next-intl 4) */}
+        <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>
   )
@@ -287,8 +323,10 @@ export function WelcomeBanner() {
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 
-export async function createProject(formData: FormData) {
-  const t = await getTranslations('errors')
+// next/root-params doesn't work in Server Actions: take the locale as an
+// argument (bind it from the form) and pass it explicitly
+export async function createProject(locale: string, formData: FormData) {
+  const t = await getTranslations({ locale, namespace: 'errors' })
   
   const schema = z.object({
     name: z.string().min(1, t('required')),
@@ -303,7 +341,7 @@ export async function createProject(formData: FormData) {
   }
 
   // Create project...
-  const successT = await getTranslations('success')
+  const successT = await getTranslations({ locale, namespace: 'success' })
   return { success: true, message: successT('projectCreated') }
 }
 ```
@@ -313,9 +351,9 @@ export async function createProject(formData: FormData) {
 ```typescript
 'use client'
 
-import { useLocale } from 'next-intl'
-import { useRouter, usePathname } from 'next/navigation'
-import { locales, Locale } from '@/i18n'
+import { type Locale, useLocale } from 'next-intl'
+import { usePathname, useRouter } from '@/i18n/navigation'
+import { routing } from '@/i18n/routing'
 
 const localeNames: Record<Locale, string> = {
   en: 'English',
@@ -328,10 +366,9 @@ export function LanguageSwitcher() {
   const router = useRouter()
   const pathname = usePathname()
 
+  // pathname has no locale prefix; the router adds the right one
   const switchLocale = (newLocale: Locale) => {
-    // Replace current locale in path
-    const newPath = pathname.replace(`/${locale}`, `/${newLocale}`)
-    router.push(newPath)
+    router.replace(pathname, { locale: newLocale })
   }
 
   return (
@@ -339,7 +376,7 @@ export function LanguageSwitcher() {
       value={locale}
       onChange={(e) => switchLocale(e.target.value as Locale)}
     >
-      {locales.map((loc) => (
+      {routing.locales.map((loc) => (
         <option key={loc} value={loc}>
           {localeNames[loc]}
         </option>
@@ -468,8 +505,12 @@ function TimeAgo({ date }: { date: Date }) {
 
 ```
 project/
-├── i18n.ts                    # Configuration
+├── next.config.ts             # createNextIntlPlugin()
 ├── proxy.ts                   # Locale detection (middleware.ts before Next.js 16)
+├── i18n/
+│   ├── routing.ts             # defineRouting — locales, defaultLocale
+│   ├── request.ts             # getRequestConfig — locale + messages
+│   └── navigation.ts          # createNavigation — Link, useRouter, usePathname
 ├── messages/
 │   ├── en.json
 │   ├── es.json
@@ -500,4 +541,4 @@ project/
 
 ---
 
-*Skill Version: 1.0.0 | Compatible with next-intl 3.x & Next.js 16.x*
+*Skill Version: 1.1.0 | Compatible with next-intl 4.x & Next.js 16.3+*

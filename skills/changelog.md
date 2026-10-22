@@ -6,6 +6,15 @@
 
 ---
 
+## i18n v1.1, deploy.sh on macOS bash (2026-10-22)
+
+| Change | Affects |
+|--------|---------|
+| `i18n` setup rewritten for next-intl 4 + Next.js 16.3: `i18n/routing.ts` (`defineRouting`), `i18n/request.ts` reading `next/root-params`, `i18n/navigation.ts`, `createMiddleware(routing)`; Server Actions pass `locale` explicitly | Any project using next-intl |
+| `deploy.sh` custom skill menu no longer uses `mapfile`, so it runs on macOS bash 3.2 | Deploying with `./deploy.sh` on macOS |
+
+---
+
 ## Gemini and the .opencode/ deploy mode removed (2026-10-22)
 
 | Change | Affects |
