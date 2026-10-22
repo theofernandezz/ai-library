@@ -6,6 +6,16 @@
 
 ---
 
+## CLAUDE.md, spec-driven v1.2, local-delegation v1.0 (2026-10-22)
+
+| Change | Affects |
+|--------|---------|
+| New "smallest solution that holds" ladder runs before sizing a spec or counting files for delegation; a new dependency is now asked, never installed | Any feature work, delegation decisions |
+| Herdr/opencode handoff moved from `CLAUDE.md` to skill `local-delegation`; the full-stack worked example moved to `spec-driven` | Local delegation, sequential delegation |
+| The open-issues/changelog check runs only inside the `ai-library` repo, not at the start of every deployed project's session | Session start in deployed projects |
+
+---
+
 ## spec-driven, feedback-loop, project-setup (2026-10-19)
 
 | Change | Affects |

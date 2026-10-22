@@ -191,7 +191,7 @@ function printReport(ctx) {
 
 // Meta-skills used inside projects — also shipped to .claude/skills so Claude Code
 // and omp discover them natively. skill-creator/skill-sync only maintain the library.
-const PROJECT_META_SKILLS = ['spec-driven', 'feedback-loop', 'project-setup']
+const PROJECT_META_SKILLS = ['spec-driven', 'feedback-loop', 'project-setup', 'local-delegation']
 
 function copyTopLevelSkillFiles(ctx, libraryDir, target) {
   const skillsDir = join(libraryDir, 'skills')

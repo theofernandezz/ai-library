@@ -38,6 +38,7 @@
 | `skill-sync`    | Check every skill is registered in the indexes             |
 | `feedback-loop` | Capture improvement signals and learnings                  |
 | `project-setup` | Document project context in CLAUDE.md                      |
+| `local-delegation` | Hand small mechanical tasks to a local model via Herdr  |
 | `spec-driven`   | Size the spec to the risk: inline, mini-spec, or spec-first |
 
 ---

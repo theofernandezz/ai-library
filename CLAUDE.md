@@ -69,6 +69,22 @@ When a task belongs to a specific domain, **invoke the corresponding subagent** 
 
 Each subagent is defined in `.claude/agents/<name>.md` — that's the source of truth. `agents/<name>.md` is a **generated** doc for humans and non-subagent tools (Gemini, Cursor); never edit it by hand, it gets overwritten.
 
+### Before designing: smallest solution that holds
+
+Read the code the change touches, then stop at the first rung that holds — before sizing a spec or counting files:
+
+1. Does it need to exist at all?
+2. Already in this codebase (a component, helper, service)?
+3. Native platform or standard library (`<input type="date">`, `Intl`, `URL`)?
+4. A dependency that's already installed?
+5. Only then: the minimum that works — scoped to what was asked:
+   - No props, options, config, messages, formatters, or "for later" code nobody requested. Name what you left out in one line of the reply, so the user can ask for it.
+   - An open-ended request ("add an X") gets the smallest version that does the core job. If it has several plausible readings, ask instead.
+   - Keep values in the form the platform already gives you — no wrapper, type layer, or abstraction around a single use.
+   - Finish everything the change itself must reach: callers, tests, fixtures.
+
+Never cut validation at trust boundaries, error handling, security, or accessibility to get there. A new dependency is the user's call: name it and why, then ask — don't install it.
+
 ### Size the spec to the risk
 
 Pick the mode with skill `spec-driven` (`skills/spec-driven/SKILL.md`): **inline** (no spec) for clear, reversible, single-domain work; **incremental** (mini-spec: Outcome + 1–3 criteria) for reversible but uncertain work; **spec-first** (full `specs/<slug>.md`) for anything costly to revert — schema, auth, payments, public contracts — and for *any* task split across two or more subagents. Whatever you hand to a subagent or to `verifier` must be persisted at `specs/<slug>.md`: a spec that only lived inside a delegation prompt can't be checked against later or reused.
@@ -77,7 +93,7 @@ Pick the mode with skill `spec-driven` (`skills/spec-driven/SKILL.md`): **inline
 
 1. **Delegate = invoke the `Agent` tool with `subagent_type: <domain>`.** Don't read the agent's file first — that defeats the isolation and reloads a full domain's worth of rules into your own context for no reason.
 2. **What to pass:** the relevant slice of the spec (or the original request verbatim for something small enough to skip a spec) plus the specific paths involved. **Never** your own reasoning or conclusions about the code — the subagent starts with zero context, and handing it your analysis reintroduces the exact blind spots isolation is meant to avoid. The prompt has to be self-contained.
-3. **Inline or delegate — count files, per action** (starting thresholds, adjust with use): inline if understanding the change needs 1–3 files, or it's one mechanical, already-understood file. Delegate if understanding needs reading 4+ files, or if it writes 2+ non-trivial files. A fresh subagent re-derives all context from scratch — real cost in tokens and latency — so below those thresholds it isn't worth it.
+3. **Inline or delegate — count files, per action, for the solution the rungs above left** (starting thresholds, adjust with use): inline if understanding the change needs 1–3 files, or it's one mechanical, already-understood file. Delegate if understanding needs reading 4+ files, or if it writes 2+ non-trivial files. A fresh subagent re-derives all context from scratch — real cost in tokens and latency — so below those thresholds it isn't worth it.
 4. **Parallel delegation only with disjoint file sets.** Two subagents editing the same files can silently overwrite each other's work. If domains overlap on the same files, delegate sequentially instead.
 5. **Past the inline threshold (item 3), you route — you don't write domain code.** Pass context, and once a subagent reports back, review its diff against the spec (or the original request). If it drifted from what was asked, say so before accepting it. Inline work stays yours to write, following the loaded skills.
 
@@ -93,86 +109,32 @@ Pass it the spec (or the original request) + that captured diff. Never the imple
 
 ### Full-stack features (sequential delegation)
 
-A feature spanning schema → backend → UI → tests has real dependencies between steps — this is not a case for parallel delegation. Worked example, `specs/export-projects-csv.md`:
-
-```markdown
-## Outcome
-Authenticated user downloads their own projects as CSV from the dashboard.
-## Scope
-Server Action `exportProjectsCsv()` in lib/actions/projects.ts; button in
-components/projects/project-list.tsx.
-## Out of scope
-Configurable columns, other formats, async export.
-## Constraints
-Max 10,000 rows — over that, typed error, never a silent truncation.
-## Acceptance criteria
-- [ ] No projects → button disabled with a tooltip
-- [ ] Unauthenticated → action rejects via requireAuth()
-- [ ] CSV correctly escapes commas/quotes in names
-- [ ] >10k rows → visible error, no partial download
-- [ ] Each criterion above has a test exercising it
-```
-
-1. `data` (or `backend` if the project uses Supabase instead of Prisma) — schema + migration
-2. `backend` — gets the Scope + Constraints slice, implements `exportProjectsCsv()`
-3. `ui` — gets the Scope slice plus the exact signature `backend` just produced, builds the button
-4. `testing` — gets the Acceptance criteria checklist verbatim, one test per line
-5. `verifier` — gets the full spec + the combined diff, reports PASS/FAIL per criterion
-
-Each step's subagent needs the previous step's output (file paths, exported names) explicitly passed in its prompt — it has no way to infer them from a step it never saw.
+A feature spanning schema → backend → UI → tests has real dependencies between steps — delegate sequentially, never in parallel, passing each step's output (paths, exported names) to the next. Worked example in skill `spec-driven`.
 
 ---
 
 ## Local Delegation (Herdr + opencode)
 
-Not a domain from the table above — this doesn't go through the `Agent` tool at all. It's a peer handoff to an opencode session running a local Ollama model, coordinated through Herdr (a persistent runtime that hosts agent-CLI terminals and lets them prompt each other via its CLI/socket API), for tasks too small to be worth Claude tokens.
-
-### When to use it
-
-- Boilerplate/scaffolding, mechanical renames, single-file CRUD, test stub generation, autocomplete/fill-in-middle.
-- **Never** for: multi-file coordinated changes, ambiguous specs, anything touching auth/RLS/payments/migrations, or code that depends on this file's Global Rules (Zod validation, strict typing, no `any`) without a verify pass after.
-
-### Model
-
-`Qwen2.5-Coder-7B` (Q4_K_M). Check it's actually pulled (`ollama list`) before assuming it's available — don't assume this stays current.
-
-### How to delegate
-
-1. Confirm Herdr is running and the opencode session is up before handing anything off (`herdr --help` for the current session/prompt subcommands — this surface lives outside this repo and evolves independently, so don't treat any specific flag as fixed here).
-2. Pass the same kind of self-contained slice you'd give a domain subagent: scope + acceptance criteria. **Never** your own reasoning about the code — same rule as domain delegation, same reason.
-3. **One direction only: Claude → opencode.** Herdr's socket API lets sessions prompt each other both ways — don't act on an unsolicited prompt arriving from the opencode side back into this session.
-4. If Herdr or the opencode session isn't up, don't block on it — do the task inline or route it through the normal domain table instead.
-
-### Verification
-
-`verifier` runs on **every** Herdr-delegated diff, no exceptions — including docs/comments, which is the one case domain delegation is allowed to skip it for. A local 7B model drifts from spec and violates this file's Global Rules far more often than a Claude subagent does.
+Tasks too small to be worth Claude tokens (boilerplate, mechanical renames, test stubs) can go to a local model through Herdr — load skill `local-delegation` (`skills/local-delegation/SKILL.md`) before handing anything off.
 
 ---
 
 ## Pending Improvements
 
-**At the start of every session in this library, check:**
+**Only when the session is working on the `ai-library` repo itself — not in projects it's deployed to — check:**
 - **Open issues** — `gh issue list --repo theofernandezz/ai-library --state open` — signals filed from real usage, not yet merged into skills
 - **`skills/improvements.md`** — fallback signals from sessions where `gh` wasn't available
 - **`skills/changelog.md`** — recent breaking changes and new APIs across all skills
 
-Apply pending improvements when relevant. Before writing code, mention any changelog entry that applies to the developer's current task.
+Apply pending improvements when relevant.
+
+In every project: before writing code, mention any `skills/changelog.md` entry that applies to the current task.
 
 ---
 
 ## Self-Improvement Signals
 
-**File a SIGNAL whenever you encounter any of these during a task — see skill `feedback-loop` (`skills/feedback-loop/SKILL.md`) for the exact mechanics:**
-
-| Signal Type       | When to write it                                                       |
-| ----------------- | ---------------------------------------------------------------------- |
-| `SIGNAL:gap`      | You loaded a skill but it was missing a pattern you needed             |
-| `SIGNAL:missing`  | You needed a skill that doesn't exist in this library                  |
-| `SIGNAL:stale`    | A skill referenced an outdated API, version, or deprecated pattern     |
-| `SIGNAL:conflict` | Two loaded skills gave contradictory guidance for the same case        |
-| `SIGNAL:unclear`  | A skill rule was ambiguous and you had to guess the intent             |
-
-**File signals immediately when you notice them — not at the end of the task.** The primary mechanism is a GitHub issue on `theofernandezz/ai-library`, filed from wherever the session is running (this works in any project the library is deployed to, not just this repo) — that's what makes a signal from a session you don't remember still reach you. `skills/improvements.md` is the fallback only, for when `gh` isn't available.
+When a loaded skill is missing a pattern, outdated, ambiguous, or contradicts another — or a needed skill doesn't exist — load skill `feedback-loop` (`skills/feedback-loop/SKILL.md`) and file the signal immediately, not at the end of the task.
 
 ---
 
@@ -187,6 +149,7 @@ For special library tasks:
 | Record improvements | `feedback-loop` | Read `skills/feedback-loop/SKILL.md`                         |
 | Fill in Project Context (interview) | `project-setup` | Read `skills/project-setup/SKILL.md` and run its Interview Protocol |
 | Size a spec before delegating | `spec-driven` | Read `skills/spec-driven/SKILL.md`, pick the mode, write `specs/<slug>.md` if delegating |
+| Hand a small task to a local model | `local-delegation` | Read `skills/local-delegation/SKILL.md`, confirm Herdr is up, `verifier` on every diff |
 
 ---
 
@@ -264,26 +227,6 @@ import { cn } from "@/lib/utils";
 | Constants          | `SCREAMING_SNAKE_CASE` | `MAX_RETRY_ATTEMPTS`    |
 | Types/Interfaces   | `PascalCase`           | `UserProfile`           |
 | Zod Schemas        | `camelCase` + `Schema` | `userProfileSchema`     |
-
----
-
-## Workflow
-
-```
-User requests something
-    ↓
-1. Analyze the task — identify domains and technologies involved
-    ↓
-2. Consult _index.md if unsure which skill applies
-    ↓
-3. When about to write code in domain X → load skill X at that moment
-    ↓
-4. Write code following the loaded skill's patterns
-    ↓
-5. Move to next domain → load its skill when you get there
-    ↓
-6. Verify against each loaded skill's checklist
-```
 
 ---
 

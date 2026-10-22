@@ -7,7 +7,7 @@ description: |
 license: MIT
 metadata:
   author: ai-library
-  version: "1.1"
+  version: "1.2"
   scope: [root]
   auto_invoke:
     - "About to delegate a non-trivial or multi-domain task to a subagent"
@@ -93,4 +93,30 @@ Keep the spec after the task ships — it's the record of what was agreed, and t
 
 ### Worked example
 
-The "Full-stack features" walkthrough in `CLAUDE.md` (export-to-CSV: spec → `backend` → `ui` → `testing` → `verifier`).
+A full-stack feature, `specs/export-projects-csv.md`:
+
+```markdown
+## Outcome
+Authenticated user downloads their own projects as CSV from the dashboard.
+## Scope
+Server Action `exportProjectsCsv()` in lib/actions/projects.ts; button in
+components/projects/project-list.tsx.
+## Out of scope
+Configurable columns, other formats, async export.
+## Constraints
+Max 10,000 rows — over that, typed error, never a silent truncation.
+## Acceptance criteria
+- [ ] No projects → button disabled with a tooltip
+- [ ] Unauthenticated → action rejects via requireAuth()
+- [ ] CSV correctly escapes commas/quotes in names
+- [ ] >10k rows → visible error, no partial download
+- [ ] Each criterion above has a test exercising it
+```
+
+1. `data` (or `backend` if the project uses Supabase instead of Prisma) — schema + migration
+2. `backend` — gets the Scope + Constraints slice, implements `exportProjectsCsv()`
+3. `ui` — gets the Scope slice plus the exact signature `backend` just produced, builds the button
+4. `testing` — gets the Acceptance criteria checklist verbatim, one test per line
+5. `verifier` — gets the full spec + the combined diff, reports PASS/FAIL per criterion
+
+Each step's subagent needs the previous step's output (file paths, exported names) explicitly passed in its prompt — it has no way to infer them from a step it never saw.

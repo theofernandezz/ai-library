@@ -71,7 +71,7 @@ PROFILE_API="api-design database security error-handling typescript email env-co
 
 # Meta-skills used inside projects — also shipped to .claude/skills so Claude Code
 # and omp discover them natively. skill-creator/skill-sync only maintain the library.
-PROJECT_META_SKILLS="spec-driven feedback-loop project-setup"
+PROJECT_META_SKILLS="spec-driven feedback-loop project-setup local-delegation"
 
 # ── All available generic skills (auto-discovered) ─────────────────────────────
 get_all_skills() {
