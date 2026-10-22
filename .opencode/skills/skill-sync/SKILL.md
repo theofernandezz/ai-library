@@ -6,7 +6,7 @@ description: |
 license: MIT
 metadata:
   author: ai-library
-  version: "2.0"
+  version: "2.1"
   scope: [root]
   auto_invoke:
     - "After creating/modifying a skill"
@@ -30,7 +30,6 @@ Every `skills/generic/<name>/SKILL.md` must appear as `` `<name>` `` in each of 
 | `skills/_index.md` | Skills table |
 | `README.md` | Skills table |
 | `AGENTS.md` | Skills Index table, plus its Auto-invoke rows |
-| `CLAUDE.md` | Automatic Skill Detection table |
 | `GEMINI.md` | Automatic Skill Detection table |
 
 ---

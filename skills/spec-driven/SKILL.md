@@ -7,7 +7,7 @@ description: |
 license: MIT
 metadata:
   author: ai-library
-  version: "1.2"
+  version: "1.3"
   scope: [root]
   auto_invoke:
     - "About to delegate a non-trivial or multi-domain task to a subagent"
@@ -81,11 +81,17 @@ subagents) could reasonably implement differently.
 
 ### Delegating
 
-Pass each subagent only its slice of the spec — never the orchestrator's reasoning about *why*. Sequential steps (`data` → `backend` → `ui`) each get the previous step's concrete output (paths, exported names) added to their slice; the spec fixes intent, not implementation. See `CLAUDE.md`'s "How to delegate".
+Pass each subagent only its slice of the spec — never the orchestrator's reasoning about *why*. Sequential steps (`data` → `backend` → `ui`) each get the previous step's concrete output (paths, exported names) added to their slice; the spec fixes intent, not implementation. See `CLAUDE.md`'s "Delegation".
 
 ### Verifying
 
 `verifier` receives the spec (or the relevant slice) plus the diff. It checks each criterion PASS/FAIL; a criterion with no test exercising it is a FAIL. See `.claude/agents/verifier.md`.
+
+- **Why it exists:** a fresh-context pass catches what the implementer's own context can't — especially when a previously-failing gate (tests, build, lint) now passes, the classic sign of scope drift or a test quietly weakened to pass.
+- **Freeze the candidate:** capture `git diff` yourself right after the subagent reports done and pass that exact output — don't let `verifier` re-derive it from the live repo, where something may have shifted since.
+- **Never pass the implementer's reasoning** — that defeats the fresh context.
+- **One correction, exactly:** on a FAIL, send the specific delta to the subagent that owns the file. If the same criterion fails again, stop and report the diagnosis to the user instead of retrying a third time.
+- **Model:** default Sonnet is enough for routine diffs; use `model: opus` for auth, payments, and migrations, where a missed flaw is costly to revert.
 
 ### Lifecycle
 

@@ -6,6 +6,17 @@
 
 ---
 
+## CLAUDE.md, spec-driven v1.3, skill-sync v2.1 (2026-10-22)
+
+| Change | Affects |
+|--------|---------|
+| `CLAUDE.md` cut to its rules: the skill-detection, domain and meta-skill tables are gone (Claude Code lists skills and subagents natively), Global Rules are one line each | Session context in every deployed project |
+| `verifier` details (freeze the diff, one correction, when to use opus) moved to `spec-driven` | Verification |
+| `skill-sync` no longer requires skills to be listed in `CLAUDE.md` | Registering a new skill |
+| Deployed projects no longer read this changelog at session start (it cost a file read every session); generic skills carry their own "What's New" table, read when the skill loads | Session start in deployed projects |
+
+---
+
 ## CLAUDE.md, spec-driven v1.2, local-delegation v1.0 (2026-10-22)
 
 | Change | Affects |
