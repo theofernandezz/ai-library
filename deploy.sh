@@ -815,8 +815,11 @@ ask_custom_skills() {
   echo -e "  ${DIM}Example: 1 3 5${RESET}"
   echo ""
 
-  local all_skills
-  mapfile -t all_skills < <(get_all_skills)
+  # bash 3.2 (macOS default) has no mapfile
+  local all_skills=() skill
+  while IFS= read -r skill; do
+    all_skills+=("$skill")
+  done < <(get_all_skills)
 
   if [[ ${#all_skills[@]} -eq 0 ]]; then
     warn "No skills found in skills/generic/. Using full profile."
