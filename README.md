@@ -142,7 +142,7 @@ The Team Lead breaks down the task, assigns work to agents, and reviews their ou
 
 A root-mode deploy also works in [omp](https://omp.sh): omp reads `AGENTS.md` and `.claude/skills/` as they are, and the same 8 agents ship in `.omp/agents/` (omp doesn't scan `.claude/agents/`). `generate-agents.sh` derives them from `.claude/agents/*.md`: Claude Code's `model: sonnet` becomes `anthropic/claude-sonnet-5-5`, `effort` becomes `thinking-level`, and `skills` becomes `autoload-skills`. Log in with `omp login` (Claude Pro/Max OAuth or an API key).
 
-omp does not read the root `CLAUDE.md` — only `AGENTS.md` — so the delegation and `verifier` rules in `CLAUDE.md` don't reach it.
+omp does not read the root `CLAUDE.md` — only `AGENTS.md`. `AGENTS.md` carries the same delegation rule (inline by default) and a short version of the `verifier` step.
 
 The project meta-skills `spec-driven`, `feedback-loop` and `project-setup` also ship to `.claude/skills/`, so omp lists them as skills. `spec-driven` holds the verification details and the full-stack worked example; `CLAUDE.md` keeps the delegation rules.
 

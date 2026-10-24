@@ -6,6 +6,15 @@
 
 ---
 
+## spec-driven v1.4, inline-by-default delegation (2026-10-24)
+
+| Change | Affects |
+|--------|---------|
+| `CLAUDE.md` Delegation: the "4+ files → delegate" threshold is gone; work is inline by default and delegated only for parallel disjoint pieces or a heavy main context. A benchmark (5 tasks up to 12 files, one accumulating session, Opus 5.5) showed the same quality inline, while delegating cost ~2× and left the main context the same size | Every deployed project's `CLAUDE.md` (re-deploy to pick it up) |
+| New "Large features: slice" rule: a spec with more than one Outcome is split into vertical slices; only the next slice is fully specified, and each following slice is rewritten from what the previous one taught | Spec-first features, especially multi-subagent ones |
+
+---
+
 ## typescript skill removed (2026-10-22)
 
 | Change | Affects |

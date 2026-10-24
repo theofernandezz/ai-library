@@ -16,7 +16,7 @@
 
 ## 🤖 Specialized Agents
 
-When a task falls into a specific domain, **route to the specialized agent** which knows how to orchestrate multiple skills:
+When a task falls into a specific domain, **read its specialized agent doc** — it lists the conventions and skills for that domain:
 
 | Domain             | Agent                                     | Claude Code Agent                        | Skills Orchestrated                                         |
 | ------------------ | ----------------------------------------- | ---------------------------------------- | ----------------------------------------------------------- |
@@ -30,7 +30,7 @@ When a task falls into a specific domain, **route to the specialized agent** whi
 
 > **Note:** Files in `/agents/` are **generated** from `.claude/agents/*.md` (the source of truth) — don't edit them by hand. Claude Code invokes `.claude/agents/*.md` directly as real subagents; tools without subagent support read the generated `/agents/*.md` docs instead. omp reads its own generated copies in `.omp/agents/*.md`.
 > **Data/Prisma, Git, and Mobile don't have a `/<domain>/AGENTS.md`** — that per-scope doc layer only exists for ui/backend/auth/testing today. Use `agents/*.md` directly for these three.
-> There is no `feature` agent — a full-stack feature is sequential delegation across `data`/`backend` → `ui` → `testing`, coordinated by the orchestrator (see `CLAUDE.md`'s "Full-stack features" section).
+> There is no `feature` agent — a full-stack feature is done inline like any other change; when it is delegated, it goes sequentially across `data`/`backend` → `ui` → `testing`, coordinated by the orchestrator (see `CLAUDE.md`'s "Full-stack features" section).
 
 ### Agent Hierarchy
 
@@ -46,16 +46,18 @@ AGENTS.md (Orchestrator Agent - OA)
 
 ### Delegation Rules
 
-**Automatic delegation:** When a task matches a domain, delegate to the specialized agent:
+**Inline by default, whatever the file count.** Do the change yourself, following the domain's agent doc. Delegating a sequential change costs ~2× and doesn't shrink your context — routing and reviewing it reads the same code.
 
-- For UI/Frontend tasks → delegate to ui agent
-- For Backend/Server tasks → delegate to backend agent
-- For Authentication tasks → delegate to auth agent
-- For Testing tasks → delegate to testing agent
-- For Prisma/data modeling tasks → delegate to data agent
-- For full-stack features spanning multiple domains → sequential delegation, data/backend → ui → testing (no single feature agent)
-- For commits/branches/PRs → delegate to git agent
-- For React Native/Expo tasks → delegate to mobile agent
+Run a domain agent as a separate subagent only if your tool supports subagents and either:
+
+- independent pieces split into disjoint file sets that can run in parallel, or
+- your context is already heavy (long session, large reads) and the task can be handed off whole with a spec (`skills/spec-driven`).
+
+Domain → agent: UI/Frontend → ui · Backend/Server → backend · Authentication → auth · Testing → testing · Prisma/data modeling → data · commits/branches/PRs → git · React Native/Expo → mobile.
+
+### Verification before "done"
+
+After a fix, feature, or refactor (not docs/comments/formatting), review the change with fresh context, following [`agents/verifier.md`](agents/verifier.md). Always do it for auth, payments, data mutations, and migrations. Capture `git diff` yourself and pass only that diff plus the request or spec — never your reasoning about the code. If your tool supports subagents, run `verifier` as one; otherwise use a new chat. One correction round: if the same criterion fails again, stop and report to the user.
 
 ---
 

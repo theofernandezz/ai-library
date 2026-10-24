@@ -24,7 +24,7 @@ Never cut validation at trust boundaries, error handling, security, or accessibi
 
 ## Delegation
 
-- **Inline or delegate — count files for the solution the rungs above left.** Inline if understanding the change needs 1–3 files, or it's one mechanical, already-understood file. Delegate (`Agent` tool, `subagent_type: <domain>`) if it needs 4+ files or writes 2+ non-trivial files. Past that threshold you route and review diffs; you don't write domain code.
+- **Inline by default, whatever the file count.** Delegating a sequential change costs ~2× and doesn't shrink your context — routing and reviewing it reads the same code. Delegate (`Agent` tool, `subagent_type: <domain>`) only when independent pieces split into disjoint file sets that can run in parallel, or your context is already heavy (long session, large reads) and the task can be handed off whole with a spec.
 - **Size the spec to the risk** with skill `spec-driven`: none for clear reversible work, a mini-spec for uncertain work, a full `specs/<slug>.md` for anything costly to revert (schema, auth, payments, public contracts) or split across 2+ subagents. Anything handed to a subagent or `verifier` is persisted there.
 - **What to pass:** the spec slice (or the request verbatim) plus paths — never your own reasoning about the code. Don't read the agent's file first.
 - **Parallel only with disjoint file sets.**
@@ -32,7 +32,7 @@ Never cut validation at trust boundaries, error handling, security, or accessibi
 
 ### Full-stack features
 
-Sequential (`data`/`backend` → `ui` → `testing` → `verifier`), each step getting the previous step's paths and exported names. Worked example in `spec-driven`.
+Inline like any other change. When one is delegated (see above): sequential (`data`/`backend` → `ui` → `testing` → `verifier`), each step getting the previous step's paths and exported names. Worked example in `spec-driven`.
 
 ## Verification before "done"
 
