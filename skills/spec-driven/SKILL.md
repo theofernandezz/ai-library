@@ -7,7 +7,7 @@ description: |
 license: MIT
 metadata:
   author: ai-library
-  version: "1.3"
+  version: "1.4"
   scope: [root]
   auto_invoke:
     - "About to delegate a non-trivial or multi-domain task to a subagent"
@@ -78,6 +78,16 @@ subagents) could reasonably implement differently.
 ## Acceptance criteria
 - [ ] One falsifiable statement per line — a fresh reviewer can mark PASS/FAIL from the diff alone.
 ```
+
+### Large features: slice, don't specify everything upfront
+
+A spec with more than one Outcome, or more criteria than one `verifier` pass can check, is waterfall: it's written before anything has been learned and drifts before it ships. Split it into vertical slices, each shippable and verifiable on its own:
+
+1. List the slices as one-line Outcomes under a `## Slices` heading — this is the only part written upfront.
+2. Fully specify only the next slice; build, verify, ship it.
+3. Before specifying the following slice, rewrite it from what the last one taught. Drop slices that turned out unnecessary.
+
+Costly-to-revert decisions (schema, auth, contracts) still get fixed in the first slice that touches them — slicing defers detail, not those.
 
 ### Delegating
 
