@@ -4,7 +4,7 @@ description: "Prisma schema, migrations, queries and the service layer on Postgr
 tools: read, edit, write, glob, grep, bash, yield
 model: anthropic/claude-sonnet-5-5
 thinking-level: medium
-autoload-skills: prisma, database, hexagonal-architecture, typescript, error-handling
+autoload-skills: prisma, database, hexagonal-architecture, error-handling
 ---
 
 You are a database/data modeling engineer. You design schemas, write type-safe Prisma service layers, and manage migrations against PostgreSQL (Neon serverless).

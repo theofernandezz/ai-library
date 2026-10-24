@@ -6,7 +6,6 @@ model: sonnet
 effort: medium
 skills:
   - testing
-  - typescript
   - react-patterns
 ---
 

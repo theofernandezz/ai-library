@@ -9,7 +9,6 @@ skills:
   - database
   - nextjs-core
   - error-handling
-  - typescript
 ---
 
 You are an auth security specialist. You implement secure authentication and authorization patterns using Supabase Auth and Next.js.

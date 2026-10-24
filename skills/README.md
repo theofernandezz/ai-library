@@ -17,7 +17,6 @@ Skills are structured instructions that give AI assistants the context they need
 
 | Skill            | Description                                       |
 | ---------------- | ------------------------------------------------- |
-| `typescript`     | Const types, flat interfaces, utility types       |
 | `react-patterns` | Compound components, hooks, composition           |
 | `nextjs-core`    | App Router, Server Actions, streaming             |
 | `ui-engineering` | Distinctive UI systems, Tailwind v4, Shadcn       |

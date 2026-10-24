@@ -6,7 +6,6 @@
 
 | Skill              | When to load                                                              |
 | ------------------ | ------------------------------------------------------------------------- |
-| `typescript`       | Any `.ts` or `.tsx` file — types, no `any`, no `enum`, `as const`        |
 | `react-patterns`   | Creating or refactoring React components, custom hooks, composition       |
 | `nextjs-core`      | Server Components, Server Actions, pages, layouts, `app/` directory       |
 | `ui-engineering`   | Tailwind v4, shadcn, Aceternity, `cn()`, design tokens                   |

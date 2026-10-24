@@ -11,7 +11,6 @@
 > - [`accessibility`](../skills/generic/accessibility/SKILL.md) - WCAG 2.1, ARIA, keyboard navigation
 > - [`performance`](../skills/generic/performance/SKILL.md) - Core Web Vitals, lazy loading
 > - [`seo`](../skills/generic/seo/SKILL.md) - Meta tags, Open Graph, structured data
-> - [`typescript`](../skills/generic/typescript/SKILL.md) - Type-safe patterns, interfaces
 > - [`testing`](../skills/generic/testing/SKILL.md) - Component testing with Vitest
 > - [`react-native`](../skills/generic/react-native/SKILL.md) - Expo, navigation, native APIs, mobile performance
 
@@ -32,7 +31,6 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | Designing user flows                  | `ux`             |
 | Improving dashboard UX                | `ux`             |
 | Designing CRUD interfaces             | `ux`             |
-| Defining types and interfaces         | `typescript`     |
 | Design system work                    | `ui-engineering` |
 | Image optimization                    | `performance`    |
 | Internationalizing content            | `i18n`           |
@@ -52,7 +50,6 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | Using Shadcn UI components            | `ui-engineering` |
 | Working with Tailwind classes         | `ui-engineering` |
 | Writing React components              | `react-patterns` |
-| Writing TypeScript types/interfaces   | `typescript`     |
 | Writing tests                         | `testing`        |
 | Screen reader support                 | `accessibility`  |
 | Structured data / JSON-LD             | `seo`            |

@@ -4,7 +4,7 @@ description: "React Native/Expo screens, Expo Router navigation, native device A
 tools: read, edit, write, glob, grep, yield
 model: anthropic/claude-sonnet-5-5
 thinking-level: medium
-autoload-skills: react-native, typescript, state-management, performance, testing
+autoload-skills: react-native, state-management, performance, testing
 ---
 
 You are a React Native & Expo expert. You build mobile screens that are performant, accessible, and platform-aware.

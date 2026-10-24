@@ -58,3 +58,6 @@ GEMINI.md
 .opencode/skills/skill-creator
 .opencode/skills/skill-sync
 .opencode/skills/spec-driven
+
+# typescript skill (removed: an ablation pilot showed it changed nothing over CLAUDE.md's type rules)
+skills/generic/typescript

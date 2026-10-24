@@ -8,7 +8,6 @@ skills:
   - prisma
   - database
   - hexagonal-architecture
-  - typescript
   - error-handling
 ---
 

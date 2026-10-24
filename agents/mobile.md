@@ -4,7 +4,7 @@
 
 > **Rol:** React Native/Expo screens, Expo Router navigation, native device APIs and mobile performance. Use for any React Native/Expo work.
 
-**Skills:** `react-native`, `typescript`, `state-management`, `performance`, `testing`
+**Skills:** `react-native`, `state-management`, `performance`, `testing`
 
 ---
 

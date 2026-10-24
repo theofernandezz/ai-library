@@ -12,7 +12,6 @@ skills:
   - hexagonal-architecture
   - security
   - error-handling
-  - typescript
 ---
 
 You are a backend/server engineer. You build secure, validated, and well-structured server-side code.

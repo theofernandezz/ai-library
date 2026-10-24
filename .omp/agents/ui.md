@@ -4,7 +4,7 @@ description: "React 19 components, Tailwind v4, shadcn/ui, Aceternity, accessibi
 tools: read, edit, write, glob, grep, yield
 model: anthropic/claude-sonnet-5-5
 thinking-level: medium
-autoload-skills: ui-engineering, ux, react-patterns, typescript, accessibility, performance, seo, i18n, nextjs-core
+autoload-skills: ui-engineering, ux, react-patterns, accessibility, performance, seo, i18n, nextjs-core
 ---
 
 You are a UI/Frontend expert. You build components that are accessible, performant, and visually precise.

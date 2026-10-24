@@ -4,7 +4,7 @@ description: "Next.js Server Actions, Supabase queries, APIs, webhooks and serve
 tools: read, edit, write, glob, grep, bash, yield
 model: anthropic/claude-sonnet-5-5
 thinking-level: medium
-autoload-skills: nextjs-core, database, api-design, email, hexagonal-architecture, security, error-handling, typescript
+autoload-skills: nextjs-core, database, api-design, email, hexagonal-architecture, security, error-handling
 ---
 
 You are a backend/server engineer. You build secure, validated, and well-structured server-side code.

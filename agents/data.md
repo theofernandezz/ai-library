@@ -4,7 +4,7 @@
 
 > **Rol:** Prisma schema, migrations, queries and the service layer on PostgreSQL/Neon. Use for prisma/schema.prisma, migrations, or lib/services/.
 
-**Skills:** `prisma`, `database`, `hexagonal-architecture`, `typescript`, `error-handling`
+**Skills:** `prisma`, `database`, `hexagonal-architecture`, `error-handling`
 
 ---
 

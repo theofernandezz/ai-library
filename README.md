@@ -34,7 +34,6 @@ For larger tasks, agents work as a team. The developer acts as Team Lead, coordi
 
 | Skill | What it covers |
 |-------|---------------|
-| `typescript` | Strict types, no `any`, no `enum`, `as const` patterns |
 | `react-patterns` | Component composition, custom hooks, compound components |
 | `nextjs-core` | App Router, Server Components, Server Actions, streaming |
 | `ui-engineering` | Tailwind v4, shadcn/ui, Aceternity, design tokens |
@@ -114,15 +113,15 @@ Re-run the same command (preview first with `--dry-run`).
 
 ## Deploy profiles
 
-Not every project needs all 21 skills. Profiles deploy only the skills relevant to your project type:
+Not every project needs all 22 skills. Profiles deploy only the skills relevant to your project type:
 
 | Profile | Skills | Best for |
 |---------|--------|----------|
-| `web-app` | nextjs-core, database, security, typescript, react-patterns, ui-engineering, error-handling, testing, api-design, email, env-config | Full-stack Next.js applications |
-| `mobile` | react-native, typescript, state-management, performance, testing | React Native / Expo apps |
-| `static` | nextjs-core, ui-engineering, seo, performance, typescript, accessibility | Marketing sites, blogs, landing pages |
-| `api` | api-design, database, security, error-handling, typescript, email, env-config | API-only backends |
-| `full` | All 21 skills | When you need everything (default) |
+| `web-app` | nextjs-core, database, security, react-patterns, ui-engineering, error-handling, testing, api-design, email, env-config | Full-stack Next.js applications |
+| `mobile` | react-native, state-management, performance, testing | React Native / Expo apps |
+| `static` | nextjs-core, ui-engineering, seo, performance, accessibility | Marketing sites, blogs, landing pages |
+| `api` | api-design, database, security, error-handling, email, env-config | API-only backends |
+| `full` | All 22 skills | When you need everything (default) |
 
 ## Agent Teams
 

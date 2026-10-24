@@ -8,7 +8,6 @@ skills:
   - ui-engineering
   - ux
   - react-patterns
-  - typescript
   - accessibility
   - performance
   - seo

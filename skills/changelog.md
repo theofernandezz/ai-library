@@ -6,6 +6,15 @@
 
 ---
 
+## typescript skill removed (2026-10-22)
+
+| Change | Affects |
+|--------|---------|
+| `typescript` is gone: in an ablation pilot (3 tasks × 3 runs, Opus 5.5) code written with and without it was the same — no `any`/`enum`/`namespace`, `as const` unions — because the "no `any`, no `enum`" rule in `CLAUDE.md` already covers it | Profiles (`web-app`, `mobile`, `static`, `api`), agent skill lists |
+| Re-deploying moves `skills/generic/typescript` into `.ai-library-backup/` | Existing deployed projects |
+
+---
+
 ## i18n v1.1, deploy.sh on macOS bash (2026-10-22)
 
 | Change | Affects |

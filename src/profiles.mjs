@@ -4,12 +4,12 @@ import { join } from 'node:path'
 // Keep in sync with PROFILE_* in deploy.sh — the two tools must not drift.
 export const PROFILES = {
   'web-app': [
-    'nextjs-core', 'database', 'security', 'typescript', 'react-patterns',
+    'nextjs-core', 'database', 'security', 'react-patterns',
     'ui-engineering', 'error-handling', 'testing', 'api-design', 'email', 'env-config',
   ],
-  mobile: ['react-native', 'typescript', 'state-management', 'performance', 'testing'],
-  static: ['nextjs-core', 'ui-engineering', 'seo', 'performance', 'typescript', 'accessibility'],
-  api: ['api-design', 'database', 'security', 'error-handling', 'typescript', 'email', 'env-config'],
+  mobile: ['react-native', 'state-management', 'performance', 'testing'],
+  static: ['nextjs-core', 'ui-engineering', 'seo', 'performance', 'accessibility'],
+  api: ['api-design', 'database', 'security', 'error-handling', 'email', 'env-config'],
 }
 
 export function getAllSkills(libraryDir) {

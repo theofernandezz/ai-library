@@ -6,7 +6,6 @@ model: sonnet
 effort: medium
 skills:
   - react-native
-  - typescript
   - state-management
   - performance
   - testing

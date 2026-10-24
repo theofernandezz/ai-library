@@ -11,7 +11,6 @@
 > - [`seo`](../skills/generic/seo/SKILL.md) - Meta tags, sitemap, robots.txt
 > - [`security`](../skills/generic/security/SKILL.md) - XSS/CSRF prevention, input validation, auth
 > - [`error-handling`](../skills/generic/error-handling/SKILL.md) - Custom errors, boundaries, logging
-> - [`typescript`](../skills/generic/typescript/SKILL.md) - Type-safe patterns, interfaces
 
 
 ---
@@ -47,7 +46,6 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | Working with Supabase | `database` |
 | Working with app/ directory | `nextjs-core` |
 | Working with app/api/ directory | `api-design` |
-| Writing TypeScript types/interfaces | `typescript` |
 
 ---
 

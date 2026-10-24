@@ -209,7 +209,6 @@ No importa cuán "simple" parezca la tarea. Sin excepciones.
 
 | Si estás... | Skill | Path |
 |-------------|-------|------|
-| Creando archivos .ts/.tsx | `typescript` | `skills/generic/typescript/SKILL.md` |
 | Trabajando en app/ | `nextjs-core` | `skills/generic/nextjs-core/SKILL.md` |
 | Creando componentes React | `react-patterns` | `skills/generic/react-patterns/SKILL.md` |
 | Usando Tailwind/shadcn | `ui-engineering` | `skills/generic/ui-engineering/SKILL.md` |
@@ -255,7 +254,6 @@ EOF
 
 | Skill | Path | Patrones Clave |
 |-------|------|----------------|
-| `typescript` | `generic/typescript/SKILL.md` | as const, no any, no enum |
 | `react-patterns` | `generic/react-patterns/SKILL.md` | Compound components, hooks |
 | `nextjs-core` | `generic/nextjs-core/SKILL.md` | Server Components, Actions |
 | `ui-engineering` | `generic/ui-engineering/SKILL.md` | Tailwind v4, shadcn, cn() |

@@ -4,7 +4,6 @@
 
 > **Skills Reference**: For detailed patterns, use these skills:
 > - [`testing`](../skills/generic/testing/SKILL.md) - Vitest, Testing Library, MSW, behavior-driven
-> - [`typescript`](../skills/generic/typescript/SKILL.md) - Type-safe test utilities
 > - [`react-patterns`](../skills/generic/react-patterns/SKILL.md) - Component testing patterns
 
 ---
@@ -22,7 +21,7 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | Mocking with MSW | `testing` |
 | Server Action testing | `testing` |
 | Test setup and configuration | `testing` |
-| Test utilities creation | `testing` + `typescript` |
+| Test utilities creation | `testing` |
 | Writing tests | `testing` |
 
 ---

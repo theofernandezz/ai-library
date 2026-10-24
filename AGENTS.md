@@ -20,13 +20,13 @@ When a task falls into a specific domain, **route to the specialized agent** whi
 
 | Domain             | Agent                                     | Claude Code Agent                        | Skills Orchestrated                                         |
 | ------------------ | ----------------------------------------- | ---------------------------------------- | ----------------------------------------------------------- |
-| **UI/Frontend**    | [`/ui/AGENTS.md`](ui/AGENTS.md)           | [`agents/ui.md`](agents/ui.md)           | ui-engineering, react-patterns, typescript, testing         |
-| **Backend/Server** | [`/backend/AGENTS.md`](backend/AGENTS.md) | [`agents/backend.md`](agents/backend.md) | nextjs-core, database, security, error-handling, typescript |
+| **UI/Frontend**    | [`/ui/AGENTS.md`](ui/AGENTS.md)           | [`agents/ui.md`](agents/ui.md)           | ui-engineering, react-patterns, testing         |
+| **Backend/Server** | [`/backend/AGENTS.md`](backend/AGENTS.md) | [`agents/backend.md`](agents/backend.md) | nextjs-core, database, security, error-handling |
 | **Auth**           | [`/auth/AGENTS.md`](auth/AGENTS.md)       | [`agents/auth.md`](agents/auth.md)       | database, security, error-handling, nextjs-core             |
-| **Testing**        | [`/testing/AGENTS.md`](testing/AGENTS.md) | [`agents/testing.md`](agents/testing.md) | testing, typescript, react-patterns                         |
-| **Data/Prisma**    | —                                          | [`agents/data.md`](agents/data.md)       | prisma, database, hexagonal-architecture, typescript, error-handling |
+| **Testing**        | [`/testing/AGENTS.md`](testing/AGENTS.md) | [`agents/testing.md`](agents/testing.md) | testing, react-patterns                         |
+| **Data/Prisma**    | —                                          | [`agents/data.md`](agents/data.md)       | prisma, database, hexagonal-architecture, error-handling |
 | **Git**            | —                                          | [`agents/git.md`](agents/git.md)         | git-workflow                                                 |
-| **Mobile**         | —                                          | [`agents/mobile.md`](agents/mobile.md)   | react-native, typescript, state-management, performance, testing |
+| **Mobile**         | —                                          | [`agents/mobile.md`](agents/mobile.md)   | react-native, state-management, performance, testing |
 
 > **Note:** Files in `/agents/` are **generated** from `.claude/agents/*.md` (the source of truth) — don't edit them by hand. Claude Code invokes `.claude/agents/*.md` directly as real subagents; tools without subagent support read the generated `/agents/*.md` docs instead. omp reads its own generated copies in `.omp/agents/*.md`.
 > **Data/Prisma, Git, and Mobile don't have a `/<domain>/AGENTS.md`** — that per-scope doc layer only exists for ui/backend/auth/testing today. Use `agents/*.md` directly for these three.
@@ -80,14 +80,12 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | Creating pull requests                  | `git-workflow`     |
 | Creating sitemap                        | `seo`              |
 | Creating test files                     | `testing`          |
-| Creating/editing .ts or .tsx files      | `typescript`       |
 | Creating/styling components             | `ui-engineering`   |
 | Designing user flows                    | `ux`               |
 | Improving dashboard UX                  | `ux`               |
 | Designing CRUD interfaces               | `ux`               |
 | Database queries and mutations          | `database`         |
 | Defining RLS policies                   | `database`         |
-| Defining types and interfaces           | `typescript`       |
 | Designing REST APIs                     | `api-design`       |
 | Error recovery patterns                 | `error-handling`   |
 | External API integrations               | `api-design`       |
@@ -150,9 +148,7 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | Working with Tailwind classes           | `ui-engineering`   |
 | Working with app/ directory             | `nextjs-core`      |
 | Working with app/api/ directory         | `api-design`       |
-| Working with generics                   | `typescript`       |
 | Writing React components                | `react-patterns`   |
-| Writing TypeScript types/interfaces     | `typescript`       |
 | Writing tests                           | `testing`          |
 | ARIA and screen reader support          | `accessibility`    |
 | Building navigation menus               | `accessibility`    |
@@ -168,7 +164,6 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 
 | Skill              | Description                                             | URL                                                  |
 | ------------------ | ------------------------------------------------------- | ---------------------------------------------------- |
-| `typescript`       | Const types, flat interfaces, utility types             | [SKILL.md](skills/generic/typescript/SKILL.md)       |
 | `react-patterns`   | Compound components, hooks, composition                 | [SKILL.md](skills/generic/react-patterns/SKILL.md)   |
 | `nextjs-core`      | App Router, Server Actions, streaming                   | [SKILL.md](skills/generic/nextjs-core/SKILL.md)      |
 | `ui-engineering`   | Distinctive UI systems, Tailwind v4, Shadcn             | [SKILL.md](skills/generic/ui-engineering/SKILL.md)   |

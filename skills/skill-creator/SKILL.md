@@ -230,7 +230,7 @@ If your skill depends on or extends another:
 ```markdown
 ---
 extends:
-  - /skills/generic/typescript
+  - /skills/generic/react-patterns
 requires:
   - /skills/generic/database
 ---
@@ -258,7 +258,6 @@ Ensure no conflicts with existing skills:
 
 ```markdown
 # Check existing skills for overlapping rules
-/skills/generic/typescript  - Type rules
 /skills/generic/nextjs-core - Framework rules
 /skills/generic/ui-engineering - UI rules
 /skills/generic/database - Data rules

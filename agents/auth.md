@@ -4,7 +4,7 @@
 
 > **Rol:** Supabase Auth, RLS policies, sessions, route protection and role checks. Use for login/signup/OAuth flows, protecting routes, or writing RLS policies.
 
-**Skills:** `security`, `database`, `nextjs-core`, `error-handling`, `typescript`
+**Skills:** `security`, `database`, `nextjs-core`, `error-handling`
 
 ---
 

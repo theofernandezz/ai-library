@@ -4,7 +4,7 @@
 
 > **Rol:** Vitest, Testing Library, MSW and Playwright. Use when writing, running, or fixing tests or test setup.
 
-**Skills:** `testing`, `typescript`, `react-patterns`
+**Skills:** `testing`, `react-patterns`
 
 ---
 

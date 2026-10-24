@@ -4,7 +4,7 @@
 
 > **Rol:** React 19 components, Tailwind v4, shadcn/ui, Aceternity, accessibility, i18n/SEO, and client-side Next.js (Client Components, next/image, loading/error.tsx, Suspense). Use when creating or changing UI.
 
-**Skills:** `ui-engineering`, `ux`, `react-patterns`, `typescript`, `accessibility`, `performance`, `seo`, `i18n`, `nextjs-core`
+**Skills:** `ui-engineering`, `ux`, `react-patterns`, `accessibility`, `performance`, `seo`, `i18n`, `nextjs-core`
 
 ---
 

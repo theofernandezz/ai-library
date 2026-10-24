@@ -4,7 +4,7 @@
 
 > **Rol:** Next.js Server Actions, Supabase queries, APIs, webhooks and server-side validation. Use for business logic or anything in lib/.
 
-**Skills:** `nextjs-core`, `database`, `api-design`, `email`, `hexagonal-architecture`, `security`, `error-handling`, `typescript`
+**Skills:** `nextjs-core`, `database`, `api-design`, `email`, `hexagonal-architecture`, `security`, `error-handling`
 
 ---
 

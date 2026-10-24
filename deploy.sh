@@ -15,10 +15,10 @@
 #   --mode <mode>     Deployment mode (default: auto)
 #                       root       → deploy to the repo root (auto is an alias)
 #   --profile <name>  Deploy only skills for a specific project type (default: full)
-#                       web-app    → nextjs, db, auth, ui, testing, api, email (11 skills)
-#                       mobile     → react-native, state, performance, testing (5 skills)
-#                       static     → nextjs, ui, seo, performance, a11y (6 skills)
-#                       api        → api-design, db, security, error-handling, email (7 skills)
+#                       web-app    → nextjs, db, auth, ui, testing, api, email (10 skills)
+#                       mobile     → react-native, state, performance, testing (4 skills)
+#                       static     → nextjs, ui, seo, performance, a11y (5 skills)
+#                       api        → api-design, db, security, error-handling, email (6 skills)
 #                       custom     → choose individual skills interactively
 #                       full       → all skills (default)
 #   --dry-run         Show what would be copied without actually copying
@@ -60,10 +60,10 @@ SKIPPED=0
 ERRORS=0
 
 # ── Skill Profiles ─────────────────────────────────────────────────────────────
-PROFILE_WEB_APP="nextjs-core database security typescript react-patterns ui-engineering error-handling testing api-design email env-config"
-PROFILE_MOBILE="react-native typescript state-management performance testing"
-PROFILE_STATIC="nextjs-core ui-engineering seo performance typescript accessibility"
-PROFILE_API="api-design database security error-handling typescript email env-config"
+PROFILE_WEB_APP="nextjs-core database security react-patterns ui-engineering error-handling testing api-design email env-config"
+PROFILE_MOBILE="react-native state-management performance testing"
+PROFILE_STATIC="nextjs-core ui-engineering seo performance accessibility"
+PROFILE_API="api-design database security error-handling email env-config"
 
 # Meta-skills used inside projects — also shipped to .claude/skills so Claude Code
 # and omp discover them natively. skill-creator/skill-sync only maintain the library.
@@ -206,10 +206,10 @@ Options:
   --mode <mode>     Deployment mode (default: auto)
                       root       → deploy to the repo root (auto is an alias)
   --profile <name>  Deploy only skills for a specific project type (default: full)
-                      web-app    → nextjs, db, auth, ui, testing, api, email (11 skills)
-                      mobile     → react-native, state, performance, testing (5 skills)
-                      static     → nextjs, ui, seo, performance, a11y (6 skills)
-                      api        → api-design, db, security, error-handling, email (7 skills)
+                      web-app    → nextjs, db, auth, ui, testing, api, email (10 skills)
+                      mobile     → react-native, state, performance, testing (4 skills)
+                      static     → nextjs, ui, seo, performance, a11y (5 skills)
+                      api        → api-design, db, security, error-handling, email (6 skills)
                       custom     → choose individual skills interactively
                       full       → all skills (default)
   --dry-run         Show what would be copied without actually copying
@@ -781,10 +781,10 @@ ask_profile() {
 
   local options=(
     "full     → all skills"
-    "web-app  → nextjs, db, auth, ui, testing, api, email, typescript, error-handling"
-    "mobile   → react-native, typescript, state-management, performance, testing"
-    "static   → nextjs, ui, seo, performance, typescript, accessibility"
-    "api      → api-design, db, security, error-handling, email, typescript"
+    "web-app  → nextjs, db, auth, ui, testing, api, email, error-handling"
+    "mobile   → react-native, state-management, performance, testing"
+    "static   → nextjs, ui, seo, performance, accessibility"
+    "api      → api-design, db, security, error-handling, email"
     "custom   → pick individual skills from the list"
   )
 
